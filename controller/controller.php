@@ -1,7 +1,7 @@
- 
+
 <?php
  /*includes the database */
-include 'database/model.php';
+include '../database/model.php';
 
 
 
