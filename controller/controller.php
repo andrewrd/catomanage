@@ -3,32 +3,39 @@
  /*includes the database */
 include '../database/model.php';
 
-$dbo = db_connect();
-
-function test(){
+function get_categories(){
+	$dbo = db_connect();
 	/*runs a test query to display all category names*/
-	$query = "SELECT cat_name ";
-	$query .= "FROM CATEGORY";
+	if (isset($_GET['id'])){
+		$parent_id = $_GET['id'];
+	} else {
+		$parent_id = 1;
+	}
+
+	$stmt = $dbo->prepare("SELECT cat_name FROM category WHERE cat_id = (:id)");
+	$stmt->bindParam(':id', $parent_id);
 
 	try {
-	  $statement = $dbo->query($query);
+		$stmt->execute();
 	}
 	catch (PDOException $ex){
 	  echo $ex->getMessage();
 	  die("Invalid Query");
 	}
 
-	while($row = $statement->fetch()) { ?> <!-- see http://www.php.net/manual/en/pdostatement.fetch.php -->
-			<TR>
-		<?php	for ($j = 0; $j < $statement->columnCount(); $j++) { ?>
-			    <TD><?php echo $row[$j]?></TD>
-		<?php	} ?>
-			</TR>
+	while($row = $stmt->fetch()) { ?> <!-- see http://www.php.net/manual/en/pdostatement.fetch.php -->
+		<p><strong>
+			<?php	for ($j = 0; $j < $stmt->columnCount(); $j++) { ?>
+				    <TD><?php echo $row[$j]?></TD>
+			<?php	} ?>
+		</strong></p>
 	<?php	}
+	# Drop the reference to the database
+	$dbo = null;
 }
 
 
-	# Drop the reference to the database
-	$dbo = null;
+
+
 
 ?>

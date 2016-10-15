@@ -7,9 +7,9 @@ include '../controller/controller.php';
 ?>
 <div class="container">
   <div class="col-xs-4">
+    <?php get_categories(); ?>
   </div>
   <div class="col-xs-8">
-    <?php test(); ?>
   </div>
 </div>
 <?php
