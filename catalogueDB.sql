@@ -193,3 +193,59 @@ alter table STOCK add constraint FK_ATTRIBUTEVALUE_HAS foreign key (STOCK_PROD_A
 
 alter table STOCK add constraint FK_PRODUCTHAS foreign key (STOCK_PROD_ID)
       references PRODUCT (PROD_ID) on delete restrict on update restrict;
+
+/* Insert into Category */
+insert into category values (1,'Store root category','Store root category',null,'DisplayCategory.php');
+insert into category values (2,'Men''s Clothing','Clothing of all types - trousers, jackets, etc.',null,'DisplayCategory.php');
+insert into category values (3,'Jeans','Jeans: Denim, cotton, etc.',null,'DisplayCategory.php');
+insert into category values (4,'Denim Jeans','Denim jeans',null,'DisplayCategory.php');
+insert into category values (5,'Boot cut jeans','Boot cut jeans',null,'DisplayProducts.php');
+insert into category values (6,'Straight cut jeans','Straight cut jeans',null,'DisplayProducts.php');
+insert into category values (7,'Shoes and boots','Shoes and boots','shoes.jpg','DisplayCategory.php');
+insert into category values (8,'Computers','Computers','computers.jpg','DisplayCategory.php');
+insert into category values (9,'Laptop computers','Laptop computers','laptop.jpg','DisplayProducts.php');
+insert into category values (10,'Servers','Rackmount and tower servers','server.jpg','DisplayProducts.php');
+insert into category values (11,'Shirts','Shirts of all kinds','shirts.jpg','DisplayCategory.php');
+insert into category values (12,'Trousers','Trousers, jeans, shorts','trousers.jpg','DisplayCategory.php');
+insert into category values (13,'Jackets','Sports jackets, blazers, etc.','jackets.jpg','DisplayCategory.php');
+insert into category values (14,'Business shirts','Cotton and cotton blend business shirts','bshirt.jpg','DisplayCategory.php');
+insert into category values (15,'Short-sleeved shirts','With collars and short sleeves','sshirt.jpg','DisplayCategory.php');
+insert into category values (16,'T-shirts','Tees: plain and with designs','tshirt.jpg','DisplayCategory.php');
+
+/* Insert into Product */
+insert into PRODUCT values (1,'Null Product','Null product','null.jpg','Null product','NULL','DisplayProduct.php', 0, 0, 0, 0);
+insert into PRODUCT values (2,'Levi 501','Levi 501 Classic Jeans','levi_501.jpg','You will look terrific in these classic blue denim jeans. Hard-wearing, but stylish, these durable pants always look smart, even when you''ve just gotten off your horse.','LEVI501','DisplayProduct.php', 0.12, 12, 36, 20);
+insert into PRODUCT values (3,'Levi 504','Levi 504 Cord Jeans','levi_504.jpg','Light-weight corduroy is perfect for those hot summer days! Look cool and be cool. Available in blue, brown and black.','LEVI504','DisplayProduct.php', 0.13, 13, 37, 21);
+insert into PRODUCT values (4,'Levi 502','Levi 502 Jeans','levi_502.jpg','The classic Levi look in black','LEVI502','DisplayProduct.php', 0.14, 14, 38, 22);
+insert into PRODUCT values (5,'Wrangler CCOR','Wrangler Cowboy Cut Original Fit','wr_ccof.jpg','Available in blue and black, yadda, yadda, yadda','WRCCOF','DisplayProduct.php', 0.15, 15, 39, 23);
+insert into PRODUCT values (6,'XKCD Stats Class Tee','The classic XKCD "Causality" t-shirt','xkcd-t.jpg','The classic XKCD cartoon now comes to a t-shirt near you! Available in blue only.','XKCDT','DisplayProduct.php', 0.16, 16, 40, 24);
+insert into PRODUCT values (7,'IBM 306m','IBM X-Series 306m 1U Rack-mount server','306m.jpg','A 1U rack-mount server. Specify processor, RAM, storage, etc. below','IBM306M','DisplayProduct.php', 12.6, 70, 55, 40);
+
+/* Insert into CgPrRel */
+insert into CGPRREL values (1,5,2);
+insert into CGPRREL values (2,5,4);
+insert into CGPRREL values (3,6,3);
+insert into CGPRREL values (4,5,5);
+insert into CGPRREL values (5,16,6);
+insert into CGPRREL values (6,10,7);
+
+/* Insert into CgryRel */
+insert into CGRYREL values (1,1,2,null);
+insert into CGRYREL values (2,2,3,null);
+insert into CGRYREL values (3,3,4,null);
+insert into CGRYREL values (4,3,5,null);
+insert into CGRYREL values (5,3,6,null);
+insert into CGRYREL values (6,4,5,null);
+insert into CGRYREL values (7,4,6,null);
+insert into CGRYREL values (8,2,7,null);
+insert into CGRYREL values (9,2,11,null);
+insert into CGRYREL values (10,2,12,null);
+insert into CGRYREL values (11,12,3,null);
+insert into CGRYREL values (12,2,11,null);
+insert into CGRYREL values (13,11,14,null);
+insert into CGRYREL values (14,11,15,null);
+insert into CGRYREL values (15,11,16,null);
+insert into CGRYREL values (16,2,13,null);
+insert into CGRYREL values (17,1,8,null);
+insert into CGRYREL values (18,8,9,null);
+insert into CGRYREL values (19,8,10,NULL);
