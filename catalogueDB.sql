@@ -29,7 +29,7 @@ drop table if exists STOCK;
 /*==============================================================*/
 create table ATTRIBUTE
 (
-   ID                   int not null,
+   ID                   int not null auto_increment,
    PRODUCT_PROD_ID      int not null,
    NAME                 varchar(45),
    primary key (ID)
@@ -40,7 +40,7 @@ create table ATTRIBUTE
 /*==============================================================*/
 create table ATTRIBUTEVALUE
 (
-   ATTRVAL_ID           int not null,
+   ATTRVAL_ID           int not null auto_increment,
    ATTRVAL_PROD_ID      int not null,
    ATTRVAL_ATTR_ID      int not null,
    ATTRVAL_VALUE        varchar(45) not null,
@@ -53,7 +53,7 @@ create table ATTRIBUTEVALUE
 /*==============================================================*/
 create table CATEGORY
 (
-   CAT_ID               int not null,
+   CAT_ID               int not null auto_increment,
    CAT_NAME             varchar(40) not null,
    CAT_DESC             varchar(128),
    CAT_IMG_URL          varchar(128),
@@ -66,7 +66,7 @@ create table CATEGORY
 /*==============================================================*/
 create table CGPRREL
 (
-   CGPRREL_ID           int not null,
+   CGPRREL_ID           int not null auto_increment,
    CGPR_CAT_ID          int not null,
    CGPR_PROD_ID         int not null,
    primary key (CGPRREL_ID)
@@ -77,7 +77,7 @@ create table CGPRREL
 /*==============================================================*/
 create table CGRYREL
 (
-   CGRYREL_ID           int not null,
+   CGRYREL_ID           int not null auto_increment,
    CGRYREL_ID_PARENT    int not null,
    CGRYREL_ID_CHILD     int not null,
    CGRYREL_SEQUENCE     int,
@@ -89,7 +89,7 @@ create table CGRYREL
 /*==============================================================*/
 create table PRODPRICES
 (
-   PRPR_ID              int not null,
+   PRPR_ID              int not null auto_increment,
    PRPR_PROD_ID         int not null,
    PRPR_SHOPGRP         int not null,
    PRPR_PRICE           decimal(10,2),
@@ -101,7 +101,7 @@ create table PRODPRICES
 /*==============================================================*/
 create table PRODUCT
 (
-   PROD_ID              int not null,
+   PROD_ID              int not null auto_increment,
    PROD_NAME            varchar(40) not null,
    PROD_DESC            varchar(128),
    PROD_IMG_URL         varchar(128),
@@ -120,7 +120,7 @@ create table PRODUCT
 /*==============================================================*/
 create table SHOPPERGROUP
 (
-   SHOPGRP_ID           int not null,
+   SHOPGRP_ID           int not null auto_increment,
    SHOPGRP_NAME         varchar(45) not null,
    SHOPGRP_DESCRIPTION  varchar(256),
    primary key (SHOPGRP_ID)
@@ -131,7 +131,7 @@ create table SHOPPERGROUP
 /*==============================================================*/
 create table SPECIALS
 (
-   SPECIALS_ID          int not null,
+   SPECIALS_ID          int not null auto_increment,
    SPECIAL_PRODUCT_ID   int not null,
    SPECIAL_PRODATTRVAL  int not null,
    SPECIAL_PRODPRICES_ID int,
@@ -146,7 +146,7 @@ create table SPECIALS
 /*==============================================================*/
 create table STOCK
 (
-   STOCK_ID             int not null,
+   STOCK_ID             int not null auto_increment,
    STOCK_PROD_ID        int not null,
    STOCK_PROD_ATTRVALUE_ID int not null,
    STOCK_QTY            int,
@@ -193,4 +193,3 @@ alter table STOCK add constraint FK_ATTRIBUTEVALUE_HAS foreign key (STOCK_PROD_A
 
 alter table STOCK add constraint FK_PRODUCTHAS foreign key (STOCK_PROD_ID)
       references PRODUCT (PROD_ID) on delete restrict on update restrict;
-
