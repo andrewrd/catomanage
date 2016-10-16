@@ -11,6 +11,13 @@ include '../controller/controller.php';
     <?php get_categories($dbo); ?>
   </div>
   <div class="col-xs-8">
+    <?php if (isset($_GET['id'])){
+  		$parent_id = $_GET['id'];
+  	} else {
+  		$parent_id = 1;
+  	}
+    echo get_bread_crumb($dbo, $parent_id);
+    ?>
     <h1><?php get_category_name($dbo); ?></h1>
   </div>
 </div>

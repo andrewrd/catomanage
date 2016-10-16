@@ -4,13 +4,45 @@
 include '../database/model.php';
 $dbo = db_connect();
 
-function check_get(){
+function get_bread_crumb($dbo, $id){
+  $stmt = $dbo->prepare("SELECT cat_name FROM category WHERE cat_id = (:id)");
+	$stmt->bindParam(':id', $id);
 
+  try {
+		$stmt->execute();
+	}
+	catch (PDOException $ex){
+	  echo $ex->getMessage();
+	  die("Invalid Query");
+	}
+
+  $results = $stmt->fetchColumn();
+  $stmt = null;
+  $thislink = "<a href='catalogue.php?id=".$id."'>".$results."</a>";
+
+  if ($id==1){
+    return $thislink;
+  } else {
+    $stmt = $dbo->prepare("SELECT cgryrel_id_parent FROM cgryrel WHERE cgryrel_id_child = (:id)");
+    $stmt->bindParam(':id', $id);
+
+    try {
+  		$stmt->execute();
+  	}
+  	catch (PDOException $ex){
+  	  echo $ex->getMessage();
+  	  die("Invalid Query");
+  	}
+
+    $results = $stmt->fetchColumn();
+    return get_bread_crumb($dbo, $results)." / ".$thislink;
+  }
+
+  $stmt = null;
 }
 
 function get_category_name($dbo){
-	/*runs a test query to display all category names*/
-	$parent_id = check_get();
+	//gets the category name, depending on $_get['id']
 	if (isset($_GET['id'])){
 		$parent_id = $_GET['id'];
 	} else {
@@ -35,7 +67,6 @@ function get_category_name($dbo){
 }
 
 function get_categories($dbo){
-	$parent_id = check_get();
 	if (isset($_GET['id'])){
 		$parent_id = $_GET['id'];
 	} else {
