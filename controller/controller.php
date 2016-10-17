@@ -4,6 +4,17 @@
 include '../database/model.php';
 $dbo = db_connect();
 
+function try_or_die($statement){
+  try {
+    $statement->execute();
+  }
+  catch (PDOException $ex){
+    echo $ex->getMessage();
+    die("Invalid Query");
+  }
+  //standard attempt query or die code
+}
+
 function get_bread_crumb($dbo, $id){
   //this function generates the breadcrumb to place on the catalogue.php page
   //this is a recursive function, that fetches the parent_id of each subsequent level
@@ -16,14 +27,7 @@ function get_bread_crumb($dbo, $id){
   	$stmt->bindParam(':id', $id);
     //this gets the current category name
 
-    try {
-  		$stmt->execute();
-  	}
-  	catch (PDOException $ex){
-  	  echo $ex->getMessage();
-  	  die("Invalid Query");
-  	}
-    //standard attempt query or die code
+    try_or_die($stmt);
 
     $results = $stmt->fetchColumn();
     //fetches the result
@@ -37,14 +41,7 @@ function get_bread_crumb($dbo, $id){
     $stmt->bindParam(':id', $id);
     //gets the parent of the current category
 
-    try {
-  		$stmt->execute();
-  	}
-  	catch (PDOException $ex){
-  	  echo $ex->getMessage();
-  	  die("Invalid Query");
-  	}
-    //standard attempt query or die code
+    try_or_die($stmt);
 
     $results = $stmt->fetchColumn();
     //fetches the result of the query
@@ -60,6 +57,8 @@ function get_bread_crumb($dbo, $id){
 
 function get_category_name($dbo){
 	//gets the category name, depending on $_get['id']
+  //probably want to expand this function out to deal with getting the categories products,
+  //and other category information
 	if (isset($_GET['id'])){
 		$parent_id = $_GET['id'];
 	} else {
@@ -71,14 +70,7 @@ function get_category_name($dbo){
 	$stmt->bindParam(':id', $parent_id);
   //selects the category name for the selected cat_id
 
-	try {
-		$stmt->execute();
-	}
-	catch (PDOException $ex){
-	  echo $ex->getMessage();
-	  die("Invalid Query");
-	}
-  //standard attempt to query or die
+	try_or_die($stmt);
 
 	$results = $stmt->fetchColumn();
   //return the result
@@ -100,13 +92,7 @@ function get_categories($dbo){
 	$stmt = $dbo->prepare("SELECT cgryrel.cgryrel_id_child, category.cat_name FROM cgryrel INNER JOIN category ON cgryrel.cgryrel_id_child=category.cat_id WHERE cgryrel.cgryrel_id_parent = (:id)");
 	$stmt->bindParam(':id', $parent_id);
 
-	try {
-		$stmt->execute();
-	}
-	catch (PDOException $ex){
-	  echo $ex->getMessage();
-	  die("Invalid Query");
-	}
+	try_or_die($stmt);
 
 	while($row = $stmt->fetch()) { ?>
 		<p><a href=<?php echo "catalogue.php?id=".$row[0];?>><?php echo $row[1]; ?></a></p>
