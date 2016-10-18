@@ -122,7 +122,7 @@ function add_prod(){
   }
   else {
     //if info hasnt been added, show the form to add new info
-    new_product();
+    include '../layouts/addprodform.php';
   }
 }
 
@@ -131,10 +131,8 @@ function submitt_product(){
   return;
 }
 
-function new_product(){
-  //function that calls the form for adding a new form to the database
-  include '../layouts/addprodform.php';
+function get_all_cats(){
+  //function that gets all of the categories ids and names
 }
-
 
 ?>
