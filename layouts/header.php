@@ -10,8 +10,7 @@
   </head>
   <header class="container">
     <div class="col-xs-12">
-      <h3>COMP344 eCommerce Store</h3>
-      <h3><small>Catalogue Management Subsystem</small></h3>
+      <h1>Custom Header goes here</h1>
     </div>
   </header>
   <body>

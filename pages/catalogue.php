@@ -18,7 +18,7 @@ include '../controller/controller.php';
   	}
     echo get_bread_crumb($dbo, $parent_id);
     ?>
-    <h1><?php get_category_name($dbo); ?></h1>
+    <?php get_category_products($dbo); ?>
   </div>
 </div>
 <?php

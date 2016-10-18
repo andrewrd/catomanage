@@ -55,7 +55,7 @@ function get_bread_crumb($dbo, $id){
 
 }
 
-function get_category_name($dbo){
+function get_category_products($dbo){
 	//gets the category name, depending on $_get['id']
   //probably want to expand this function out to deal with getting the categories products,
   //and other category information
@@ -74,12 +74,21 @@ function get_category_name($dbo){
 
 	$results = $stmt->fetchColumn();
   //return the result
- 	echo $results;
+ 	echo "<div class='col-xs-12'><h2>".$results."</h2></div>";
   //echo out the result
   //maybe change this to return?
-
-	$stmt = null;
+  $stmt = null;
   //free statement
+
+  $stmt = $dbo->prepare("SELECT product.prod_name FROM product INNER JOIN cgprrel ON product.prod_id = cgprrel.cgpr_prod_id WHERE cgprrel.cgpr_cat_id = (:id)");
+  $stmt->bindParam(':id', $parent_id);
+
+  try_or_die($stmt);
+
+  while($row = $stmt->fetch()) {
+    echo "<p>".$row["prod_name"]."</p>";
+  }
+	$stmt = null;
 }
 
 function get_categories($dbo){
