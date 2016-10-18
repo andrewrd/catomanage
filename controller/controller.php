@@ -109,5 +109,32 @@ function get_categories($dbo){
 	$stmt = null;
 }
 
+function check_user_permission_level() {
+  //placeholder function for the role based access control functionality
+  return;
+}
+
+function add_prod(){
+  check_user_permission_level();
+  if (isset($_POST['prod_name'])) {
+    //if info has been posted, add that info to the DB
+    submitt_product();
+  }
+  else {
+    //if info hasnt been added, show the form to add new info
+    new_product();
+  }
+}
+
+function submitt_product(){
+  //function for submitting new product data to the DB
+  return;
+}
+
+function new_product(){
+  //function that calls the form for adding a new form to the database
+  include '../layouts/addprodform.php';
+}
+
 
 ?>
