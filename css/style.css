@@ -1,1 +1,32 @@
 /*Custom CSS file*/
+
+/*Form CSS goes here*/
+.title {
+    font-size: 2em;
+    text-decoration: none;
+    font-family: 'Dosis', serif;
+
+}
+.text-input-underline{
+    padding: 10px;
+    border: none;
+    width: 100%;
+    border-bottom: solid 2px #c9c9c9;
+    transition: border 0.3s;
+}
+.text-input-underline:focus {
+    outline: none;
+    border-bottom: solid 2px #969696;
+}
+
+.labelText {
+    font-family: 'Dosis', serif;
+    font-size: 1.4em;
+}
+
+.subHeader{
+    font-family: 'Dosis',serif;
+    text-decoration: underline !important;
+
+}
+/*Form CSS Ends here*/
