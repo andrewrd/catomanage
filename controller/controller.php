@@ -114,11 +114,22 @@ function check_user_permission_level() {
   return;
 }
 
-function add_prod(){
+function add_prod($dbo){
   check_user_permission_level();
   if (isset($_POST['prod_name'])) {
     //if info has been posted, add that info to the DB
-    submitt_product();
+    submit_product($dbo);
+
+    //test code for checking what categories have been selected
+    $cats = $_POST['cat'];
+    foreach($cats as $cat){
+      echo $cat;
+    }
+    unset($_POST['prod_name']);
+    unset($_POST['cat']);
+    echo "<a href='addprod.php'>Add another product</a>";
+    //end test code for checking what cats have been selected
+
   }
   else {
     //if info hasnt been added, show the form to add new info
@@ -126,13 +137,30 @@ function add_prod(){
   }
 }
 
-function submitt_product(){
+function submit_product(){
   //function for submitting new product data to the DB
   return;
 }
 
-function get_all_cats(){
-  //function that gets all of the categories ids and names
+function get_all_categories($dbo){
+  //function that gets all of the categories and their ids for using in adding
+  //producs to categories
+  $stmt = $dbo->prepare("SELECT cat_id, cat_name FROM category");
+
+  try_or_die($stmt);
+
+  while($row = $stmt->fetch()) { ?>
+
+		<div class="checkbox">
+      <label>
+        <input type="checkbox" name="cat[]" value="<?php echo $row['cat_id']; ?>">
+        <?php echo $row['cat_name']; ?>
+      </label>
+    </div>
+	<?php
+  }
+
+  $stmt = null;
 }
 
 ?>

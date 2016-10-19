@@ -6,7 +6,7 @@ include '../controller/controller.php';
 ?>
 
 <div class=container>
-  <?php add_prod(); ?>
+  <?php add_prod($dbo); ?>
 </div>
 
 <?php

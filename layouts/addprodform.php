@@ -1,7 +1,7 @@
 <!--this form deals with adding new product information to the database-->
 <h3 class="text-center">Add New Product</h3>
 <h4>Product Details</h4>
-<form>
+<form action="addprod.php" METHOD="POST">
   <div class="form-group">
     <label for="new-prod-name">Product Name</label>
     <input id="new-prod-name" class="form-control" name="prod_name">
@@ -13,6 +13,10 @@
   <div class="form-group">
     <label for="new-long-desc">Long Description (Max 256 Characters)</label>
     <textarea id="new-long-desce" class="form-control" name="prod_long_desc" rows="3"></textarea>
+  </div>
+  <div class="form-group">
+    <label>Add to Category</label>
+    <?php get_all_categories($dbo); ?>
   </div>
   <button type="submitt" class="btn btn-default">Submit</button>
 </form>
