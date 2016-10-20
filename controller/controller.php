@@ -115,11 +115,13 @@ function check_user_permission_level() {
 }
 
 function add_prod($dbo){
+  //function that handles adding a new product into the database
   check_user_permission_level();
   if (isset($_POST['prod_name'])) {
     //if info has been posted, add that info to the DB
-    submit_product($dbo);
-    submit_product_category($dbo);
+    $prod_id = submit_product($dbo);
+    submit_product_category($dbo, $prod_id);
+    submit_product_attributes($dbo, $prod_id);
     //test code for checking what categories have been selected
 
     /* need a function that unsets all the post variables to prevent accidental
@@ -157,9 +159,7 @@ function submit_product($dbo){
 	try_or_die($stmt);
 
   $stmt = null;
-}
 
-function submit_product_category($dbo) {
   //need to get the prod_id of the new product
   $stmt = $dbo->prepare("SELECT prod_id FROM product WHERE prod_name = (:prod_name)");
   $stmt->bindParam(':prod_name', $_POST['prod_name']);
@@ -167,7 +167,10 @@ function submit_product_category($dbo) {
   try_or_die($stmt);
 
   $prod_id = $stmt->fetchColumn();
-  echo $prod_id;
+}
+
+function submit_product_category($dbo, $prod_id) {
+  //function to submit product-category relationship
   $cats = $_POST['cat'];
   foreach($cats as $cat){
     echo $cat;
@@ -177,6 +180,10 @@ function submit_product_category($dbo) {
 
     try_or_die($stmt);
   }
+}
+
+function submit_product_attributes($dbo, $prod_id) {
+  
 }
 
 function get_all_categories($dbo){

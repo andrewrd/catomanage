@@ -150,7 +150,7 @@
             </div>
             <div class="form-group">
                 <div class="col-xs-3 col-sm-2 col-md-2 col-lg-12 ">
-                    <input type="submit" value="Add New Attribute +" id="btn-addNewAttr" class="btn btn-default" />
+                    <button type="button" id="btn-addNewAttr" class="btn btn-default">Add New Attribute +</button>
                 </div>
             </div>
             <!--Attribute Input Starts here-->
@@ -181,7 +181,7 @@
                 </div>
                 <!--Submit button-->
                 <div class="col-xs-3 col-sm-2 col-md-2 col-lg-12 ">
-                    <input type="submit" value="Add New Value +" id="btn-addNewAttrVal" class="btn btn-default" />
+                    <button type="button" value="Add New Value +" id="btn-addNewAttrVal" class="btn btn-default" />Add New Value</button>
                 </div>
             </div>
             <!--Price Management Section Starts here-->
@@ -266,6 +266,6 @@
         <!--                        Supporting Documents ends-->
     </form>
 <!--Form Container Ends here-->
-
+<script type="text/javascript" src="../js/addprod.js"></script>
 </div>
 <!--Form Container ends here-->
