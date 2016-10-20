@@ -31,7 +31,7 @@
                         <br>(Max 128 Characters)</p>
                 </div>
                 <div class="col-xs-12 col-sm-9 col-md-9 col-lg-10">
-                    <textarea class="form-control" id="form-input-shortDesc" rows="2" placeholder="Description Text"></textarea>
+                    <textarea name="prod_desc" class="form-control" id="form-input-shortDesc" rows="2" placeholder="Description Text"></textarea>
                 </div>
             </div>
             <!--Short Description Ends-->
@@ -42,7 +42,7 @@
                         <br>(Max 256 Characters)</p>
                 </div>
                 <div class="col-xs-12 col-sm-9 col-md-9 col-lg-10">
-                    <textarea class="form-control exampleTextarea" id="form-input-longDesc" rows="4" placeholder="Description Text"></textarea>
+                    <textarea name="prod_long_desc" class="form-control exampleTextarea" id="form-input-longDesc" rows="4" placeholder="Description Text"></textarea>
                 </div>
             </div>
             <!--Long Description Ends-->
@@ -69,7 +69,7 @@
                 </div>
                 <!--Length Input-->
                 <div class="col-xs-12 col-sm-1  col-md-1 col-lg-2">
-                    <input type="text" class="text-input-underline" placeholder="Length" id="form-length-input">
+                    <input name="prod_l" type="text" class="text-input-underline" placeholder="Length" id="form-length-input">
                 </div>
                 <!--Width Label-->
                 <div class="hidden-xs col-sm-1 col-md-1 col-lg-1">
@@ -77,13 +77,13 @@
                 </div>
                 <!--Width input-->
                 <div class="col-xs-12 col-sm-2  col-md-2 col-lg-2">
-                    <input type="text" class="text-input-underline" placeholder="Width" id="form-input-width">
+                    <input name="prod_w" type="text" class="text-input-underline" placeholder="Width" id="form-input-width">
                 </div>
                 <div class="hidden-xs col-sm-1 col-md-1 col-lg-1">
                     <p class="labelText">Height:</p>
                 </div>
                 <div class="col-xs-12 col-sm-2  col-md-2 col-lg-2">
-                    <input type="text" class="text-input-underline" placeholder="Height" id="form-height-input">
+                    <input name="prod_h" type="text" class="text-input-underline" placeholder="Height" id="form-height-input">
                 </div>
             </div>
             <div class="form-group row">
@@ -92,7 +92,7 @@
                     <p class="labelText">Weight</p>
                 </div>
                 <div class="col-xs-12 col-sm-3  col-md-3 col-lg-3">
-                    <input type="text" class="text-input-underline" placeholder="Weight" id="form-weight-input">
+                    <input name="prod_weight" type="text" class="text-input-underline" placeholder="Weight" id="form-weight-input">
                 </div>
                 <!--Weight Ends here-->
                 <!--Product SKU Starts here-->
@@ -100,9 +100,15 @@
                     <p class="labelText">Product SKU</p>
                 </div>
                 <div class="col-xs-12 col-sm-3  col-md-3 col-lg-4">
-                    <input type="text" class="text-input-underline" placeholder="Product SKU" id="form-sku-input">
+                    <input name="prod_sku" type="text" class="text-input-underline" placeholder="Product SKU" id="form-sku-input">
                 </div>
                 <!--Product SKU Ends here-->
+                <div class="hidden-xs col-sm-3 col-md-3 col-lg-2">
+                    <p class="labelText">Image URL</p>
+                </div>
+                <div class="col-xs-12 col-sm-3  col-md-3 col-lg-4">
+                    <input name="prod_img_url" type="text" class="text-input-underline" placeholder="Image URL" id="form-url-input">
+                </div>
             </div>
             <!--Packaging Information Ends-->
             <!--Display Product Starts-->
@@ -113,11 +119,11 @@
                 <div class="col-xs-12 col-sm-3  col-md-3 col-lg-3">
                     <div class="radio">
                         <label>
-                            <input type="radio" name="optradio" id="form-input-dispProd-yes">Yes</label>
+                            <input name="prod_disp_cmd" value="yes" type="radio" name="optradio" id="form-input-dispProd-yes">Yes</label>
                     </div>
                     <div class="radio">
                         <label>
-                            <input type="radio" name="optradio" id="form-input-dispProd-no">No</label>
+                            <input name="prod_disp_cmd" value="no" type="radio" name="optradio" id="form-input-dispProd-no">No</label>
                     </div>
                 </div>
             </div>
@@ -137,9 +143,8 @@
             <!--Current Set attributes ends here-->
             <div class="form-group">
                 <div class="col-xs-12 col-sm-12 col-md-13 col-lg-12">
-                    <ul>
-                      <li>Colour - Values: Red(+$5), Blue(+$4), Green(+$3) X Remove</li>
-                      <li>Size - Values: Large(+$5), Medium(+$4), Small(+$3) X Remove</li>
+                    <ul id="attribute-output">
+
                     </ul>
                 </div>
             </div>

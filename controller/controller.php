@@ -119,17 +119,16 @@ function add_prod($dbo){
   if (isset($_POST['prod_name'])) {
     //if info has been posted, add that info to the DB
     submit_product($dbo);
-
+    submit_product_category($dbo);
     //test code for checking what categories have been selected
-    $cats = $_POST['cat'];
-    foreach($cats as $cat){
-      echo $cat;
-    }
+
+    /* need a function that unsets all the post variables to prevent accidental
+    resubmission - this is an example of that */
     unset($_POST['prod_name']);
     unset($_POST['cat']);
-    echo "<a href='addprod.php'>Add another product</a>";
-    //end test code for checking what cats have been selected
 
+    //echos out a link for testing purposes only DO NOT LEAVE THIS IN
+    echo "<a href='addprod.php'>Add another product</a>";
   }
   else {
     //if info hasnt been added, show the form to add new info
@@ -137,20 +136,59 @@ function add_prod($dbo){
   }
 }
 
-function submit_product(){
-  //function for submitting new product data to the DB
-  return;
+function submit_product($dbo){
+  //prepare statement to insert the basic product details into the product table
+
+  //should break these statements up into smaller pieces
+  $stmt = $dbo->prepare("INSERT INTO product(prod_name, prod_desc, prod_img_url, prod_long_desc, prod_sku, prod_disp_cmd, prod_weight, prod_l, prod_w, prod_h) VALUES(:prod_name, :prod_desc, :prod_img_url, :prod_long_desc, :prod_sku, :prod_disp_cmd, :prod_weight, :prod_l, :prod_w, :prod_h)");
+  /*bind variables, using post variables without any
+  validation, which still needs to be done */
+	$stmt->bindParam(':prod_name', $_POST['prod_name']);
+  $stmt->bindParam(':prod_desc', $_POST['prod_desc']);
+  $stmt->bindParam(':prod_img_url', $_POST['prod_img_url']);
+  $stmt->bindParam(':prod_long_desc', $_POST['prod_long_desc']);
+  $stmt->bindParam(':prod_sku', $_POST['prod_sku']);
+  $stmt->bindParam(':prod_disp_cmd', $_POST['prod_disp_cmd']);
+  $stmt->bindParam(':prod_weight', $_POST['prod_weight']);
+  $stmt->bindParam(':prod_l', $_POST['prod_l']);
+  $stmt->bindParam(':prod_w', $_POST['prod_w']);
+  $stmt->bindParam(':prod_h', $_POST['prod_h']);
+
+	try_or_die($stmt);
+
+  $stmt = null;
+}
+
+function submit_product_category($dbo) {
+  //need to get the prod_id of the new product
+  $stmt = $dbo->prepare("SELECT prod_id FROM product WHERE prod_name = (:prod_name)");
+  $stmt->bindParam(':prod_name', $_POST['prod_name']);
+
+  try_or_die($stmt);
+
+  $prod_id = $stmt->fetchColumn();
+  echo $prod_id;
+  $cats = $_POST['cat'];
+  foreach($cats as $cat){
+    echo $cat;
+    $stmt = $dbo->prepare("INSERT INTO cgprrel(cgpr_cat_id, cgpr_prod_id) VALUES(:cat_id, :prod_id)");
+    $stmt->bindParam(':cat_id', $cat);
+    $stmt->bindParam(':prod_id', $prod_id);
+
+    try_or_die($stmt);
+  }
 }
 
 function get_all_categories($dbo){
-  //function that gets all of the categories and their ids for using in adding
-  //producs to categories
+  /* function that gets all of the categories and their ids for using in adding
+  producs to categories - we might also want to filter out the root category
+  as an option */
   $stmt = $dbo->prepare("SELECT cat_id, cat_name FROM category");
 
   try_or_die($stmt);
 
+  //outputs the html for category selection, with a checkbox for each possible category
   while($row = $stmt->fetch()) { ?>
-
 		<div class="checkbox">
       <label>
         <input type="checkbox" name="cat[]" value="<?php echo $row['cat_id']; ?>">
