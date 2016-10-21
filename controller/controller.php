@@ -186,35 +186,42 @@ function submit_product_category($dbo, $prod_id) {
 }
 
 function submit_product_attributes($dbo, $prod_id) {
+  //this function submits the selected product attributes and their values
+
+  //a php object is created out of the json string posted to the server
   $json = json_decode($_POST['json']);
+
+  //prepares 3 statements for querying and selecting from the database
   $stmt = $dbo->prepare("INSERT INTO attribute(product_prod_id, name) VALUES(:prod_id, :name)");
-
   $getAttribId = $dbo->prepare("SELECT id FROM attribute WHERE product_prod_id = (:prod_id) AND name = (:name)");
-
   $insertAttributeValues = $dbo->prepare("INSERT INTO attributevalue(attrval_prod_id, attrval_attr_id, attrval_value, attrval_price) VALUES(:prod_id, :attr_id, :value, :price)");
 
+  //loop through the properties and their values
   foreach(get_object_vars($json) as $property=>$value) {
 
+    //binds the passed product id and pro
     $stmt->bindParam(':prod_id', $prod_id);
     $stmt->bindParam(':name', $property);
 
+    //inserts the property to the proprty table
     try_or_die($stmt);
 
     $getAttribId->bindParam(':prod_id', $prod_id);
     $getAttribId->bindParam(':name', $property);
 
+    //returns the id of the newly submitted property
     try_or_die($getAttribId);
-
     $attr_id = $getAttribId->fetchColumn();
-    echo $attr_id;
 
+    //for each object inside the properties arry
     for($i = 0; $i < sizeOf($value); $i++) {
 
       $insertAttributeValues->bindParam(':prod_id', $prod_id);
       $insertAttributeValues->bindParam(':attr_id', $attr_id);
-      $insertAttributeValues->bindParam(':value', $value[$i]['Value']);
-      $insertAttributeValues->bindParam(':price', $value[$i]['Price']);
+      $insertAttributeValues->bindParam(':value', $value[$i]->Value);
+      $insertAttributeValues->bindParam(':price', $value[$i]->Price);
 
+      //inserts a row into property values, with links to the property and product
       try_or_die($insertAttributeValues);
     }
   }
