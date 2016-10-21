@@ -179,10 +179,8 @@
                 <div class="col-xs-12 col-sm-3  col-md-3 col-lg-3">
                     <input type="text" class="text-input-underline" placeholder="Attribute Price" id="form-input-attributePrice">
                 </div>
+                <input name="json" id="json-input">
                 <!--Submit button-->
-                <div class="col-xs-3 col-sm-2 col-md-2 col-lg-12 ">
-                    <button type="button" value="Add New Value +" id="btn-addNewAttrVal" class="btn btn-default" />Add New Value</button>
-                </div>
             </div>
             <!--Price Management Section Starts here-->
             <div class="form-group">

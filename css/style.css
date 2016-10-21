@@ -4,8 +4,6 @@
 .title {
     font-size: 2em;
     text-decoration: none;
-    font-family: 'Dosis', serif;
-
 }
 .text-input-underline{
     padding: 10px;
@@ -20,13 +18,16 @@
 }
 
 .labelText {
-    font-family: 'Dosis', serif;
     font-size: 1.4em;
 }
 
 .subHeader{
-    font-family: 'Dosis',serif;
     text-decoration: underline !important;
 
 }
 /*Form CSS Ends here*/
+
+
+#json-input {
+  display: none;
+}

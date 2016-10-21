@@ -35,7 +35,7 @@ function outputAttrs(obj){
     html.innerHTML = "AttributeName: " + key + ". Values: [";
 
     for (var i = 0; i < obj[key].length; i++){
-      html.innerHTML += " { Value: " + obj[key][0] + ", Price:" + obj[key][1] + " } ";
+      html.innerHTML += " { Value: " + obj[key][i].Value + ", Price: " + obj[key][i].Price + " } ";
     }
     html.innerHTML += "]"
 
@@ -45,19 +45,9 @@ function outputAttrs(obj){
     output.appendChild(html);
     output.appendChild(button);
   }
+
+  document.getElementById("json-input").value = JSON.stringify(json);
 }
-
-document.getElementById('btn-addNewAttrVal').onclick = function(attributeName){
-  var attr_val = document.getElementById('form-input-attributeValue').value;
-  var attr_price = document.getElementById('form-input-attributePrice').value;
-
-  console.log(attr_val, attr_price);
-};
-
-var attributes = {
-  "CT":[{"value": 12, "price": 10}, {"value": 32, "price": 310}]
-};
-
 
 function createButton(key) {
   //function to create the new button, that allows adding in new attr vals
@@ -83,5 +73,11 @@ function createButton(key) {
 
 function addValue(clickedVal) {
   //this function should add the current values to the required object property array
-  console.log(clickedVal);
+  var attr_val = document.getElementById('form-input-attributeValue').value;
+  var attr_price = document.getElementById('form-input-attributePrice').value;
+  var obj = {"Value":attr_val, "Price":attr_price}
+
+  json[clickedVal].push(obj);
+
+  outputAttrs(json);
 }

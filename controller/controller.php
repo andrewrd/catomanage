@@ -122,6 +122,7 @@ function add_prod($dbo){
     $prod_id = submit_product($dbo);
     submit_product_category($dbo, $prod_id);
     submit_product_attributes($dbo, $prod_id);
+
     //test code for checking what categories have been selected
 
     /* need a function that unsets all the post variables to prevent accidental
@@ -130,7 +131,7 @@ function add_prod($dbo){
     unset($_POST['cat']);
 
     //echos out a link for testing purposes only DO NOT LEAVE THIS IN
-    echo "<a href='addprod.php'>Add another product</a>";
+    echo "<p><a href='addprod.php'>Add another product</a></p>";
   }
   else {
     //if info hasnt been added, show the form to add new info
@@ -167,6 +168,8 @@ function submit_product($dbo){
   try_or_die($stmt);
 
   $prod_id = $stmt->fetchColumn();
+
+  return $prod_id;
 }
 
 function submit_product_category($dbo, $prod_id) {
@@ -183,7 +186,8 @@ function submit_product_category($dbo, $prod_id) {
 }
 
 function submit_product_attributes($dbo, $prod_id) {
-  
+  $json = json_decode($_POST['json']);
+  return;
 }
 
 function get_all_categories($dbo){
