@@ -225,8 +225,6 @@ function submit_product_attributes($dbo, $prod_id) {
       try_or_die($insertAttributeValues);
     }
   }
-
-  return;
 }
 
 function get_all_categories($dbo){

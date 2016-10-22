@@ -249,3 +249,7 @@ insert into CGRYREL values (16,2,13,null);
 insert into CGRYREL values (17,1,8,null);
 insert into CGRYREL values (18,8,9,null);
 insert into CGRYREL values (19,8,10,NULL);
+
+insert into SHOPPERGROUP(SHOPGRP_NAME, SHOPGRP_DESCRIPTION) values ("Normal","This a normal shopper");
+insert into SHOPPERGROUP(SHOPGRP_NAME, SHOPGRP_DESCRIPTION) values ("Australian", "This is a shopper from Australia. Please consider GST");
+insert into SHOPPERGROUP(SHOPGRP_NAME, SHOPGRP_DESCRIPTION) values ("Discounted", "This is a shopper that gets a discount");
