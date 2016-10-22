@@ -1,4 +1,5 @@
 var json = {};
+var pricesArray= [];
 
 document.getElementById('btn-addNewAttr').onclick = function(){
   //get the name of the new attribute
@@ -75,9 +76,35 @@ function addValue(clickedVal) {
   //this function should add the current values to the required object property array
   var attr_val = document.getElementById('form-input-attributeValue').value;
   var attr_price = document.getElementById('form-input-attributePrice').value;
-  var obj = {"Value":attr_val, "Price":attr_price}
+  var obj = {"Value":attr_val, "Price":attr_price};
 
   json[clickedVal].push(obj);
 
   outputAttrs(json);
+}
+
+document.getElementById('btn-addNewShopGrpDisc').onclick = function(){
+  var price = document.getElementById('form-input-productPrice').value;
+  var group = document.getElementById('form-input-specialShopGroup').value;
+
+  var obj = {"Price":price, "Group":group};
+
+  pricesArray.push(obj);
+
+  outputArray(pricesArray);
+
+  document.getElementById("prod_prices").value = JSON.stringify(pricesArray);
+}
+
+function outputArray(array){
+  var output = document.getElementById('price-output');
+  while (output.firstChild) {
+    output.removeChild(output.firstChild);
+  }
+  for (var i = 0; i < array.length; i++){
+    var html = document.createElement('li');
+    html.innerHTML = "Price: " + array[i].Price + ", Group: " + array[i].Group;
+    output.appendChild(html);
+  }
+
 }

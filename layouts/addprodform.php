@@ -188,68 +188,46 @@
                     <h3 class="subHeader">Price Management</h3>
                 </div>
             </div>
+            <div class="form-group">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h4 class="subHeader">Current Set Prices</h4>
+                </div>
+            </div>
+            <!--Current Set attributes ends here-->
+            <div class="form-group">
+                <div class="col-xs-12 col-sm-12 col-md-13 col-lg-12">
+                    <ul id="price-output">
+
+                    </ul>
+                </div>
+            </div>
+            <input type="hidden" name="prod_prices" class="text-input-underline" id="prod_prices">
             <!--Product Base Price Label and Input-->
             <div class="form-group">
                 <div class="hidden-xs col-sm-3 col-md-3 col-lg-2">
-                    <p class="labelText">Product Base Price</p>
+                    <p class="labelText">Product Price</p>
                 </div>
                 <div class="col-xs-12 col-sm-9  col-md-3 col-lg-4">
-                    <input type="text" class="text-input-underline" placeholder="Product Price" id="form-input-productPrice">
-                </div>
-            </div>
-            <!--On Special Label and Input-->
-            <div class="form-group row">
-                <div class="hidden-xs col-sm-3 col-md-3 col-lg-2">
-                    <p class="labelText">On Special</p>
-                </div>
-                <div class="col-xs-12 col-sm-3  col-md-3 col-lg-4">
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="optradio" id="form-input-onSpecial-yes">Yes
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="optradio" id="form-input-dispProd-no">No
-                        </label>
-                    </div>
-                </div>
-                <!--Special Discount Label and input-->
-                <div class="hidden-xs col-sm-3 col-md-3 col-lg-2">
-                    <p class="labelText">Special Discount</p>
-                </div>
-                <div class="col-xs-12 col-sm-9  col-md-3 col-lg-4">
-                    <input type="text" class="text-input-underline" placeholder="Special Discount" id="form-input-specialDiscount">
+                    <input type="text" name="prpr_name" class="text-input-underline" placeholder="Product Price" id="form-input-productPrice">
                 </div>
             </div>
             <!--Shopper Group Special -->
             <div class="form-group row">
                 <!--Special for shopper group label-->
                 <div class="hidden-xs col-sm-3 col-md-3 col-lg-2">
-                    <p class="labelText">Special for Shopper Group</p>
+                    <p class="labelText">Shopper Group</p>
                 </div>
                 <!--Shopper group selection-->
                 <div class="col-xs-12 col-sm-3 col-md-3  col-lg-4">
                     <select multiple class="form-control" id="form-input-specialShopGroup">
-                        <option>1. Shopper Group 1</option>
-                        <option>2. Shopper Group 2</option>
-                        <option>3. Shopper Group 3</option>
-                        <option>4. Shopper Group 4</option>
-                        <option>5. Shopper Group 5</option>
+                        <?php get_all_shopper_groups($dbo); ?>
                     </select>
-                </div>
-                <!--Group Discount Label and Input-->
-                <div class="hidden-xs col-sm-3 col-md-3 col-lg-2">
-                    <p class="labelText">Group Discount</p>
-                </div>
-                <div class="col-xs-12 col-sm-9  col-md-3 col-lg-4">
-                    <input type="text" class="text-input-underline" placeholder="Group Discount" id="form-input-groupDiscount">
                 </div>
             </div>
             <!--Add new shopper group discount button-->
             <div class="form-group row">
                 <div class="col-xs-3 col-sm-2 col-md-2 col-lg-12 ">
-                    <input type="submit" value="Add New Shopper Group Discount +" id="btn-addNewShopGrpDisc" class="btn btn-default" />
+                    <button type="button" value="Add New Shopper Group Discount +" id="btn-addNewShopGrpDisc" class="btn btn-default">Add New Price +</button>
                 </div>
             </div>
             <!--Form Submit button-->

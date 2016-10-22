@@ -122,8 +122,7 @@ function add_prod($dbo){
     $prod_id = submit_product($dbo);
     submit_product_category($dbo, $prod_id);
     submit_product_attributes($dbo, $prod_id);
-
-    //test code for checking what categories have been selected
+    insert_product_prices($dbo, $prod_id);
 
     /* need a function that unsets all the post variables to prevent accidental
     resubmission - this is an example of that */
@@ -131,7 +130,8 @@ function add_prod($dbo){
     unset($_POST['cat']);
 
     //echos out a link for testing purposes only DO NOT LEAVE THIS IN
-    echo "<p><a href='addprod.php'>Add another product</a></p>";
+    echo "<p>Product successfully added to the system.</p>";
+    echo "<p><p><a href='addprod.php'>Add another product</a></p></p>";
   }
   else {
     //if info hasnt been added, show the form to add new info
@@ -176,7 +176,6 @@ function submit_product_category($dbo, $prod_id) {
   //function to submit product-category relationship
   $cats = $_POST['cat'];
   foreach($cats as $cat){
-    echo $cat;
     $stmt = $dbo->prepare("INSERT INTO cgprrel(cgpr_cat_id, cgpr_prod_id) VALUES(:cat_id, :prod_id)");
     $stmt->bindParam(':cat_id', $cat);
     $stmt->bindParam(':prod_id', $prod_id);
@@ -247,6 +246,38 @@ function get_all_categories($dbo){
   }
 
   $stmt = null;
+}
+
+function get_all_shopper_groups($dbo){
+  /*function returns all the shopper groups in a list format,
+   so the user can select from any of them*/
+  $stmt = $dbo->prepare("SELECT shopgrp_name, shopgrp_id FROM shoppergroup");
+
+  try_or_die($stmt);
+
+  //for each row found, output in the following format
+  while($row = $stmt->fetch()) { ?>
+		<option value="<?php echo $row[1]?>"><?php echo $row[0]; ?></option>
+	<?php	}
+}
+
+function insert_product_prices($dbo, $prod_id){
+  //function that inserts the product prices for the different shopper groups
+
+  $array = json_decode($_POST['prod_prices']);
+  //passed a json array
+
+  $insertStatement = $dbo->prepare("INSERT INTO prodprices(prpr_prod_id, prpr_shopgrp, prpr_price) VALUES(:prod_id, :shopgrp, :price)");
+  //statement prepared
+
+  for($i = 0; $i < sizeOf($array); $i++){
+    //for each shopper group, price is inserted
+    $insertStatement->bindParam(':prod_id', $prod_id);
+    $insertStatement->bindParam(':shopgrp', $array[$i]->Group);
+    $insertStatement->bindParam(':price', $array[$i]->Price);
+
+    try_or_die($insertStatement);
+  }
 }
 
 ?>
