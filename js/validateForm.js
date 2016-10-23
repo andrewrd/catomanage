@@ -3,7 +3,6 @@
 //Helper function to check for the length of a string
 function checkLength(str, minLim, maxLim){
     length =  str.length;
-    console.log(length + "min "+ maxLim);
     if(length > minLim && length <= maxLim){
         return true;
     }
