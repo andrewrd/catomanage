@@ -114,6 +114,10 @@ function check_user_permission_level() {
   return;
 }
 
+function add_cat($dbo){
+    include '../layouts/addcatform.php';
+}
+
 function add_prod($dbo){
   //function that handles adding a new product into the database
   check_user_permission_level();
