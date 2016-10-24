@@ -249,3 +249,71 @@ insert into CGRYREL values (16,2,13,null);
 insert into CGRYREL values (17,1,8,null);
 insert into CGRYREL values (18,8,9,null);
 insert into CGRYREL values (19,8,10,NULL);
+
+/* Insert into Attribute */
+insert into ATTRIBUTE values (DEFAULT, 2,'Colour');
+insert into ATTRIBUTE values (DEFAULT, 2,'Waist');
+insert into ATTRIBUTE values (DEFAULT, 6, 'Size')
+insert into ATTRIBUTE values (DEFAULT, 6, 'Colour')
+insert into ATTRIBUTE values (DEFAULT, 7,'CPU Speed');
+insert into ATTRIBUTE values (DEFAULT, 7, 'Bandwidth');
+
+/* ================================
+Insert into AttributeValue
+================================== */
+
+/* Colours for Levi 501  */
+insert into ATTRIBUTEVALUE values (DEFAULT, 2, 1, 'Blue', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 2, 1, 'Black', 5.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 2, 1, 'Grey', 5.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 2, 1, 'Burgundy', 5.00);
+
+/* Waist Size for Levi 501 */
+insert into ATTRIBUTEVALUE values (DEFAULT, 2, 2, '32', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 2, 2, '34', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 2, 2, '36', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 2, 2, '38', 1.99);
+
+/* Shirt size for XCSD tee */
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 5, 'S', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 5, 'M', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 5, 'L', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 5, 'XL', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 5, 'XXL', 2.00);
+
+/* Shirt colour for XCSD tee */
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 6, 'Red', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 6, 'Orange', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 6, 'Yellow', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 6, 'Green', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 6, 'Blue', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 6, 'Black', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 6, 'White', 0.00);
+
+/* CPU speed for IBM Series Server */
+insert into ATTRIBUTEVALUE values (DEFAULT, 7, 3, '1.8 GHz', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 7, 3, '2.4 GHz', 49.99);
+
+/* Bandwidth for IBM Series Server */
+insert into ATTRIBUTEVALUE values (DEFAULT, 7, 4, '3 GB', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 7, 4, '8.5 GB', 69.99);
+
+/* Insert into ShopperGroup */
+insert into SHOPPERGROUP values (DEFAULT, 'Shopper Group 1', 'This shopper group is part of the blah blah and is eligible to receive blah blah blah benefits.');
+insert into SHOPPERGROUP values (DEFAULT, 'Shopper Group 2', 'This shopper group is part of the blah x2 blah x2 and is eligible to receive blah blah blah benefits.');
+insert into SHOPPERGROUP values (DEFAULT, 'Shopper Group 3', 'This shopper group is part of the blah x3 blah x3 and is eligible to receive blah blah blah benefits.');
+
+/* ProdPrices for Levi501 jeans */
+insert into PRODPRICES values (DEFAULT, 2, 1, 35.99);
+insert into PRODPRICES values (DEFAULT, 2, 2, 30.99);
+insert into PRODPRICES values (DEFAULT, 2, 3, 25.99);
+
+/* ProdPrices for IBM Server */
+insert into PRODPRICES values (DEFAULT, 7, 1, 150.99);
+insert into PRODPRICES values (DEFAULT, 7, 2, 140.99);
+insert into PRODPRICES values (DEFAULT, 7, 3, 130.99);
+
+/* ProdPrices for XCSD Tee */
+insert into PRODPRICES values (DEFAULT, 6, 1, 24.99);
+insert into PRODPRICES values (DEFAULT, 6, 2, 20.99);
+insert into PRODPRICES values (DEFAULT, 6, 3, 15.99);

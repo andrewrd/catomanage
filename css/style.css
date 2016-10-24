@@ -30,3 +30,18 @@
 
 }
 /*Form CSS Ends here*/
+a {
+  text-decoration: underline;
+}
+
+.fa-star, .fa-star-half-o {
+  color: #FFD700;
+}
+
+.recommendation {
+  text-align: center;
+}
+
+.price {
+  color: red;
+}

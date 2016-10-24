@@ -184,7 +184,7 @@ function get_all_categories($dbo){
   producs to categories - we might also want to filter out the root category
   as an option */
   $stmt = $dbo->prepare("SELECT cat_id, cat_name FROM category");
-
+  $stmt->bindParam(':id', $parent_id);
   try_or_die($stmt);
 
   //outputs the html for category selection, with a checkbox for each possible category
@@ -201,4 +201,63 @@ function get_all_categories($dbo){
   $stmt = null;
 }
 
+function displayproduct($dbo) {
+  $prod_id = $_GET['prod_id'];
+  //$prod_id = 7;
+  $shopper_group = 1;
+  $stmt = $dbo->prepare("SELECT PROD_NAME, PROD_IMG_URL, PROD_LONG_DESC, PRPR_PRICE FROM Product, ProdPrices where PROD_ID = (:id)
+  and Product.prod_id = ProdPrices.prpr_prod_id and prpr_shopgrp = (:shgroup) group by prod_id");
+  //I had to use a group by because duplicates were being returned
+  $stmt->bindParam(':id', $prod_id);
+  $stmt->bindParam(':shgroup', $shopper_group);
+  try_or_die($stmt);
+
+  while($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
+    <div class = "row">
+      <div class = "col-md-6">
+        <img src = "../img/<?php echo $row['PROD_IMG_URL'] ?>"/>
+      </div>
+    <div class = "col-md-6">
+    <h1><?php echo $row['PROD_NAME']?></h1>
+    <i class="fa fa-star" aria-hidden="true"></i>
+    <i class="fa fa-star" aria-hidden="true"></i>
+    <i class="fa fa-star" aria-hidden="true"></i>
+    <i class="fa fa-star" aria-hidden="true"></i>
+    <i class="fa fa-star-half-o" aria-hidden="true"></i>
+    <a href = "#">See Reviews</a>
+    <h3 class = "price"><?php echo $row['PRPR_PRICE'] ?></h3>
+    <p class = "lead"><?php echo $row['PROD_LONG_DESC'] ?></p>
+  <?php
+  }
+  $stmt = null;
+}
+
+function displayproductattributes($dbo) {
+  $prod_id = $_GET['prod_id'];
+  //$prod_id = 7;
+  $stmt = $dbo->prepare("SELECT ID, PRODUCT_PROD_ID, NAME FROM ATTRIBUTE WHERE PRODUCT_PROD_ID = (:id)");
+  //I had to use a group by because duplicates were being returned
+  $stmt->bindParam(':id', $prod_id);
+  try_or_die($stmt);
+  $attribute_ids = array(); //create an array to store ID's of attributes
+
+  while($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
+    <?php $attribute_ids[] = $row['ID']; ?>
+  <?php
+  }
+  $stmt = null;
+  /* 2nd query */
+  $arrlength = count($attribute_ids);
+  for ($i = 0; $i < $arrlength; ++$i) {
+    $stmt = $dbo->prepare("SELECT ATTRVAL_VALUE FROM ATTRIBUTEVALUE WHERE ATTRVAL_ATTR_ID = (:attrID)");
+    $stmt->bindParam(':attrID', $attribute_ids[$i]);
+    try_or_die($stmt);
+    ?> <select class = "form-control"> <?php
+    while($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
+        <option><?php echo $row['ATTRVAL_VALUE'] ?> </option>
+    <?php }
+    ?> </select>
+    <?php }
+  }
+  $stmt = null;
 ?>
