@@ -299,9 +299,9 @@ insert into ATTRIBUTEVALUE values (DEFAULT, 7, 4, '3 GB', 0.00);
 insert into ATTRIBUTEVALUE values (DEFAULT, 7, 4, '8.5 GB', 69.99);
 
 /* Insert into ShopperGroup */
-insert into SHOPPERGROUP values (DEFAULT, 'Shopper Group 1', 'This shopper group is part of the blah blah and is eligible to receive blah blah blah benefits.');
-insert into SHOPPERGROUP values (DEFAULT, 'Shopper Group 2', 'This shopper group is part of the blah x2 blah x2 and is eligible to receive blah blah blah benefits.');
-insert into SHOPPERGROUP values (DEFAULT, 'Shopper Group 3', 'This shopper group is part of the blah x3 blah x3 and is eligible to receive blah blah blah benefits.');
+insert into SHOPPERGROUP values (DEFAULT, 'Normal', 'This a normal shopper');
+insert into SHOPPERGROUP values (DEFAULT, 'Australian', 'This is a shopper from Australia. Please consider GST');
+insert into SHOPPERGROUP values (DEFAULT, 'Discounted', 'This is a shopper that gets a discount');
 
 /* ProdPrices for Levi501 jeans */
 insert into PRODPRICES values (DEFAULT, 2, 1, 35.99);

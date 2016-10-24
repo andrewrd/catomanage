@@ -5,9 +5,9 @@ include '../layouts/header.php';
 include '../controller/controller.php';
 ?>
 
-<div class=container>
-  <?php add_prod($dbo); ?>
-</div>
+
+<?php add_prod($dbo); ?>
+
 
 <?php
 //includes the footer of the application

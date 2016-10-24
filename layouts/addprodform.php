@@ -10,7 +10,7 @@
 
             </div>
         </div>
-        <section data-scroll-index="1">
+        <section>
             <div class="form-group">
                 <div class="col-xs-12 col-sm-12 col-md-13 col-lg-12">
                     <h3 class="subHeader">Product Details</h3>
@@ -20,7 +20,8 @@
                     <p class="labelText">Product Name</p>
                 </div>
                 <div class="col-xs-12 col-sm-9  col-md-3 col-lg-4">
-                    <input name="prod_name" type="text" class="text-input-underline" placeholder="Product Name" id="form-input-productName">
+                    <input name="prod_name" type="text" class="text-input-underline" placeholder="Product Name" id="form-input-productName" oninput="checkString(this.id, 40)" required>
+                    <p id="form-error-productName"></p>
                 </div>
                 <!--Product name Info ends-->
             </div>
@@ -31,7 +32,8 @@
                         <br>(Max 128 Characters)</p>
                 </div>
                 <div class="col-xs-12 col-sm-9 col-md-9 col-lg-10">
-                    <textarea name="prod_desc" class="form-control" id="form-input-shortDesc" rows="2" placeholder="Description Text"></textarea>
+                    <textarea name="prod_desc" class="form-control" id="form-input-shortDesc" rows="2" placeholder="Description Text" required oninput="checkString(this.id, 128)"></textarea>
+                    <p id="form-error-shortDesc"></p>
                 </div>
             </div>
             <!--Short Description Ends-->
@@ -42,7 +44,8 @@
                         <br>(Max 256 Characters)</p>
                 </div>
                 <div class="col-xs-12 col-sm-9 col-md-9 col-lg-10">
-                    <textarea name="prod_long_desc" class="form-control exampleTextarea" id="form-input-longDesc" rows="4" placeholder="Description Text"></textarea>
+                    <textarea name="prod_long_desc" class="form-control exampleTextarea" id="form-input-longDesc" rows="4" placeholder="Description Text" oninput="checkString(this.id, 256)" required></textarea>
+                    <p id="form-error-longDesc"></p>
                 </div>
             </div>
             <!--Long Description Ends-->
@@ -69,7 +72,8 @@
                 </div>
                 <!--Length Input-->
                 <div class="col-xs-12 col-sm-1  col-md-1 col-lg-2">
-                    <input name="prod_l" type="text" class="text-input-underline" placeholder="Length" id="form-length-input">
+                    <input name="prod_l" type="text" class="text-input-underline" placeholder="Length" id="form-input-length" required oninput="checkNumber(this.id)">
+                    <p id="form-error-length"></p>
                 </div>
                 <!--Width Label-->
                 <div class="hidden-xs col-sm-1 col-md-1 col-lg-1">
@@ -77,13 +81,15 @@
                 </div>
                 <!--Width input-->
                 <div class="col-xs-12 col-sm-2  col-md-2 col-lg-2">
-                    <input name="prod_w" type="text" class="text-input-underline" placeholder="Width" id="form-input-width">
+                    <input name="prod_w" type="text" class="text-input-underline" placeholder="Width" id="form-input-width" required oninput="checkNumber(this.id)">
+                    <p id="form-error-width"></p>
                 </div>
                 <div class="hidden-xs col-sm-1 col-md-1 col-lg-1">
                     <p class="labelText">Height:</p>
                 </div>
                 <div class="col-xs-12 col-sm-2  col-md-2 col-lg-2">
-                    <input name="prod_h" type="text" class="text-input-underline" placeholder="Height" id="form-height-input">
+                    <input name="prod_h" type="text" class="text-input-underline" placeholder="Height" id="form-input-height" required oninput="checkNumber(this.id)">
+                    <p id="form-error-height"></p>
                 </div>
             </div>
             <div class="form-group row">
@@ -92,7 +98,8 @@
                     <p class="labelText">Weight</p>
                 </div>
                 <div class="col-xs-12 col-sm-3  col-md-3 col-lg-3">
-                    <input name="prod_weight" type="text" class="text-input-underline" placeholder="Weight" id="form-weight-input">
+                    <input name="prod_weight" type="text" class="text-input-underline" placeholder="Weight" id="form-input-weight" required oninput="checkNumber(this.id)">
+                    <p id="form-error-weight"></p>
                 </div>
                 <!--Weight Ends here-->
                 <!--Product SKU Starts here-->
@@ -100,9 +107,13 @@
                     <p class="labelText">Product SKU</p>
                 </div>
                 <div class="col-xs-12 col-sm-3  col-md-3 col-lg-4">
-                    <input name="prod_sku" type="text" class="text-input-underline" placeholder="Product SKU" id="form-sku-input">
+                    <input name="prod_sku" type="text" class="text-input-underline" placeholder="Product SKU" id="form-input-sku" required oninput="checkSKU(this.id)">
+                    <p id="form-error-sku"></p>
                 </div>
                 <!--Product SKU Ends here-->
+            </div>
+            <div class="form-group row">
+                
                 <div class="hidden-xs col-sm-3 col-md-3 col-lg-2">
                     <p class="labelText">Image URL</p>
                 </div>
@@ -119,7 +130,7 @@
                 <div class="col-xs-12 col-sm-3  col-md-3 col-lg-3">
                     <div class="radio">
                         <label>
-                            <input name="prod_disp_cmd" value="yes" type="radio" name="optradio" id="form-input-dispProd-yes">Yes</label>
+                            <input name="prod_disp_cmd" value="yes" type="radio" name="optradio" id="form-input-dispProd-yes" required>Yes</label>
                     </div>
                     <div class="radio">
                         <label>
@@ -150,7 +161,7 @@
             </div>
             <div class="form-group">
                 <div class="col-xs-3 col-sm-2 col-md-2 col-lg-12 ">
-                    <input type="submit" value="Add New Attribute +" id="btn-addNewAttr" class="btn btn-default" />
+                    <button type="button" id="btn-addNewAttr" class="btn btn-default">Add New Attribute +</button>
                 </div>
             </div>
             <!--Attribute Input Starts here-->
@@ -160,7 +171,8 @@
                     <p class="labelText">Attribute Name</p>
                 </div>
                 <div class="col-xs-12 col-sm-3  col-md-3 col-lg-3">
-                    <input type="text" class="text-input-underline" placeholder="Attribute Name" id="form-input-attributeName">
+                    <input type="text" class="text-input-underline" placeholder="Attribute Name" id="form-input-attributeName" oninput="checkString(this.id, 45)">
+                    <p id="form-error-attributeName"></p>
                 </div>
             </div>
             <!--Attribute Value and Price Inputs-->
@@ -170,19 +182,19 @@
                     <p class="labelText">Attribute Value</p>
                 </div>
                 <div class="col-xs-12 col-sm-3  col-md-3 col-lg-3">
-                    <input type="text" class="text-input-underline" placeholder="Attribute Value" id="form-input-attributeValue">
+                    <input type="text" class="text-input-underline" placeholder="Attribute Value" id="form-input-attributeValue" oninput="checkString(this.id, 45)">
+                    <p id="form-error-attributeValue"></p>
                 </div>
                 <!--Attribute Price Label and Input-->
                 <div class="hidden-xs col-sm-3 col-md-2 col-lg-2">
                     <p class="labelText">Attribute Price</p>
                 </div>
                 <div class="col-xs-12 col-sm-3  col-md-3 col-lg-3">
-                    <input type="text" class="text-input-underline" placeholder="Attribute Price" id="form-input-attributePrice">
+                    <input type="text" class="text-input-underline" placeholder="Attribute Price" id="form-input-attributePrice" oninput="checkNumber(this.id)">
+                    <p id="form-error-attributePrice"></p>
                 </div>
+                <input name="json" id="json-input">
                 <!--Submit button-->
-                <div class="col-xs-3 col-sm-2 col-md-2 col-lg-12 ">
-                    <input type="submit" value="Add New Value +" id="btn-addNewAttrVal" class="btn btn-default" />
-                </div>
             </div>
             <!--Price Management Section Starts here-->
             <div class="form-group">
@@ -190,68 +202,47 @@
                     <h3 class="subHeader">Price Management</h3>
                 </div>
             </div>
+            <div class="form-group">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h4 class="subHeader">Current Set Prices</h4>
+                </div>
+            </div>
+            <!--Current Set attributes ends here-->
+            <div class="form-group">
+                <div class="col-xs-12 col-sm-12 col-md-13 col-lg-12">
+                    <ul id="price-output">
+
+                    </ul>
+                </div>
+            </div>
+            <input type="hidden" name="prod_prices" class="text-input-underline" id="prod_prices">
             <!--Product Base Price Label and Input-->
             <div class="form-group">
                 <div class="hidden-xs col-sm-3 col-md-3 col-lg-2">
-                    <p class="labelText">Product Base Price</p>
+                    <p class="labelText">Product Price</p>
                 </div>
                 <div class="col-xs-12 col-sm-9  col-md-3 col-lg-4">
-                    <input type="text" class="text-input-underline" placeholder="Product Price" id="form-input-productPrice">
-                </div>
-            </div>
-            <!--On Special Label and Input-->
-            <div class="form-group row">
-                <div class="hidden-xs col-sm-3 col-md-3 col-lg-2">
-                    <p class="labelText">On Special</p>
-                </div>
-                <div class="col-xs-12 col-sm-3  col-md-3 col-lg-4">
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="optradio" id="form-input-onSpecial-yes">Yes
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="optradio" id="form-input-dispProd-no">No
-                        </label>
-                    </div>
-                </div>
-                <!--Special Discount Label and input-->
-                <div class="hidden-xs col-sm-3 col-md-3 col-lg-2">
-                    <p class="labelText">Special Discount</p>
-                </div>
-                <div class="col-xs-12 col-sm-9  col-md-3 col-lg-4">
-                    <input type="text" class="text-input-underline" placeholder="Special Discount" id="form-input-specialDiscount">
+                    <input type="text" class="text-input-underline" placeholder="Product Price" id="form-input-productPrice" required oninput="checkNumber(this.id)">
+                    <p id="form-error-productPrice"></p>
                 </div>
             </div>
             <!--Shopper Group Special -->
             <div class="form-group row">
                 <!--Special for shopper group label-->
                 <div class="hidden-xs col-sm-3 col-md-3 col-lg-2">
-                    <p class="labelText">Special for Shopper Group</p>
+                    <p class="labelText">Shopper Group</p>
                 </div>
                 <!--Shopper group selection-->
                 <div class="col-xs-12 col-sm-3 col-md-3  col-lg-4">
                     <select multiple class="form-control" id="form-input-specialShopGroup">
-                        <option>1. Shopper Group 1</option>
-                        <option>2. Shopper Group 2</option>
-                        <option>3. Shopper Group 3</option>
-                        <option>4. Shopper Group 4</option>
-                        <option>5. Shopper Group 5</option>
+                        <?php get_all_shopper_groups($dbo); ?>
                     </select>
-                </div>
-                <!--Group Discount Label and Input-->
-                <div class="hidden-xs col-sm-3 col-md-3 col-lg-2">
-                    <p class="labelText">Group Discount</p>
-                </div>
-                <div class="col-xs-12 col-sm-9  col-md-3 col-lg-4">
-                    <input type="text" class="text-input-underline" placeholder="Group Discount" id="form-input-groupDiscount">
                 </div>
             </div>
             <!--Add new shopper group discount button-->
             <div class="form-group row">
                 <div class="col-xs-3 col-sm-2 col-md-2 col-lg-12 ">
-                    <input type="submit" value="Add New Shopper Group Discount +" id="btn-addNewShopGrpDisc" class="btn btn-default" />
+                    <button type="button" value="Add New Shopper Group Discount +" id="btn-addNewShopGrpDisc" class="btn btn-default">Add New Price +</button>
                 </div>
             </div>
             <!--Form Submit button-->
@@ -266,6 +257,7 @@
         <!--                        Supporting Documents ends-->
     </form>
 <!--Form Container Ends here-->
-
+<script type="text/javascript" src="../js/addprod.js"></script>
+<script type="text/javascript" src="../js/validateForm.js"></script>
 </div>
 <!--Form Container ends here-->
