@@ -118,22 +118,262 @@ function add_cat($dbo){
     include '../layouts/addcatform.php';
 }
 
+/*Validation and sanitisation helper functions start here*/
+
+//Sanitisation: Function to sanitise input strings from the internet
+function sanitise_string($input){
+    $input = trim($input);
+    $input = stripslashes($input);
+    $input = strip_tags($input);
+    $input = htmlspecialchars($input);
+    $input = filter_var($input, FILTER_SANITIZE_STRING);
+    return $input;
+}
+
+function sanitise_number($input){
+    $input = trim($input);
+    $input = stripslashes($input);
+    $input = strip_tags($input);
+    $input = htmlspecialchars($input);
+    $input = filter_var($input, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+    return $input;
+}
+
+//Validation: checks whether a string matches letters, numbers, dashes or spaces. 
+function isAlphanumeric($input){
+    if(!preg_match("/^[\w\-\s]+$/", $input)){
+        return false;
+    }
+    return true;
+}
+
+function isEmpty($input){
+    if(strlen($input)<=0){
+        return true;
+    }
+    return false;
+}
+
+function isArrayEmpty($input){
+    if(empty($input)){
+        return true;
+    }
+    return false;
+}
+
+function isValidLength($input, $maxLen){
+    if(strlen($input)>$maxLen){
+        return false;
+    }
+    return true;
+}
+
+function isNumber($input){
+    if(!preg_match("/^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$/", $input) ){
+        return false;
+    }  
+    return true;
+}
+
+function isSKU($input){
+    if(!preg_match("([A-Za-z0-9\-\_]+$)", $input)){
+        return false;
+    }
+    return true;
+}
+
+function validateProd(){
+    $validated = true;
+    
+    $prod_name = $cat = $prod_desc = $prod_img_url = $prod_long_desc = $prod_sku = $prod_display_cmd = 0;
+    $prod_weight = $prod_l = $prod_w = $prod_h = 0;
+    
+    
+    if(isset($_POST['prod_name'])){
+        $prod_name = sanitise_string($_POST['prod_name']);
+        $prod_name_error = "";
+        if(isEmpty($prod_name)){
+            $prod_name_error = "The product name cannot be empty" ;
+            
+            $validated = false;
+        }
+
+        if(!isValidLength($prod_name, 40)){
+            $prod_name_error = "<br>The product name that you entered was either too short or too long(max " . 40 . " characters )"; 
+            $validated = false;
+        }
+        if(!isAlphanumeric($prod_name)){
+            $prod_name_error .= "<br>The product name that you entered included characters that weren't alphanumeric or spaces";
+            $validated = false;
+        }
+        $_POST['prod_name_error'] = $prod_name_error;
+    }
+    if(isset($_POST['prod_desc'])){
+        $prod_desc = sanitise_string($_POST['prod_desc']);
+        $prod_desc_error = "";
+        if(isEmpty($prod_desc)){
+            $prod_desc_error = "The product description cannot be empty";
+            $validated = false;
+        }
+        if(!isValidLength($prod_desc, 128)){
+            $prod_desc_error = "The product description that you entered was either too short or too long(max " . 128 . " characters )";
+            $validated = false;
+        }
+        if(!isAlphanumeric($prod_desc)){
+            $prod_desc_error = "The product name that you entered included characters that weren't alphanumeric or spaces";
+            $validated = false;
+        }
+        $_POST['prod_desc_error'] = $prod_desc_error;
+    }
+
+    if(isset($_POST['prod_long_desc'])){
+        $prod_long_desc = sanitise_string($_POST['prod_long_desc']);
+        $prod_long_desc_error = "";
+        if(isEmpty($prod_long_desc)){
+            $prod_long_desc_error = "The product long description cannot be empty";
+            $validated = false;
+        }
+        if(!isValidLength($prod_long_desc, 128)){
+            $prod_long_desc_error = "The product description that you entered was either too short or too long(max " . 128 . " characters )";
+            $validated = false;
+        }
+        if(!isAlphanumeric($prod_long_desc)){
+            $prod_long_desc_error = "The product name that you entered included characters that weren't alphanumeric or spaces";
+            $validated = false;
+        }
+        $_POST['prod_long_desc_error'] = $prod_long_desc_error;
+    }
+    
+    if(isset($_POST['cat'])){
+        $cat = $_POST['cat'];
+        $cat_error = "";
+        
+        if(empty($cat)){
+            $validated = false;
+            $cat_error = "You must select a category to add a product into.";
+        }
+        
+        $_POST['cat_error'] = $cat_error;   
+    } else{
+        $cat_error = "";
+        $cat_error = "You must select a category to add a product into.";
+        $_POST['cat_error'] = $cat_error;
+    }
+    
+    //Packaging validation
+    if(isset($_POST['prod_l'])){
+        $prod_l_error = "";
+        $prod_l = sanitise_number($_POST['prod_l']);
+        if(!isNumber($prod_l)){
+            $validated = false;
+            $prod_l_error = "This field must only contain numbers or decimals";
+        }
+        $_POST['prod_l_error'] = $prod_l_error;
+    }
+    if(isset($_POST['prod_w'])){
+        $prod_w_error = "";
+        $prod_w = sanitise_number($_POST['prod_w']);
+        if(!isNumber($prod_w)){
+            $validated = false;
+            $prod_w_error = "This field must only contain numbers or decimals";
+        }
+        $_POST['prod_w_error'] = $prod_w_error;
+    }
+    if(isset($_POST['prod_h'])){
+        $prod_h_error = "";
+        $prod_h = sanitise_number($_POST['prod_h']);
+        if(!isNumber($prod_h)){
+            $validated = false;
+            $prod_h_error = "This field must only contain numbers or decimals";
+        }
+        $_POST['prod_h_error'] = $prod_h_error;
+    }
+    
+    if(isset($_POST['prod_weight'])){
+        $prod_weight_error = "";
+        $prod_weight = sanitise_number($_POST['prod_weight']);
+        if(!isNumber($prod_weight)){
+            $validated = false;
+            $prod_weight_error = "This field must only contain numbers or decimals";
+        }
+        $_POST['prod_weight_error'] = $prod_weight_error;
+    }
+    
+    
+    if(isset($_POST['prod_sku'])){
+        $prod_sku_error = "";
+        $prod_sku = sanitise_string($_POST['prod_sku']);
+        if(!isSKU($prod_sku)){
+            $validated = false;
+            $prod_sku_error = "The SKU you entered included characters that weren't alphanumeric";
+        }
+        $_POST['prod_sku_error'] = $prod_sku_error;
+    }    
+
+
+    if(count(json_decode($_POST['json']))==0){
+
+    }
+    else {
+        $prod_attr_error = "";
+        $json = json_decode($_POST['json']);
+        $price;
+        
+        foreach(get_object_vars($json) as $property=>$value) {
+            
+            //Attribute name
+            echo "Property".$property;
+            if(!isset($property)){
+                echo 'lolz';
+                $prod_attr_error="You have to enter a attribute name";
+                $validated = false;
+            }
+            else{
+                for($i = 0; $i < sizeOf($value); $i++){
+                    
+                    
+                    $value = sanitise_string($value[$i]->Value);
+                    echo $value;
+                    if(isEmpty($value)){
+                        $validated = false;
+                        $prod_attr_error .= "Product attribute cannot be empty";
+                    }
+          
+                  
+                }
+            }
+            $_POST['prod_price_error'] = $prod_attr_error;
+
+        }
+    } 
+    
+    return $validated;
+}
+
 function add_prod($dbo){
     //function that handles adding a new product into the database
     check_user_permission_level();
-    if (isset($_POST['prod_name'])) {
+    
+
+    //Validate the form
+    $validated = validateProd();
+//    echo $validated;
+    
+
+    if ($validated==true) {
         //if info has been posted, add that info to the DB
         $prod_id = submit_product($dbo);
         submit_product_category($dbo, $prod_id);
         submit_product_attributes($dbo, $prod_id);
         insert_product_prices($dbo, $prod_id);
-
+        echo $_POST['prod_name'];
         /* need a function that unsets all the post variables to prevent accidental
         resubmission - this is an example of that */
         unset($_POST['prod_name']);
         unset($_POST['cat']);
 
         //echos out a link for testing purposes only DO NOT LEAVE THIS IN
+        
         echo "<p>Product successfully added to the system.</p>";
         echo "<p><p><a href='addprod.php'>Add another product</a></p></p>";
     }
