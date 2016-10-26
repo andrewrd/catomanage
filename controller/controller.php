@@ -182,7 +182,11 @@ function isSKU($input){
     return true;
 }
 
+//Function that validates the add product from
 function validateProd(){
+    
+    //set validated to true, all other checks upon fail will set it to false.
+    //If none of the attributes pass then 
     $validated = true;
     
     $prod_name = $cat = $prod_desc = $prod_img_url = $prod_long_desc = $prod_sku = $prod_display_cmd = 0;
@@ -344,7 +348,7 @@ function validateProd(){
                         if(isEmpty($price)){
                             $validated = false;
                             $prod_attr_error .= "Product Price cannot be empty";
-                            echo $price;
+
                         }
                         
                         else if(!isNumber($price)){
@@ -364,7 +368,6 @@ function validateProd(){
         
         if(count($json_input)==0){
             $prod_prices_error = "You have to enter at least one product price and shopper group for this product";
-            echo "prices were empty";
         }
         else if(count($json_input)>0){
             for($i = 0; $i < sizeOf($json_input); $i++){
@@ -462,9 +465,10 @@ function add_prod($dbo){
 
     //Validate the form
     $validated = validateProd();
-
+    
+    //If the form passes the validation test
     if ($validated==true) {
-        //if info has been posted, add that info to the DB
+        //add the form data info to the DB
         $prod_id = submit_product($dbo);
         submit_product_category($dbo, $prod_id);
         submit_product_attributes($dbo, $prod_id);
@@ -472,6 +476,7 @@ function add_prod($dbo){
         
         //unset the post variables from the last form
         unsetProdForm();
+        //unset the post error message variables from the last form
         unsetProdFormErrors();
    
         //echos out a link for testing purposes only DO NOT LEAVE THIS IN
