@@ -46,3 +46,8 @@ a {
 #json-input {
   display: none;
 }
+
+
+.errorMessage{
+    color:red;
+}

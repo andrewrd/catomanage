@@ -206,7 +206,7 @@ function validateProd(){
             $prod_name_error .= "<br>The product name that you entered included characters that weren't alphanumeric or spaces";
             $validated = false;
         }
-        $_POST['prod_name_error'] = $prod_name_error;
+        $_POST['prod_name_error'] = "<span class='errorMessage'>". $prod_name_error."</span>";
     }
     if(isset($_POST['prod_desc'])){
         $prod_desc = sanitise_string($_POST['prod_desc']);
@@ -223,7 +223,7 @@ function validateProd(){
             $prod_desc_error = "The product name that you entered included characters that weren't alphanumeric or spaces";
             $validated = false;
         }
-        $_POST['prod_desc_error'] = $prod_desc_error;
+        $_POST['prod_desc_error'] = "<span class='errorMessage'>". $prod_desc_error . "</span>";
     }
 
     if(isset($_POST['prod_long_desc'])){
@@ -241,7 +241,7 @@ function validateProd(){
             $prod_long_desc_error = "The product name that you entered included characters that weren't alphanumeric or spaces";
             $validated = false;
         }
-        $_POST['prod_long_desc_error'] = $prod_long_desc_error;
+        $_POST['prod_long_desc_error'] = "<span class='errorMessage'>" . $prod_long_desc_error ."</span>";
     }
     
     if(isset($_POST['cat'])){
@@ -257,7 +257,7 @@ function validateProd(){
     } else{
         $cat_error = "";
         $cat_error = "You must select a category to add a product into.";
-        $_POST['cat_error'] = $cat_error;
+        $_POST['cat_error'] = "<span class='errorMessage'>" . $cat_error . "</p>";
     }
     
     //Packaging validation
@@ -268,7 +268,7 @@ function validateProd(){
             $validated = false;
             $prod_l_error = "This field must only contain numbers or decimals";
         }
-        $_POST['prod_l_error'] = $prod_l_error;
+        $_POST['prod_l_error'] ="<span class='errorMessage'>". $prod_l_error."</p>";
     }
     if(isset($_POST['prod_w'])){
         $prod_w_error = "";
@@ -277,7 +277,7 @@ function validateProd(){
             $validated = false;
             $prod_w_error = "This field must only contain numbers or decimals";
         }
-        $_POST['prod_w_error'] = $prod_w_error;
+        $_POST['prod_w_error'] = "<span class='errorMessage'>".$prod_w_error."</p>";
     }
     if(isset($_POST['prod_h'])){
         $prod_h_error = "";
@@ -286,7 +286,7 @@ function validateProd(){
             $validated = false;
             $prod_h_error = "This field must only contain numbers or decimals";
         }
-        $_POST['prod_h_error'] = $prod_h_error;
+        $_POST['prod_h_error'] = "<span class='errorMessage'>".$prod_h_error."</p>";
     }
     
     if(isset($_POST['prod_weight'])){
@@ -296,7 +296,7 @@ function validateProd(){
             $validated = false;
             $prod_weight_error = "This field must only contain numbers or decimals";
         }
-        $_POST['prod_weight_error'] = $prod_weight_error;
+        $_POST['prod_weight_error'] = "<span class='errorMessage'>".$prod_weight_error."</p>";
     }
     
     
@@ -307,47 +307,152 @@ function validateProd(){
             $validated = false;
             $prod_sku_error = "The SKU you entered included characters that weren't alphanumeric";
         }
-        $_POST['prod_sku_error'] = $prod_sku_error;
+        $_POST['prod_sku_error'] = "<span class='errorMessage'>".$prod_sku_error."</p>";
     }    
 
+    if(isset($_POST['json'])){
+        //Validate the attributes
+        if(count(json_decode($_POST['json']))==0){
+            //Products don't have to have attribute values, so do nothing.
+        }
+        //If there are attributes added 
+        else if(count(json_decode($_POST['json']))>0) {
+            $prod_attr_error = "";
+            $json = json_decode($_POST['json']);
 
-    if(count(json_decode($_POST['json']))==0){
+            foreach(get_object_vars($json) as $property=>$value) {
 
-    }
-    else {
-        $prod_attr_error = "";
-        $json = json_decode($_POST['json']);
-        $price;
-        
-        foreach(get_object_vars($json) as $property=>$value) {
-            
-            //Attribute name
-            echo "Property".$property;
-            if(!isset($property)){
-                echo 'lolz';
-                $prod_attr_error="You have to enter a attribute name";
-                $validated = false;
-            }
-            else{
-                for($i = 0; $i < sizeOf($value); $i++){
-                    
-                    
-                    $value = sanitise_string($value[$i]->Value);
-                    echo $value;
-                    if(isEmpty($value)){
-                        $validated = false;
-                        $prod_attr_error .= "Product attribute cannot be empty";
-                    }
-          
+                //Attribute name
+                if(sanitise_string($property)=="_empty_"){
+                    $prod_attr_error="You have to enter a attribute name";
+                    $validated = false;
+                }
+                
+                else{
+                    for($i = 0; $i < sizeOf($value); $i++){
+
+
+                        $valueAttr = sanitise_string($value[$i]->Value);
+                        $price = sanitise_number($value[$i]->Price);
                   
+                        
+                        if(isEmpty($valueAttr)){
+                            $validated = false;
+                            $prod_attr_error .= "Product attribute value cannot be empty";
+                        }
+                        
+                        if(isEmpty($price)){
+                            $validated = false;
+                            $prod_attr_error .= "Product Price cannot be empty";
+                            echo $price;
+                        }
+                        
+                        else if(!isNumber($price)){
+                            $validated = false;
+                            $prod_attr_error .="Product Price must be a number";
+                        }
+                    }
+                }
+                $_POST['prod_price_error'] = "<span class='errorMessage'>".$prod_attr_error. "</p>";
+            }
+        }
+    }
+     
+    if(isset($_POST['prod_prices'])){
+        $prod_prices_error = "";
+        $json_input = json_decode($_POST['prod_prices']);
+        
+        if(count($json_input)==0){
+            $prod_prices_error = "You have to enter at least one product price and shopper group for this product";
+            echo "prices were empty";
+        }
+        else if(count($json_input)>0){
+            for($i = 0; $i < sizeOf($json_input); $i++){
+                $price = sanitise_number($json_input[$i]->Price);
+                $shopGrp = sanitise_string($json_input[$i]->Group);
+                
+                if(isEmpty($shopGrp)){
+                    $prod_prices_error .= "A shopper group was not selected, please select a shopper group";
+                }
+
+                if(isEmpty($price)){
+                    $prod_prices_error .= "A product price was not entered. Please enter a product price.";
+                }
+                if(!isNumber($price)){
+                    $prod_prices_error .= "Sorry only numbers can be entered into this field";
                 }
             }
-            $_POST['prod_price_error'] = $prod_attr_error;
-
         }
-    } 
+        
+        $_POST['product_shopGrp_error'] = "<span class='errorMessage'>".$prod_prices_error."</p>";
+    }
+    
     
     return $validated;
+}
+
+//Function that unsets all post variables that were set from the form on the addprod.php page 
+function unsetProdForm(){
+    unset($_POST['prod_name']);
+    unset($_POST['prod_desc']);
+    unset($_POST['prod_long_desc']);
+    unset($_POST['cat']);
+    unset($_POST['prod_l']);
+    unset($_POST['prod_h']);
+    unset($_POST['prod_w']);
+    unset($_POST['prod_weight']);
+    unset($_POST['prod_sku']);
+    unset($_POST['prod_json']);
+    unset($_POST['prod_prices']);
+}
+
+//Function to unset all the error messages that were set within validateProd() above
+function unsetProdFormErrors(){
+    if(isset($_POST['prod_name_error'])){
+        unset($_POST['prod_name_error']);
+    }
+    
+    if(isset($_POST['prod_desc_error'])){
+        unset($_POST['prod_desc_error']);
+
+    }
+    
+    if(isset($_POST['prod_long_desc_error'])){
+        unset($_POST['prod_long_desc_error']);
+
+    }
+    if(isset($_POST['cat_error'])){
+        unset($_POST['cat_error']);
+
+    }
+    if(isset($_POST['prod_l_error'])){
+        unset($_POST['prod_l_error']);
+
+    }
+    if(isset($_POST['prod_w_error'])){
+        unset($_POST['prod_w_error']);
+
+    }
+    if(isset($_POST['prod_h_error'])){
+        unset($_POST['prod_h_error']);
+
+    }
+    if(isset($_POST['prod_weight_error'])){
+        unset($_POST['prod_weight_error']);
+    }
+    
+    if(isset($_POST['prod_sku_error'])){
+        unset($_POST['prod_sku_error']);
+
+    }
+    if(isset($_POST['prod_price_error'])){
+        unset($_POST['prod_price_error']);
+
+    }
+    if(isset($_POST['prod_shpGrp_error'])){
+        unset($_POST['prod_shopGrp_error']);
+
+    }
 }
 
 function add_prod($dbo){
@@ -357,8 +462,6 @@ function add_prod($dbo){
 
     //Validate the form
     $validated = validateProd();
-//    echo $validated;
-    
 
     if ($validated==true) {
         //if info has been posted, add that info to the DB
@@ -366,18 +469,18 @@ function add_prod($dbo){
         submit_product_category($dbo, $prod_id);
         submit_product_attributes($dbo, $prod_id);
         insert_product_prices($dbo, $prod_id);
-        echo $_POST['prod_name'];
-        /* need a function that unsets all the post variables to prevent accidental
-        resubmission - this is an example of that */
-        unset($_POST['prod_name']);
-        unset($_POST['cat']);
-
+        
+        //unset the post variables from the last form
+        unsetProdForm();
+        unsetProdFormErrors();
+   
         //echos out a link for testing purposes only DO NOT LEAVE THIS IN
         
         echo "<p>Product successfully added to the system.</p>";
         echo "<p><p><a href='addprod.php'>Add another product</a></p></p>";
     }
     else {
+        $validated = false;
         //if info hasnt been added, show the form to add new info
         include '../layouts/addprodform.php';
     }
