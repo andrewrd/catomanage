@@ -3,26 +3,25 @@
 /* Created on:     14/10/2016 9:29:44 PM                        */
 /*==============================================================*/
 
-
-drop table if exists ATTRIBUTE;
-
-drop table if exists ATTRIBUTEVALUE;
-
-drop table if exists CATEGORY;
-
 drop table if exists CGPRREL;
 
 drop table if exists CGRYREL;
 
-drop table if exists PRODPRICES;
-
-drop table if exists PRODUCT;
-
-drop table if exists SHOPPERGROUP;
-
 drop table if exists SPECIALS;
 
 drop table if exists STOCK;
+
+drop table if exists ATTRIBUTEVALUE;
+
+drop table if exists ATTRIBUTE;
+
+drop table if exists PRODPRICES;
+
+drop table if exists SHOPPERGROUP;
+
+drop table if exists PRODUCT;
+
+drop table if exists CATEGORY;
 
 /*==============================================================*/
 /* Table: ATTRIBUTE                                             */
@@ -252,9 +251,8 @@ insert into CGRYREL values (19,8,10,NULL);
 
 /* Insert into Attribute */
 insert into ATTRIBUTE values (DEFAULT, 2,'Colour');
-insert into ATTRIBUTE values (DEFAULT, 2,'Waist');
-insert into ATTRIBUTE values (DEFAULT, 6, 'Size')
-insert into ATTRIBUTE values (DEFAULT, 6, 'Colour')
+insert into ATTRIBUTE values (DEFAULT, 6, 'Size');
+insert into ATTRIBUTE values (DEFAULT, 6, 'Colour');
 insert into ATTRIBUTE values (DEFAULT, 7,'CPU Speed');
 insert into ATTRIBUTE values (DEFAULT, 7, 'Bandwidth');
 
@@ -282,13 +280,13 @@ insert into ATTRIBUTEVALUE values (DEFAULT, 6, 5, 'XL', 0.00);
 insert into ATTRIBUTEVALUE values (DEFAULT, 6, 5, 'XXL', 2.00);
 
 /* Shirt colour for XCSD tee */
-insert into ATTRIBUTEVALUE values (DEFAULT, 6, 6, 'Red', 0.00);
-insert into ATTRIBUTEVALUE values (DEFAULT, 6, 6, 'Orange', 0.00);
-insert into ATTRIBUTEVALUE values (DEFAULT, 6, 6, 'Yellow', 0.00);
-insert into ATTRIBUTEVALUE values (DEFAULT, 6, 6, 'Green', 0.00);
-insert into ATTRIBUTEVALUE values (DEFAULT, 6, 6, 'Blue', 0.00);
-insert into ATTRIBUTEVALUE values (DEFAULT, 6, 6, 'Black', 0.00);
-insert into ATTRIBUTEVALUE values (DEFAULT, 6, 6, 'White', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 5, 'Red', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 5, 'Orange', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 5, 'Yellow', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 5, 'Green', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 5, 'Blue', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 5, 'Black', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 5, 'White', 0.00);
 
 /* CPU speed for IBM Series Server */
 insert into ATTRIBUTEVALUE values (DEFAULT, 7, 3, '1.8 GHz', 0.00);
