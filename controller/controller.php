@@ -522,7 +522,7 @@ function submit_product($dbo){
     $prod_id = $stmt->fetchColumn();
 
     return $prod_id;
-}   
+}
 
 function submit_product_category($dbo, $prod_id) {
     //function to submit product-category relationship
@@ -639,21 +639,28 @@ function displayproductattributes($dbo) {
     $stmt->bindParam(':id', $prod_id);
     try_or_die($stmt);
     $attribute_ids = array(); //create an array to store ID's of attributes
+    $attribute_id_names = array();
 
     while($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
-        <?php $attribute_ids[] = $row['ID']; ?>
+        <?php $attribute_ids[] = $row['ID']; //contains ID's related to product
+          $attribute_id_names[$row['ID']]=$row['NAME']; //contains the ID's and their associated names
+        ?>
     <?php
     }
+
     $stmt = null;
     /* 2nd query */
     $arrlength = count($attribute_ids);
     for ($i = 0; $i < $arrlength; ++$i) {
-        $stmt = $dbo->prepare("SELECT ATTRVAL_VALUE FROM ATTRIBUTEVALUE WHERE ATTRVAL_ATTR_ID = (:attrID)");
+        $stmt = $dbo->prepare("SELECT ATTRVAL_ID, ATTRVAL_VALUE, ATTRVAL_PRICE FROM ATTRIBUTEVALUE WHERE ATTRVAL_ATTR_ID = (:attrID)");
         $stmt->bindParam(':attrID', $attribute_ids[$i]);
         try_or_die($stmt);
-        ?> <select class = "form-control"> <?php
+        $attribute_name = $attribute_id_names[$attribute_ids[$i]]; //assigns attribute_name by looking up from associative array
+        ?> <label for="<?php echo $attribute_name ?>"><?php echo $attribute_name ?></label>
+        <select class = "form-control" name = "<?php echo $attribute_name ?>">
+          <option value></option> <?php
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
-            <option><?php echo $row['ATTRVAL_VALUE'] ?> </option>
+            <option id = "<?php echo $row['ATTRVAL_ID']?>" value = "<?php echo $row['ATTRVAL_PRICE']?>"><?php echo $row['ATTRVAL_VALUE'] ?> </option>
         <?php }
         ?> </select>
         <?php }

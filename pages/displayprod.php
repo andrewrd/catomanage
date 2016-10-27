@@ -8,7 +8,7 @@ include '../controller/controller.php';
 <div class = "container">
       <?php displayproduct($dbo);?>
       <!--Form-->
-      <form class = "form-inline">
+      <form class = "form-inline" method = "post" action = "displayprod.php">
         <div class="form-group">
           <label for="ex1">Qty:</label>
           <input class="form-control" id="quantity" name = "quantity" type="text"><br/><br/>
