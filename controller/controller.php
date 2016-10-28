@@ -253,6 +253,8 @@ function validateProd(){
             $validated = false;
         }
         $_POST['prod_name_error'] = "<span class='errorMessage'>". $prod_name_error."</span>";
+    } else if(!isset($_POST['prod_name'])){
+        $validated = false;
     }
     if(isset($_POST['prod_desc'])){
         $prod_desc = sanitise_string($_POST['prod_desc']);
@@ -270,6 +272,8 @@ function validateProd(){
             $validated = false;
         }
         $_POST['prod_desc_error'] = "<span class='errorMessage'>". $prod_desc_error . "</span>";
+    }else if(!isset($_POST['prod_desc'])){
+        $validated = false;
     }
 
     if(isset($_POST['prod_long_desc'])){
@@ -288,9 +292,12 @@ function validateProd(){
             $validated = false;
         }
         $_POST['prod_long_desc_error'] = "<span class='errorMessage'>" . $prod_long_desc_error ."</span>";
+    }else if(!isset($_POST['prod_long_desc'])){
+        $validated = false;
     }
 
     if(isset($_POST['cat'])){
+        echo 'cat was set';
         $cat = $_POST['cat'];
         $cat_error = "";
 
@@ -300,11 +307,14 @@ function validateProd(){
         }
 
         $_POST['cat_error'] = $cat_error;
-    } else{
-        $cat_error = "";
+    } 
+
+    else if(!isset($_POST['cat'])){
+        $validated = false;
         $cat_error = "You must select a category to add a product into.";
         $_POST['cat_error'] = "<span class='errorMessage'>" . $cat_error . "</p>";
     }
+    
 
     //Packaging validation
     if(isset($_POST['prod_l'])){
@@ -315,6 +325,8 @@ function validateProd(){
             $prod_l_error = "This field must only contain numbers or decimals";
         }
         $_POST['prod_l_error'] ="<span class='errorMessage'>". $prod_l_error."</p>";
+    }else if(!isset($_POST['prod_l'])){
+        $validated = false;
     }
     if(isset($_POST['prod_w'])){
         $prod_w_error = "";
@@ -324,6 +336,8 @@ function validateProd(){
             $prod_w_error = "This field must only contain numbers or decimals";
         }
         $_POST['prod_w_error'] = "<span class='errorMessage'>".$prod_w_error."</p>";
+    }else if(!isset($_POST['prod_w'])){
+        $validated = false;
     }
     if(isset($_POST['prod_h'])){
         $prod_h_error = "";
@@ -333,6 +347,8 @@ function validateProd(){
             $prod_h_error = "This field must only contain numbers or decimals";
         }
         $_POST['prod_h_error'] = "<span class='errorMessage'>".$prod_h_error."</p>";
+    }else if(!isset($_POST['prod_h'])){
+        $validated = false;
     }
 
     if(isset($_POST['prod_weight'])){
@@ -343,6 +359,8 @@ function validateProd(){
             $prod_weight_error = "This field must only contain numbers or decimals";
         }
         $_POST['prod_weight_error'] = "<span class='errorMessage'>".$prod_weight_error."</p>";
+    }else if(!isset($_POST['prod_weight'])){
+        $validated = false;
     }
 
 
@@ -354,6 +372,8 @@ function validateProd(){
             $prod_sku_error = "The SKU you entered included characters that weren't alphanumeric";
         }
         $_POST['prod_sku_error'] = "<span class='errorMessage'>".$prod_sku_error."</p>";
+    }else if(!isset($_POST['prod_sku'])){
+        $validated = false;
     }
 
     if(isset($_POST['json'])){
@@ -402,6 +422,8 @@ function validateProd(){
                 $_POST['prod_price_error'] = "<span class='errorMessage'>".$prod_attr_error. "</p>";
             }
         }
+    }else if(!isset($_POST['json'])){
+        $validated = false;
     }
 
     if(isset($_POST['prod_prices'])){
@@ -430,6 +452,8 @@ function validateProd(){
         }
 
         $_POST['product_shopGrp_error'] = "<span class='errorMessage'>".$prod_prices_error."</p>";
+    }else if(!isset($_POST['prod_prices'])){
+        $validated = false;
     }
 
 
@@ -510,8 +534,6 @@ function add_prod($dbo){
 
     //If the form passes the validation test
     if ($validated==true) {
-        echo "validated is true<br>";
-        echo $_POST['prod_name'];
         //add the form data info to the DB
         $prod_id = submit_product($dbo);
         submit_product_category($dbo, $prod_id);
