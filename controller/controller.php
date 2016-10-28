@@ -80,14 +80,56 @@ function get_category_products($dbo){
     $stmt = null;
     //free statement
 
-    $stmt = $dbo->prepare("SELECT product.prod_name FROM product INNER JOIN cgprrel ON product.prod_id = cgprrel.cgpr_prod_id WHERE cgprrel.cgpr_cat_id = (:id)");
+    $stmt = $dbo->prepare("SELECT product.prod_id FROM product INNER JOIN cgprrel ON product.prod_id = cgprrel.cgpr_prod_id WHERE cgprrel.cgpr_cat_id = (:id)");
     $stmt->bindParam(':id', $parent_id);
 
     try_or_die($stmt);
 
+    $product_ids = array();
     while($row = $stmt->fetch()) {
-        echo "<p>".$row["prod_name"]."</p>";
+      $id = $row[0];
+      $stmt2 = $dbo->prepare("SELECT prod_id, prod_name, prod_desc, prod_img_url, prod_disp_cmd, prpr_price FROM product, prodprices
+      where prod_id = (:prodid) and product.prod_id = prodprices.prpr_prod_id group by prod_id");
+      $stmt2->bindParam(':prodid', $id);
+      try_or_die($stmt2);
+
+      while($row2 = $stmt2->fetch()) { ?>
+          <a href = "<?php echo $row2[4]."?prod_id=".$row2[0]?>">
+            <div class=  "col-md-4 productBox">
+              <img src = "../img/<?php echo $row2[3] ?>" width = "250" height = "250"/><br/>
+              <h3 class = "productname"><?php echo $row2[1] ?></h3>
+              <h3 class = "price"><?php echo $row2[5] ?></h3>
+              <p class = "desc"><?php echo $row2[2] ?></p>
+            </div>
+          </a>
+      <?php }
+      echo 'complete';
+      $stmt2 =null;
+      $row2=null;
     }
+
+    /*
+    $stmt = null;
+    $arrlength = count($product_ids);
+
+    for ($i = 0; $i < $arrlength; ++$i) {
+      $id = $product_ids[$i];
+      $stmt = $dbo->prepare("SELECT prod_id, prod_name, prod_desc, prod_img_url, prod_disp_cmd, prpr_price FROM product, prodprices
+      where prod_id = (:prodid) and product.prod_id = prodprices.prpr_prod_id group by prod_id");
+      $stmt->bindParam(':prodid', $id);
+      try_or_die($stmt);
+
+    while($row = $stmt->fetch()) { ?>
+        <a href = "<?php echo $row[4]."?prod_id=".$row[0]?>">
+          <div class=  "col-md-4 productBox">
+            <img src = "../img/<?php echo $row[3] ?>" width = "250" height = "250"/><br/>
+            <h3 class = "productname"><?php echo $row[1] ?></h3>
+            <h3 class = "price"><?php echo $row[5] ?></h3>
+            <p class = "desc"><?php echo $row[2] ?></p>
+          </div>
+        </a>
+    <?php }
+  } */
 	$stmt = null;
 }
 
@@ -139,7 +181,7 @@ function sanitise_number($input){
     return $input;
 }
 
-//Validation: checks whether a string matches letters, numbers, dashes or spaces. 
+//Validation: checks whether a string matches letters, numbers, dashes or spaces.
 function isAlphanumeric($input){
     if(!preg_match("/^[\w\-\s]+$/", $input)){
         return false;
@@ -171,7 +213,7 @@ function isValidLength($input, $maxLen){
 function isNumber($input){
     if(!preg_match("/^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$/", $input) ){
         return false;
-    }  
+    }
     return true;
 }
 
@@ -184,26 +226,26 @@ function isSKU($input){
 
 //Function that validates the add product from
 function validateProd(){
-    
+
     //set validated to true, all other checks upon fail will set it to false.
-    //If none of the attributes pass then 
+    //If none of the attributes pass then
     $validated = true;
-    
+
     $prod_name = $cat = $prod_desc = $prod_img_url = $prod_long_desc = $prod_sku = $prod_display_cmd = 0;
     $prod_weight = $prod_l = $prod_w = $prod_h = 0;
-    
-    
+
+
     if(isset($_POST['prod_name'])){
         $prod_name = sanitise_string($_POST['prod_name']);
         $prod_name_error = "";
         if(isEmpty($prod_name)){
             $prod_name_error = "The product name cannot be empty" ;
-            
+
             $validated = false;
         }
 
         if(!isValidLength($prod_name, 40)){
-            $prod_name_error = "<br>The product name that you entered was either too short or too long(max " . 40 . " characters )"; 
+            $prod_name_error = "<br>The product name that you entered was either too short or too long(max " . 40 . " characters )";
             $validated = false;
         }
         if(!isAlphanumeric($prod_name)){
@@ -247,23 +289,23 @@ function validateProd(){
         }
         $_POST['prod_long_desc_error'] = "<span class='errorMessage'>" . $prod_long_desc_error ."</span>";
     }
-    
+
     if(isset($_POST['cat'])){
         $cat = $_POST['cat'];
         $cat_error = "";
-        
+
         if(empty($cat)){
             $validated = false;
             $cat_error = "You must select a category to add a product into.";
         }
-        
-        $_POST['cat_error'] = $cat_error;   
+
+        $_POST['cat_error'] = $cat_error;
     } else{
         $cat_error = "";
         $cat_error = "You must select a category to add a product into.";
         $_POST['cat_error'] = "<span class='errorMessage'>" . $cat_error . "</p>";
     }
-    
+
     //Packaging validation
     if(isset($_POST['prod_l'])){
         $prod_l_error = "";
@@ -292,7 +334,7 @@ function validateProd(){
         }
         $_POST['prod_h_error'] = "<span class='errorMessage'>".$prod_h_error."</p>";
     }
-    
+
     if(isset($_POST['prod_weight'])){
         $prod_weight_error = "";
         $prod_weight = sanitise_number($_POST['prod_weight']);
@@ -302,8 +344,8 @@ function validateProd(){
         }
         $_POST['prod_weight_error'] = "<span class='errorMessage'>".$prod_weight_error."</p>";
     }
-    
-    
+
+
     if(isset($_POST['prod_sku'])){
         $prod_sku_error = "";
         $prod_sku = sanitise_string($_POST['prod_sku']);
@@ -312,14 +354,14 @@ function validateProd(){
             $prod_sku_error = "The SKU you entered included characters that weren't alphanumeric";
         }
         $_POST['prod_sku_error'] = "<span class='errorMessage'>".$prod_sku_error."</p>";
-    }    
+    }
 
     if(isset($_POST['json'])){
         //Validate the attributes
         if(count(json_decode($_POST['json']))==0){
             //Products don't have to have attribute values, so do nothing.
         }
-        //If there are attributes added 
+        //If there are attributes added
         else if(count(json_decode($_POST['json']))>0) {
             $prod_attr_error = "";
             $json = json_decode($_POST['json']);
@@ -331,26 +373,26 @@ function validateProd(){
                     $prod_attr_error="You have to enter a attribute name";
                     $validated = false;
                 }
-                
+
                 else{
                     for($i = 0; $i < sizeOf($value); $i++){
 
 
                         $valueAttr = sanitise_string($value[$i]->Value);
                         $price = sanitise_number($value[$i]->Price);
-                  
-                        
+
+
                         if(isEmpty($valueAttr)){
                             $validated = false;
                             $prod_attr_error .= "Product attribute value cannot be empty";
                         }
-                        
+
                         if(isEmpty($price)){
                             $validated = false;
                             $prod_attr_error .= "Product Price cannot be empty";
 
                         }
-                        
+
                         else if(!isNumber($price)){
                             $validated = false;
                             $prod_attr_error .="Product Price must be a number";
@@ -361,11 +403,11 @@ function validateProd(){
             }
         }
     }
-     
+
     if(isset($_POST['prod_prices'])){
         $prod_prices_error = "";
         $json_input = json_decode($_POST['prod_prices']);
-        
+
         if(count($json_input)==0){
             $prod_prices_error = "You have to enter at least one product price and shopper group for this product";
         }
@@ -373,7 +415,7 @@ function validateProd(){
             for($i = 0; $i < sizeOf($json_input); $i++){
                 $price = sanitise_number($json_input[$i]->Price);
                 $shopGrp = sanitise_string($json_input[$i]->Group);
-                
+
                 if(isEmpty($shopGrp)){
                     $prod_prices_error .= "A shopper group was not selected, please select a shopper group";
                 }
@@ -386,15 +428,15 @@ function validateProd(){
                 }
             }
         }
-        
+
         $_POST['product_shopGrp_error'] = "<span class='errorMessage'>".$prod_prices_error."</p>";
     }
-    
-    
+
+
     return $validated;
 }
 
-//Function that unsets all post variables that were set from the form on the addprod.php page 
+//Function that unsets all post variables that were set from the form on the addprod.php page
 function unsetProdForm(){
     unset($_POST['prod_name']);
     unset($_POST['prod_desc']);
@@ -414,12 +456,12 @@ function unsetProdFormErrors(){
     if(isset($_POST['prod_name_error'])){
         unset($_POST['prod_name_error']);
     }
-    
+
     if(isset($_POST['prod_desc_error'])){
         unset($_POST['prod_desc_error']);
 
     }
-    
+
     if(isset($_POST['prod_long_desc_error'])){
         unset($_POST['prod_long_desc_error']);
 
@@ -443,7 +485,7 @@ function unsetProdFormErrors(){
     if(isset($_POST['prod_weight_error'])){
         unset($_POST['prod_weight_error']);
     }
-    
+
     if(isset($_POST['prod_sku_error'])){
         unset($_POST['prod_sku_error']);
 
@@ -461,11 +503,11 @@ function unsetProdFormErrors(){
 function add_prod($dbo){
     //function that handles adding a new product into the database
     check_user_permission_level();
-    
+
 
     //Validate the form
     $validated = validateProd();
-    
+
     //If the form passes the validation test
     if ($validated==true) {
         //add the form data info to the DB
@@ -473,14 +515,14 @@ function add_prod($dbo){
         submit_product_category($dbo, $prod_id);
         submit_product_attributes($dbo, $prod_id);
         insert_product_prices($dbo, $prod_id);
-        
+
         //unset the post variables from the last form
         unsetProdForm();
         //unset the post error message variables from the last form
         unsetProdFormErrors();
-   
+
         //echos out a link for testing purposes only DO NOT LEAVE THIS IN
-        
+
         echo "<p>Product successfully added to the system.</p>";
         echo "<p><p><a href='addprod.php'>Add another product</a></p></p>";
     }
@@ -657,7 +699,7 @@ function displayproductattributes($dbo) {
         try_or_die($stmt);
         $attribute_name = $attribute_id_names[$attribute_ids[$i]]; //assigns attribute_name by looking up from associative array
         ?> <label for="<?php echo $attribute_name ?>"><?php echo $attribute_name ?></label>
-        <select class = "form-control" name = "<?php echo $attribute_name ?>">
+        <select class = "form-control" name = "<?php echo $attribute_name ?>" onchange="window.location='displayprod.php?>
           <option value></option> <?php
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
             <option id = "<?php echo $row['ATTRVAL_ID']?>" value = "<?php echo $row['ATTRVAL_PRICE']?>"><?php echo $row['ATTRVAL_VALUE'] ?> </option>

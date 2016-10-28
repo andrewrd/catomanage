@@ -47,7 +47,16 @@ a {
   display: none;
 }
 
-
 .errorMessage{
     color:red;
+}
+
+.productBox {
+  border: 1px solid grey;
+  text-align: center;
+}
+
+.productname {
+  background-color: #e3d33d;
+
 }
