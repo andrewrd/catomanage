@@ -23,6 +23,7 @@ var getKeys = function(obj){
 function outputAttrs(obj){
   //function that outputs the attributes and their values
   var output = document.getElementById('attribute-output');
+  console.log(obj);
 
   //wipes clear the current content
   while (output.firstChild) {
@@ -47,6 +48,7 @@ function outputAttrs(obj){
     output.appendChild(html);
     output.appendChild(button);
     output.appendChild(button2);
+
   }
 
   document.getElementById("json-input").value = JSON.stringify(json);
@@ -60,7 +62,7 @@ function createButton(key) {
   var buttonId = document.createAttribute("class");
   var buttonFunc = document.createAttribute("onclick");
   buttonFunc.value = "addValue(this.value)";
-  buttonId.value = "add-val";
+  buttonId.value = "add-val btn-default btn";
   buttonAction.value = "button";
   buttonValue.value = key;
   button.setAttributeNode(buttonAction);
@@ -78,12 +80,13 @@ function createButton(key) {
 function removeAttr(key) {
   //function to create a new button that removes the specified attribute from the json object
   var button = document.createElement("button");
-  var buttonId = document.createAttribute("class");
+  var buttonAction = document.createAttribute("type");
   var buttonValue = document.createAttribute("value");
+  var buttonId = document.createAttribute("class");
   var buttonFunc = document.createAttribute("onclick");
+  buttonFunc.value = "removeAttrFunc(this.value)";
+  buttonId.value = "remove-attr btn-default btn";
   buttonAction.value = "button";
-  buttonId.value = "remove-attr";
-  buttonFunc.value = "removeAttr(this.value)";
   buttonValue.value = key;
   button.setAttributeNode(buttonAction);
   button.setAttributeNode(buttonValue);
@@ -95,7 +98,7 @@ function removeAttr(key) {
   return button;
 }
 
-function removeAttr(clickedVal){
+function removeAttrFunc(clickedVal){
   delete json[clickedVal];
   outputAttrs(json);
 }

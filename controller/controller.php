@@ -510,6 +510,8 @@ function add_prod($dbo){
 
     //If the form passes the validation test
     if ($validated==true) {
+        echo "validated is true<br>";
+        echo $_POST['prod_name'];
         //add the form data info to the DB
         $prod_id = submit_product($dbo);
         submit_product_category($dbo, $prod_id);
