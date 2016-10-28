@@ -701,7 +701,7 @@ function displayproductattributes($dbo) {
         try_or_die($stmt);
         $attribute_name = $attribute_id_names[$attribute_ids[$i]]; //assigns attribute_name by looking up from associative array
         ?> <label for="<?php echo $attribute_name ?>"><?php echo $attribute_name ?></label>
-        <select class = "form-control" name = "<?php echo $attribute_name ?>" onchange="window.location='displayprod.php?>
+        <select class = "form-control" name = "<?php echo $attribute_name ?>">
           <option value></option> <?php
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
             <option id = "<?php echo $row['ATTRVAL_ID']?>" value = "<?php echo $row['ATTRVAL_PRICE']?>"><?php echo $row['ATTRVAL_VALUE'] ?> </option>
