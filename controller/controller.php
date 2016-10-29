@@ -88,22 +88,20 @@ function get_category_products($dbo){
     $product_ids = array();
     while($row = $stmt->fetch()) {
       $id = $row[0];
-      $stmt2 = $dbo->prepare("SELECT prod_id, prod_name, prod_desc, prod_img_url, prod_disp_cmd, prpr_price FROM product, prodprices
-      where prod_id = (:prodid) and product.prod_id = prodprices.prpr_prod_id group by prod_id");
+      $stmt2 = $dbo->prepare("SELECT prod_id, prod_name, prod_desc, prod_img_url, prod_disp_cmd, prpr_price FROM product, prodprices where prod_id = (:prodid) and product.prod_id = prodprices.prpr_prod_id group by prod_id");
       $stmt2->bindParam(':prodid', $id);
       try_or_die($stmt2);
 
       while($row2 = $stmt2->fetch()) { ?>
           <a href = "<?php echo $row2[4]."?prod_id=".$row2[0]?>">
             <div class=  "col-md-4 productBox">
-              <img src = "../img/<?php echo $row2[3] ?>" width = "250" height = "250"/><br/>
+              <img src = "../img/<?php echo $row2[3] ?>" width = "200" height = "200"/><br/>
               <h3 class = "productname"><?php echo $row2[1] ?></h3>
-              <h3 class = "price"><?php echo $row2[5] ?></h3>
+              <h3 class = "price">$<?php echo $row2[5] ?></h3>
               <p class = "desc"><?php echo $row2[2] ?></p>
             </div>
           </a>
       <?php }
-      echo 'complete';
       $stmt2 =null;
       $row2=null;
     }
@@ -690,7 +688,7 @@ function displayproduct($dbo) {
         <i class="fa fa-star" aria-hidden="true"></i>
         <i class="fa fa-star-half-o" aria-hidden="true"></i>
         <a href = "#">See Reviews</a>
-        <h3 class = "price"><?php echo $row['PRPR_PRICE'] ?></h3>
+        <h3 class = "price">$<?php echo $row['PRPR_PRICE'] ?></h3>
         <p class = "lead"><?php echo $row['PROD_LONG_DESC'] ?></p>
         <?php
     }
@@ -715,7 +713,34 @@ function displayproductattributes($dbo) {
     }
 
     $stmt = null;
-    /* 2nd query */
+
+    $arrlength = count($attribute_ids);
+    for ($i = 0; $i < $arrlength; ++$i) {
+        $stmt = $dbo->prepare("SELECT ATTRVAL_ID, ATTRVAL_VALUE, ATTRVAL_PRICE FROM ATTRIBUTEVALUE WHERE ATTRVAL_ATTR_ID = (:attrID)");
+        $stmt->bindParam(':attrID', $attribute_ids[$i]);
+        try_or_die($stmt);
+        $attribute_name = $attribute_id_names[$attribute_ids[$i]]; //assigns attribute_name by looking up from associative array
+        ?> <label for="<?php echo $attribute_name ?>"><?php echo $attribute_name ?></label>
+        <select class = "form-control" name = "<?php echo $attribute_name ?>">
+
+        <?php $count = $stmt->rowCount();
+        if ($count == 1) { //then there's only one attribute value
+          while($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
+            <option value><?php echo $row['ATTRVAL_VALUE']?></option> <?php
+          } ?>
+        </select>
+        <?php } else {
+          ?>
+        <option value></option> <?php
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
+            <option id = "<?php echo $row['ATTRVAL_ID']?>" value = "<?php echo $row['ATTRVAL_PRICE']?>"><?php echo $row['ATTRVAL_VALUE'] ?> </option>
+        <?php }
+        ?> </select>
+        <?php }
+        $stmt = null;
+      }
+
+    /* 2nd query
     $arrlength = count($attribute_ids);
     for ($i = 0; $i < $arrlength; ++$i) {
         $stmt = $dbo->prepare("SELECT ATTRVAL_ID, ATTRVAL_VALUE, ATTRVAL_PRICE FROM ATTRIBUTEVALUE WHERE ATTRVAL_ATTR_ID = (:attrID)");
@@ -730,8 +755,8 @@ function displayproductattributes($dbo) {
         <?php }
         ?> </select>
         <?php }
+        $stmt = null; */
     }
-    $stmt = null;
 
 function get_all_shopper_groups($dbo){
     /*function returns all the shopper groups in a list format,

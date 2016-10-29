@@ -255,6 +255,8 @@ insert into ATTRIBUTE values (DEFAULT, 6, 'Size');
 insert into ATTRIBUTE values (DEFAULT, 6, 'Colour');
 insert into ATTRIBUTE values (DEFAULT, 7,'CPU Speed');
 insert into ATTRIBUTE values (DEFAULT, 7, 'Bandwidth');
+insert into ATTRIBUTE values (DEFAULT, 5,'Transmission');
+insert into ATTRIBUTE values (DEFAULT, 5,'Body Type');
 
 /* ================================
 Insert into AttributeValue
@@ -296,6 +298,13 @@ insert into ATTRIBUTEVALUE values (DEFAULT, 7, 3, '2.4 GHz', 49.99);
 insert into ATTRIBUTEVALUE values (DEFAULT, 7, 4, '3 GB', 0.00);
 insert into ATTRIBUTEVALUE values (DEFAULT, 7, 4, '8.5 GB', 69.99);
 
+/* Transmission for Wrangler */
+insert into ATTRIBUTEVALUE values (DEFAULT, 5, 7, 'Automatic', 300.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 5, 7, 'Manual', 0.00);
+
+/* Body type for Wrangler */
+insert into ATTRIBUTEVALUE values (DEFAULT, 5, 8, 'Jeep', 0.00);
+
 /* Insert into ShopperGroup */
 insert into SHOPPERGROUP values (DEFAULT, 'Normal', 'This a normal shopper');
 insert into SHOPPERGROUP values (DEFAULT, 'Australian', 'This is a shopper from Australia. Please consider GST');
@@ -315,3 +324,15 @@ insert into PRODPRICES values (DEFAULT, 7, 3, 130.99);
 insert into PRODPRICES values (DEFAULT, 6, 1, 24.99);
 insert into PRODPRICES values (DEFAULT, 6, 2, 20.99);
 insert into PRODPRICES values (DEFAULT, 6, 3, 15.99);
+
+insert into PRODPRICES values (DEFAULT, 4, 1, 24.99);
+insert into PRODPRICES values (DEFAULT, 4, 2, 20.99);
+insert into PRODPRICES values (DEFAULT, 4, 3, 15.99);
+
+insert into PRODPRICES values (DEFAULT, 5, 1, 25000.00);
+insert into PRODPRICES values (DEFAULT, 5, 2, 24000.99);
+insert into PRODPRICES values (DEFAULT, 5, 3, 22599.00);
+
+insert into PRODPRICES values (DEFAULT, 3, 1, 29.99);
+insert into PRODPRICES values (DEFAULT, 3, 2, 25.99);
+insert into PRODPRICES values (DEFAULT, 3, 3, 19.99);
