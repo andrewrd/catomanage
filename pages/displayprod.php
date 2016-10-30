@@ -8,12 +8,13 @@ include '../controller/controller.php';
 <div class = "container">
       <?php displayproduct($dbo);?>
       <!--Form-->
-      <form class = "form-inline" method = "post" action = "displayprod.php">
+      <form class = "form-inline" method = "post" action = "addToCart.php" name = "addtocart" onsubmit="return validateAddToCart()">
         <div class="form-group">
           <label for="ex1">Qty:</label>
-          <input class="form-control" id="quantity" name = "quantity" type="text"><br/><br/>
+          <input class = "form-control" id = "quantity" type="number" name="quantity" min="1" max="5">
+          <br/><br/>
           <?php displayproductattributes($dbo); ?>
-          <button type="submit" class="btn btn-default btn-lg">Add To Cart</button>
+          <br/><br/><button type="submit" class="btn btn-default btn-lg">Add To Cart</button>
         </div>
       </form>
       <br/>
@@ -32,7 +33,7 @@ include '../controller/controller.php';
     </div>
   </div>
 </div>
-
+<script type = "text/javascript" src = "../js/validateAddToCart.js"></script>
 
 <?php
 

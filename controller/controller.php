@@ -305,14 +305,14 @@ function validateProd(){
         }
 
         $_POST['cat_error'] = $cat_error;
-    } 
+    }
 
     else if(!isset($_POST['cat'])){
         $validated = false;
         $cat_error = "You must select a category to add a product into.";
         $_POST['cat_error'] = "<span class='errorMessage'>" . $cat_error . "</p>";
     }
-    
+
 
     //Packaging validation
     if(isset($_POST['prod_l'])){
@@ -688,7 +688,7 @@ function displayproduct($dbo) {
         <i class="fa fa-star" aria-hidden="true"></i>
         <i class="fa fa-star-half-o" aria-hidden="true"></i>
         <a href = "#">See Reviews</a>
-        <h3 class = "price">$<?php echo $row['PRPR_PRICE'] ?></h3>
+        <h3 class = "price" id = "productPrice">$<?php echo $row['PRPR_PRICE'] ?></h3>
         <p class = "lead"><?php echo $row['PROD_LONG_DESC'] ?></p>
         <?php
     }
@@ -721,19 +721,19 @@ function displayproductattributes($dbo) {
         try_or_die($stmt);
         $attribute_name = $attribute_id_names[$attribute_ids[$i]]; //assigns attribute_name by looking up from associative array
         ?> <label for="<?php echo $attribute_name ?>"><?php echo $attribute_name ?></label>
-        <select class = "form-control" name = "<?php echo $attribute_name ?>">
+        <select class = "form-control productAttr" name = "<?php echo $attribute_name ?>" onchange = "updatePrice(this)">
 
         <?php $count = $stmt->rowCount();
         if ($count == 1) { //then there's only one attribute value
           while($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
-            <option value><?php echo $row['ATTRVAL_VALUE']?></option> <?php
+            <option id = "<?php echo $row['ATTRVAL_ID']?>" value = "<?php echo $row['ATTRVAL_PRICE']?>" name = "<?php echo $row['ATTRVAL_VALUE'] ?>"><?php echo $row['ATTRVAL_VALUE']?></option> <?php
           } ?>
         </select>
         <?php } else {
           ?>
         <option value></option> <?php
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
-            <option id = "<?php echo $row['ATTRVAL_ID']?>" value = "<?php echo $row['ATTRVAL_PRICE']?>"><?php echo $row['ATTRVAL_VALUE'] ?> </option>
+            <option id = "<?php echo $row['ATTRVAL_ID']?>" value = "<?php echo $row['ATTRVAL_PRICE']?>" name = "<?php echo $row['ATTRVAL_VALUE'] ?>"><?php echo $row['ATTRVAL_VALUE'] ?> </option>
         <?php }
         ?> </select>
         <?php }
