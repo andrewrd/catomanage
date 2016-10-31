@@ -251,10 +251,11 @@ insert into CGRYREL values (19,8,10,NULL);
 
 /* Insert into Attribute */
 insert into ATTRIBUTE values (DEFAULT, 2,'Colour');
-insert into ATTRIBUTE values (DEFAULT, 6, 'Size');
-insert into ATTRIBUTE values (DEFAULT, 6, 'Colour');
+insert into ATTRIBUTE values (DEFAULT, 2,'Waist');
 insert into ATTRIBUTE values (DEFAULT, 7,'CPU Speed');
 insert into ATTRIBUTE values (DEFAULT, 7, 'Bandwidth');
+insert into ATTRIBUTE values (DEFAULT, 6, 'Size');
+insert into ATTRIBUTE values (DEFAULT, 6, 'Colour');
 insert into ATTRIBUTE values (DEFAULT, 5,'Transmission');
 insert into ATTRIBUTE values (DEFAULT, 5,'Body Type');
 
@@ -274,6 +275,14 @@ insert into ATTRIBUTEVALUE values (DEFAULT, 2, 2, '34', 0.00);
 insert into ATTRIBUTEVALUE values (DEFAULT, 2, 2, '36', 0.00);
 insert into ATTRIBUTEVALUE values (DEFAULT, 2, 2, '38', 1.99);
 
+/* CPU speed for IBM Series Server */
+insert into ATTRIBUTEVALUE values (DEFAULT, 7, 3, '1.8 GHz', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 7, 3, '2.4 GHz', 49.99);
+
+/* Bandwidth for IBM Series Server */
+insert into ATTRIBUTEVALUE values (DEFAULT, 7, 4, '3 GB', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 7, 4, '8.5 GB', 69.99);
+
 /* Shirt size for XCSD tee */
 insert into ATTRIBUTEVALUE values (DEFAULT, 6, 5, 'S', 0.00);
 insert into ATTRIBUTEVALUE values (DEFAULT, 6, 5, 'M', 0.00);
@@ -282,21 +291,13 @@ insert into ATTRIBUTEVALUE values (DEFAULT, 6, 5, 'XL', 0.00);
 insert into ATTRIBUTEVALUE values (DEFAULT, 6, 5, 'XXL', 2.00);
 
 /* Shirt colour for XCSD tee */
-insert into ATTRIBUTEVALUE values (DEFAULT, 6, 5, 'Red', 0.00);
-insert into ATTRIBUTEVALUE values (DEFAULT, 6, 5, 'Orange', 0.00);
-insert into ATTRIBUTEVALUE values (DEFAULT, 6, 5, 'Yellow', 0.00);
-insert into ATTRIBUTEVALUE values (DEFAULT, 6, 5, 'Green', 0.00);
-insert into ATTRIBUTEVALUE values (DEFAULT, 6, 5, 'Blue', 0.00);
-insert into ATTRIBUTEVALUE values (DEFAULT, 6, 5, 'Black', 0.00);
-insert into ATTRIBUTEVALUE values (DEFAULT, 6, 5, 'White', 0.00);
-
-/* CPU speed for IBM Series Server */
-insert into ATTRIBUTEVALUE values (DEFAULT, 7, 3, '1.8 GHz', 0.00);
-insert into ATTRIBUTEVALUE values (DEFAULT, 7, 3, '2.4 GHz', 49.99);
-
-/* Bandwidth for IBM Series Server */
-insert into ATTRIBUTEVALUE values (DEFAULT, 7, 4, '3 GB', 0.00);
-insert into ATTRIBUTEVALUE values (DEFAULT, 7, 4, '8.5 GB', 69.99);
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 6, 'Red', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 6, 'Orange', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 6, 'Yellow', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 6, 'Green', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 6, 'Blue', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 6, 'Black', 0.00);
+insert into ATTRIBUTEVALUE values (DEFAULT, 6, 6, 'White', 0.00);
 
 /* Transmission for Wrangler */
 insert into ATTRIBUTEVALUE values (DEFAULT, 5, 7, 'Automatic', 300.00);

@@ -666,7 +666,6 @@ function get_all_categories($dbo){
 
 function displayproduct($dbo) {
     $prod_id = $_GET['prod_id'];
-    //$prod_id = 7;
     $shopper_group = 1;
     $stmt = $dbo->prepare("SELECT PROD_NAME, PROD_IMG_URL, PROD_LONG_DESC, PRPR_PRICE FROM Product, ProdPrices where PROD_ID = (:id)
     and Product.prod_id = ProdPrices.prpr_prod_id and prpr_shopgrp = (:shgroup) group by prod_id");
@@ -697,9 +696,7 @@ function displayproduct($dbo) {
 
 function displayproductattributes($dbo) {
     $prod_id = $_GET['prod_id'];
-    //$prod_id = 7;
     $stmt = $dbo->prepare("SELECT ID, PRODUCT_PROD_ID, NAME FROM ATTRIBUTE WHERE PRODUCT_PROD_ID = (:id)");
-    //I had to use a group by because duplicates were being returned
     $stmt->bindParam(':id', $prod_id);
     try_or_die($stmt);
     $attribute_ids = array(); //create an array to store ID's of attributes
@@ -726,7 +723,7 @@ function displayproductattributes($dbo) {
         <?php $count = $stmt->rowCount();
         if ($count == 1) { //then there's only one attribute value
           while($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
-            <option id = "<?php echo $row['ATTRVAL_ID']?>" value = "<?php echo $row['ATTRVAL_PRICE']?>" name = "<?php echo $row['ATTRVAL_VALUE'] ?>"><?php echo $row['ATTRVAL_VALUE']?></option> <?php
+            <option id = "<?php echo $row['ATTRVAL_ID']?>" value = "<?php echo $row['ATTRVAL_PRICE']?>" name = "<?php echo $row['ATTRVAL_PRICE']?>"><?php echo $row['ATTRVAL_VALUE']?></option> <?php
           } ?>
         </select>
         <?php } else {
@@ -739,23 +736,6 @@ function displayproductattributes($dbo) {
         <?php }
         $stmt = null;
       }
-
-    /* 2nd query
-    $arrlength = count($attribute_ids);
-    for ($i = 0; $i < $arrlength; ++$i) {
-        $stmt = $dbo->prepare("SELECT ATTRVAL_ID, ATTRVAL_VALUE, ATTRVAL_PRICE FROM ATTRIBUTEVALUE WHERE ATTRVAL_ATTR_ID = (:attrID)");
-        $stmt->bindParam(':attrID', $attribute_ids[$i]);
-        try_or_die($stmt);
-        $attribute_name = $attribute_id_names[$attribute_ids[$i]]; //assigns attribute_name by looking up from associative array
-        ?> <label for="<?php echo $attribute_name ?>"><?php echo $attribute_name ?></label>
-        <select class = "form-control" name = "<?php echo $attribute_name ?>">
-          <option value></option> <?php
-        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
-            <option id = "<?php echo $row['ATTRVAL_ID']?>" value = "<?php echo $row['ATTRVAL_PRICE']?>"><?php echo $row['ATTRVAL_VALUE'] ?> </option>
-        <?php }
-        ?> </select>
-        <?php }
-        $stmt = null; */
     }
 
 function get_all_shopper_groups($dbo){

@@ -34,7 +34,7 @@ function updatePrice(dropdown) {
   and the purporse of this is to simply provide convenience of seeing the
   price dynamically update without a page reload */
 
-  var basePrice = currentPrice.substr(1,currentPrice.length);
+  var basePrice = currentPrice.substr(1,currentPrice.length); //
   var attr = document.getElementsByClassName('productAttr');
   var len = attr.length;
   var i;
