@@ -97,7 +97,7 @@
             <div class="form-group row">
                 <div class="form-group">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 ">
-                        <input type="submit"  id="btn-submitAddProductForm" class="btn btn-default" />
+                        <input type="submit"  id="btn-submitAddProductForm" class="btn btn-success" />
                     </div>
                 </div>
             </div>
