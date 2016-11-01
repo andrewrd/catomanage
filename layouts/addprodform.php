@@ -2,7 +2,7 @@
 <div class="container">
     <!-- Main content starts here -->
 
-    <form action="addprod.php" method="POST" class="form-horizontal">
+    <form action="addprod.php" method="POST" class="form-horizontal" enctype="multipart/form-data">
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 header">
@@ -195,7 +195,7 @@
                     <p class="labelText">Image URL</p>
                 </div>
                 <div class="col-xs-12 col-sm-3  col-md-3 col-lg-4">
-                    <input name="prod_img_url" type="text" class="text-input-underline" placeholder="Image URL" id="form-url-input">
+                    <input name="prod_img_url" type="file" class="text-input-underline" placeholder="Image URL" id="form-url-input">
                 </div>
             </div>
             <!--Packaging Information Ends-->

@@ -782,7 +782,30 @@ function validateProd(){
     else if(!isset($_POST['prod_weight'])){
         $validated = false;
     }
-    
+    if(isset($_FILES['prod_img_url'])){
+        $errors = array();
+        $file_name = $_FILES['prod_img_url']['name'];
+        $file_size = $_FILES['prod_img_url']['size'];
+        $file_tmp = $_FILES['prod_img_url']['tmp_name'];
+        $file_type = $_FILES['prod_img_url']['type'];
+        $file_ext = strtolower(end(explode('.', $_FILES['prod_img_url']['name'])));
+
+        $allowedExtensions = array("jpeg","jpg","png");
+
+        if(in_array($file_ext,$allowedExtensions)=== false){
+            $errors[] ="That extension isn't allowed, please only use JPEG, JPG or PNG";
+        }
+        if($file_size > 2097152){
+            $errors[] = "File must be under 2MB";
+        }
+        if(empty($errors)==true){
+            move_uploaded_file($file_tmp, "../img/".$file_name);
+            echo "Success";
+        } else{
+            print_r("errors");
+            $validated = false;
+        }
+    }
     //If the product SKU is set
     if(isset($_POST['prod_sku'])){
         //Initialise the error message
@@ -1037,7 +1060,7 @@ function submit_product($dbo){
     validation, which still needs to be done */
 	$stmt->bindParam(':prod_name', $_POST['prod_name']);
     $stmt->bindParam(':prod_desc', $_POST['prod_desc']);
-    $stmt->bindParam(':prod_img_url', $_POST['prod_img_url']);
+    $stmt->bindParam(':prod_img_url', $_FILES['prod_img_url']['name']);
     $stmt->bindParam(':prod_long_desc', $_POST['prod_long_desc']);
     $stmt->bindParam(':prod_sku', $_POST['prod_sku']);
     $stmt->bindParam(':prod_disp_cmd', $_POST['prod_disp_cmd']);
