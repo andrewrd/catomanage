@@ -21,6 +21,10 @@ function isSKU(str){
     return str.match(/^[a-zA-Z0-9-]+$/)
 }
 
+function isNumber(str){
+    return str.match(/^(\d*\.)?\d+$/);
+}
+
 /*
 Function to change the colour of input fields.
 Parameters:
@@ -98,10 +102,11 @@ function checkNumber(elemId){
         var intValue = Number(nameElement.value);
         
         //if the value is not a number, correct input is false
-        if(isNaN(intValue)){
+        if(!isNumber(nameElement.value)){
             correctInput = false;
             errorMessage += "The value you entered isn't a number."
         }
+
     }
     if(!correctInput){
         changeColour(nameElement, nameElement.tagName, "red");
