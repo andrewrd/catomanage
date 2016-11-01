@@ -48,11 +48,14 @@
                 </div>
                 <!--Shopper group selection-->
                 <div class="col-xs-12 col-sm-9 col-md-9  col-lg-10">
-                    <select multiple class="form-control" id="form-input-parentCategory">
+                    <select multiple class="form-control" id="form-input-parentCategory" name="category_parent_name">
                         
                     </select>
                 </div>
             </div>
+            <!-- Add one for child category -->
+
+            
             <!--Long Description Ends-->
         </section>
         <section>

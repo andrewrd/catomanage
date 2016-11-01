@@ -167,14 +167,14 @@ function add_cat($dbo){
     if ($validated==true) {
         //add the form data info to the DB using submit category, then figure out if parents are needed
         //This adds the product to the database
-        $prod_id = submit_category($dbo);
+        $cat_id = submit_category($dbo);
         //Submits the category parent
-        submit_category_parent($dbo, $prod_id);
+        submit_category_rel($dbo, $cat_id);
 
         //unset the post variables from the last form
-        unsetProdForm();
+        unsetCatForm();
         //unset the post error message variables from the last form
-        unsetProdFormErrors();
+        unsetCatFormErrors();
 
         //echos out a link for testing purposes only DO NOT LEAVE THIS IN
 
@@ -188,10 +188,41 @@ function add_cat($dbo){
     }
 }
 
-//Inserts a new category into the sql database 
+//Gets all posted categories from layouts/addcatform.php and adds them to the database.
 function submit_category($dbo){
-    //gets all posted categories
-    //add them to the databse
+    //prepare statement to insert the basic category details into the product table
+    //should break these statements up into smaller pieces
+    $stmt = $dbo->prepare("INSERT INTO category(cat_name, cat_desc, cat_img_url, cat_display_cmd) VALUES(:cat_name, :cat_desc, :cat_img_url, :cat_display_cmd");
+    /*bind variables, using post variables without any
+    validation, which still needs to be done */
+    $stmt->bindParam(':cat_name', $_POST['cat_name']);
+    $stmt->bindParam(':cat_desc', $_POST['cat_desc']);
+    $stmt->bindParam(':cat_img_url', $_FILES['cat_img_url']['name']);
+    $stmt->bindParam(':cat_display_cmd', $_POST['cat_display_cmd']);
+
+    try_or_die($stmt);
+
+    $stmt = null;
+
+    //need to get the prod_id of the new product
+    $stmt = $dbo->prepare("SELECT prod_id FROM product WHERE prod_name = (:prod_name)");
+    $stmt->bindParam(':prod_name', $_POST['prod_name']);
+
+    try_or_die($stmt);
+
+    $cat_id = $stmt->fetchColumn();
+
+    return $cat_id;
+}
+
+//Submits the category's parents and child relations. 
+function submit_category_rel($dbo, $cat_id){
+        $stmt = $dbo->prepare("INSERT INTO cgprrel(CAT_ID, CATCGRYREL_ID_PARENT, CGRYREL_ID_CHILD) VALUES(:cat_id, :category_parent_name), :category_child_name");
+        $stmt->bindParam(':cat_id', $cat_id);
+        $stmt->bindParam(':category_parent_name', $CATCGRYREL_ID_PARENT);
+        $stmt->bindParam(':category_child_name', $CATCGRYREL_ID_CHILD);
+
+        try_or_die($stmt);
 }
 
 //Select category populates a dropdown menu, allowing the selection of categories. 
@@ -213,15 +244,15 @@ function edit_category($dbo){
     //If the form passes the validation test
     if ($validated==true) {
         //Update the form data info to the DB using update category, then figure out if parents are needed
-        //This adds the product to the database
+        //This adds the categi to the database
         $prod_id =  update_category($dbo);
         //Submits the category parent
-        submit_category_parent($dbo, $prod_id);
+        update_category_parent($dbo);
 
-        //unset the post variables from the last form
-        unsetProdForm();
-        //unset the post error message variables from the last form
-        unsetProdFormErrors();
+        //unset the post variables from the last form/do this function
+        unsetCatForm();
+        //unset the post error message variables from the last form/do
+        unsetCatFormErrors();
 
         //echos out a link for testing purposes only DO NOT LEAVE THIS IN
 
@@ -1050,7 +1081,6 @@ function add_prod($dbo){
         include '../layouts/addprodform.php';
     }
 }
-
 function submit_product($dbo){
     //prepare statement to insert the basic product details into the product table
 
