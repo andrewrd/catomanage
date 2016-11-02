@@ -60,8 +60,7 @@
                         <br>(Max 256 Characters)</p>
                 </div>
                 <div class="col-xs-12 col-sm-9 col-md-9 col-lg-10">
-                    <textarea name="prod_long_desc" class="form-control exampleTextarea" id="form-input-longDesc" rows="4" placeholder="Description Text" oninput="checkString(this.id, 256)" maxlength="256" required><?php if(isset($_POST['prod_long_desc'])){echo $_POST['prod_long_desc'];}?>
-                    </textarea>
+                    <textarea name="prod_long_desc" class="form-control exampleTextarea" id="form-input-longDesc" rows="4" placeholder="Description Text" oninput="checkString(this.id, 256)" maxlength="256" required><?php if(isset($_POST['prod_long_desc'])){echo $_POST['prod_long_desc'];}?></textarea>
                     <p id="form-error-longDesc">
                         <?php 
                         if(isset($_POST['prod_long_desc_error']))
@@ -275,7 +274,7 @@
                 <!--Submit button-->
             </div>
             <div class="form-group">
-                <div class="col-xs-12 col-sm-3  col-md-3 col-lg-3" <p id="prod_price_error">
+                <div class="col-xs-12 col-sm-3  col-md-3 col-lg-3"> <p id="prod_price_error">
                     <?php
 
                     if(isset($_POST['prod_price_error'])){
