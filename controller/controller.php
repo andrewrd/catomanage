@@ -234,9 +234,9 @@ function edit_category($dbo){
     if ($validated==true) {
         //Update the form data info to the DB using update category, then figure out if parents are needed
         //This adds the categi to the database
-        $prod_id =  update_category($dbo);
+        $cat_id =  update_category($dbo);
         //Submits the category parent
-        update_category_parent($dbo);
+        submit_category_rel($dbo, $cat_id);
 
         //unset the post variables from the last form/do this function
         unsetCatForm();
