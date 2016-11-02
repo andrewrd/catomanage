@@ -56,55 +56,57 @@ function get_bread_crumb($dbo, $id){
 }
 
 function get_category_products($dbo){
-	//gets the category name, depending on $_get['id']
-    //probably want to expand this function out to deal with getting the categories products,
-    //and other category information
+  //this function gets the products and category details of the selected category
+
 	if (isset($_GET['id'])){
 		$parent_id = $_GET['id'];
 	} else {
 		$parent_id = 1;
 	}
-    //checks if get variable is set, if not, just get the root category
+  //checks if get variable is set, if not, just get the root category
 
 	$stmt = $dbo->prepare("SELECT cat_name FROM category WHERE cat_id = (:id)");
 	$stmt->bindParam(':id', $parent_id);
-    //selects the category name for the selected cat_id
+  //selects the category name for the selected cat_id
 
 	try_or_die($stmt);
 
 	$results = $stmt->fetchColumn();
-    //return the result
  	echo "<div class='col-xs-12'><h2>".$results."</h2></div>";
-    //echo out the result
-    //maybe change this to return?
-    $stmt = null;
-    //free statement
+  //echo out the result
+  $stmt = null;
+  //free statement
 
-    $stmt = $dbo->prepare("SELECT product.prod_id FROM product INNER JOIN cgprrel ON product.prod_id = cgprrel.cgpr_prod_id WHERE cgprrel.cgpr_cat_id = (:id)");
-    $stmt->bindParam(':id', $parent_id);
+  $stmt = $dbo->prepare("SELECT product.prod_id FROM product INNER JOIN cgprrel ON product.prod_id = cgprrel.cgpr_prod_id WHERE cgprrel.cgpr_cat_id = (:id)");
+  $stmt->bindParam(':id', $parent_id);
 
-    try_or_die($stmt);
+  try_or_die($stmt);
+  //statement gathers the list of products associated to the category
 
-    $product_ids = array();
-    while($row = $stmt->fetch()) {
-      $id = $row[0];
-      $stmt2 = $dbo->prepare("SELECT prod_id, prod_name, prod_desc, prod_img_url, prod_disp_cmd, prpr_price FROM product, prodprices where prod_id = (:prodid) and product.prod_id = prodprices.prpr_prod_id group by prod_id");
-      $stmt2->bindParam(':prodid', $id);
-      try_or_die($stmt2);
+  $product_ids = array();
+  while($row = $stmt->fetch()) {
+    //iterates through each product
+    $id = $row[0];
+    $stmt2 = $dbo->prepare("SELECT prod_id, prod_name, prod_desc, prod_img_url, prod_disp_cmd, prpr_price FROM product, prodprices where prod_id = (:prodid) and product.prod_id = prodprices.prpr_prod_id group by prod_id");
+    $stmt2->bindParam(':prodid', $id);
+    try_or_die($stmt2);
+    //gathers product details for each of the products
 
-      while($row2 = $stmt2->fetch()) { ?>
-          <a href = "<?php echo $row2[4]."?prod_id=".$row2[0]?>">
-            <div class=  "col-md-4 productBox">
-              <img src = "../img/<?php echo $row2[3] ?>" width = "200" height = "200"/><br/>
-              <h3 class = "productname"><?php echo $row2[1] ?></h3>
-              <h3 class = "price">$<?php echo $row2[5] ?></h3>
-              <p class = "desc"><?php echo $row2[2] ?></p>
-            </div>
-          </a>
-      <?php }
-      $stmt2 =null;
-      $row2=null;
-    }
+    while($row2 = $stmt2->fetch()) { ?>
+        <a href = "<?php echo $row2[4]."?prod_id=".$row2[0]?>">
+          <div class=  "col-md-4 productBox">
+            <img src = "../img/<?php echo $row2[3] ?>" width = "200" height = "200"/><br/>
+            <h3 class = "productname"><?php echo $row2[1] ?></h3>
+            <h3 class = "price">$<?php echo $row2[5] ?></h3>
+            <p class = "desc"><?php echo $row2[2] ?></p>
+          </div>
+        </a>
+    <?php }
+    //creates and outputs HTML for displaying each product
+
+    $stmt2 =null;
+    $row2=null;
+  }
 
     /*
     $stmt = null;
@@ -128,7 +130,7 @@ function get_category_products($dbo){
         </a>
     <?php }
   } */
-	$stmt = null;
+  $stmt = null;
 }
 
 function get_categories($dbo){
@@ -154,7 +156,7 @@ function check_user_permission_level() {
     return;
 }
 
-//This function handles the adding of products into the database.
+//This function handles the adding of categories into the database.
 function add_cat($dbo){
 
     //from role based access control
@@ -215,7 +217,7 @@ function submit_category($dbo){
     return $cat_id;
 }
 
-//Submits the category's parents and child relations. 
+//Submits the category's parents and child relations.
 function submit_category_rel($dbo, $cat_id){
         $stmt = $dbo->prepare("INSERT INTO cgprrel(CAT_ID, CATCGRYREL_ID_PARENT, CGRYREL_ID_CHILD) VALUES(:cat_id, :category_parent_name), :category_child_name");
         $stmt->bindParam(':cat_id', $cat_id);
@@ -225,7 +227,7 @@ function submit_category_rel($dbo, $cat_id){
         try_or_die($stmt);
 }
 
-//Select category populates a dropdown menu, allowing the selection of categories. 
+//Select category populates a dropdown menu, allowing the selection of categories.
 function select_category($dbo) {
     //role based access control
     check_user_permission_level();
@@ -583,19 +585,19 @@ function validateProd(){
     if(isset($_POST['prod_name'])){
         //set the variable to the sanitised version of the string
         $prod_name = sanitise_string($_POST['prod_name']);
-        
+
         //Initialise the input error message
         $prod_name_error = "";
-        
+
         //If the variable is empty
         if(isEmpty($prod_name)){
             //Set the error message
             $prod_name_error = "The product name cannot be empty" ;
-            
+
             //Validation hasn't passed, validate is now false
             $validated = false;
         }
-        
+
         //Check if the input length is equal to or less than what is allowed in the database
         if(!isValidLength($prod_name, 40)){
             //Set the error message
@@ -612,28 +614,28 @@ function validateProd(){
         }
         //Post the error message back to the page
         $_POST['prod_name_error'] = "<span class='errorMessage'>". $prod_name_error."</span>";
-    } 
+    }
     //If the post variable isn't set, validation hasn't passed
     else if(!isset($_POST['prod_name'])){
         $validated = false;
     }
-    
+
     //If the product short description is set
     if(isset($_POST['prod_desc'])){
         //set the variable to the sanitised version of the string
         $prod_desc = sanitise_string($_POST['prod_desc']);
         //Initialise the input error message
         $prod_desc_error = "";
-        
+
         //If the variable is empty
         if(isEmpty($prod_desc)){
             //Set the error message
             $prod_desc_error = "The product description cannot be empty";
-            
+
             //Validation hasn't passed, validate is now false
             $validated = false;
         }
-        
+
         //If is longer than what is allowed in the databse, it isn't valid
         if(!isValidLength($prod_desc, 128)){
             //Set the error message
@@ -641,7 +643,7 @@ function validateProd(){
             //Validation hasn't passed, validate is now false
             $validated = false;
         }
-        
+
         //If the input contains characters other than letters, numbers, spaces or dashes
         if(!isAlphanumeric($prod_desc)){
             //Set the error message
@@ -656,14 +658,14 @@ function validateProd(){
     else if(!isset($_POST['prod_desc'])){
         $validated = false;
     }
-    
+
     //iF the product long description isn't set
     if(isset($_POST['prod_long_desc'])){
         //set the variable to the sanitised version of the string
         $prod_long_desc = sanitise_string($_POST['prod_long_desc']);
         //Initialise the input error message
         $prod_long_desc_error = "";
-        
+
         //if the variable is empty
         if(isEmpty($prod_long_desc)){
             //Set the error message
@@ -671,7 +673,7 @@ function validateProd(){
             //Validation hasn't passed, validate is now false
             $validated = false;
         }
-        
+
         //If is longer than what is allowed in the databse, it isn't valid
         if(!isValidLength($prod_long_desc, 256)){
             $prod_long_desc_error = "The product description that you entered was either too short or too long(max " . 128 . " characters )";
@@ -691,21 +693,21 @@ function validateProd(){
     }
     //If the category variable has been set
     if(isset($_POST['cat'])){
-        //Set the variable to the post variable, sanistisation isn't needed 
-        //since categorys are inserted by admins, and sanitised/validated at that point 
+        //Set the variable to the post variable, sanistisation isn't needed
+        //since categorys are inserted by admins, and sanitised/validated at that point
         $cat = $_POST['cat'];
         $cat_error = "";
-        
+
         //If the post is false, validated is false
         if(empty($cat)){
             $validated = false;
             $cat_error = "You must select a category to add a product into.";
         }
-        
+
         //Post the category editor back to the page
         $_POST['cat_error'] = $cat_error;
     }
-    
+
     /*
     ISSUE: Since checkboxes are either posted or not depending on if they are clicked or not
     It is somewhat impossible to validate if it is set or not upon POST
@@ -714,7 +716,7 @@ function validateProd(){
     else if(!isset($_POST['cat'])){
         //Validated set to false
         $validated = false;
-        
+
         //Set error and pass it to the next page
         $cat_error = "You must select a category to add a product into.";
         $_POST['cat_error'] = "<span class='errorMessage'>" . $cat_error . "</p>";
@@ -725,34 +727,34 @@ function validateProd(){
     if(isset($_POST['prod_l'])){
         //Error message initialised
         $prod_l_error = "";
-        
+
         //Set and sanitise the variable
         $prod_l = sanitise_number($_POST['prod_l']);
-        
+
         //If the variable isn't a number
         if(!isNumber($prod_l)){
             //Set validated to false
             $validated = false;
-            //Set the error message 
+            //Set the error message
             $prod_l_error = "This field must only contain numbers or decimals";
         }
-        
+
         //Pass the error message back to the next page
         $_POST['prod_l_error'] ="<span class='errorMessage'>". $prod_l_error."</p>";
     }
-    
+
     //If the POST variable isn't set, validated can't pass
     else if(!isset($_POST['prod_l'])){
         $validated = false;
     }
-    
+
     //If the product width is set
     if(isset($_POST['prod_w'])){
         //Error message initialised
         $prod_w_error = "";
         //Set and sanitise the variable to that of the post variable
         $prod_w = sanitise_number($_POST['prod_w']);
-        
+
         //If the variable isn't a number
         if(!isNumber($prod_w)){
             //Set validated to false
@@ -767,25 +769,25 @@ function validateProd(){
     else if(!isset($_POST['prod_w'])){
         $validated = false;
     }
-    
+
     //if the product height is set
     if(isset($_POST['prod_h'])){
-        
+
         //Error message variable initialised
         $prod_h_error = "";
-        
+
         //Set and sanitise the variable to that of the post variable
         $prod_h = sanitise_number($_POST['prod_h']);
-        
+
         //If the variable isn't a number
         if(!isNumber($prod_h)){
             //Set validated to false
             $validated = false;
-            
+
             //Set the error message
             $prod_h_error = "This field must only contain numbers or decimals";
         }
-        
+
         //Post the error message back to the next page
         $_POST['prod_h_error'] = "<span class='errorMessage'>".$prod_h_error."</p>";
     }
@@ -793,14 +795,14 @@ function validateProd(){
     else if(!isset($_POST['prod_h'])){
         $validated = false;
     }
-    
+
     //If the product weight is set
     if(isset($_POST['prod_weight'])){
         //Initialise the error message
         $prod_weight_error = "";
         //Set and sanitise the input to our variable
         $prod_weight = sanitise_number($_POST['prod_weight']);
-        
+
         //Check if the input isn't a number, validation is false
         if(!isNumber($prod_weight)){
             $validated = false;
@@ -843,7 +845,7 @@ function validateProd(){
         $prod_sku_error = "";
         //Set and sanitise the input into our variable
         $prod_sku = sanitise_string($_POST['prod_sku']);
-        
+
         //If the input doesn't match what should be in an sku
         if(!isSKU($prod_sku)){
             //Set the validation variable to false
@@ -851,11 +853,11 @@ function validateProd(){
             //Set the error message
             $prod_sku_error = "The SKU you entered included characters that weren't alphanumeric";
         }
-        
+
         //Post the error message back to the page
         $_POST['prod_sku_error'] = "<span class='errorMessage'>".$prod_sku_error."</p>";
     }
-    //If the SKU isn't set, validation doesn't pass 
+    //If the SKU isn't set, validation doesn't pass
     else if(!isset($_POST['prod_sku'])){
         $validated = false;
     }
@@ -863,14 +865,14 @@ function validateProd(){
     if(isset($_POST['json'])){
         //Count the number of json attributes set, if there are none
         if(count(json_decode($_POST['json']))==0){
-            
+
             //Products don't have to have attribute values, so do nothing.
         }
         //If there are attributes added
         else if(count(json_decode($_POST['json']))>0) {
             //Set our error message
             $prod_attr_error = "";
-            
+
             //Decode the json into a variable
             $json = json_decode($_POST['json']);
 
@@ -900,12 +902,12 @@ function validateProd(){
                             //Set the error message
                             $prod_attr_error .= "Product attribute value cannot be empty";
                         }
-                        
+
                         //If the price is empty
                         if(isEmpty($price)){
                             //Set the validated variable to false
                             $validated = false;
-                            //Set the error message 
+                            //Set the error message
                             $prod_attr_error .= "Product Price cannot be empty";
 
                         }
@@ -931,16 +933,16 @@ function validateProd(){
     if(isset($_POST['prod_prices'])){
         //Initialise the error message
         $prod_prices_error = "";
-        
+
         //Decode the json in the post into our variable
         $json_input = json_decode($_POST['prod_prices']);
-       
+
         //if there is no prices entered into the prices variable
         if(count($json_input)==0){
             //Set the error message
             $prod_prices_error = "You have to enter at least one product price and shopper group for this product";
         }
-        
+
         //If there are prices set
         else if(count($json_input)>0){
             //For every price that is set
@@ -949,7 +951,7 @@ function validateProd(){
                 $price = sanitise_number($json_input[$i]->Price);
                 //Set and sanitise the input for the group into our Group variable
                 $shopGrp = sanitise_string($json_input[$i]->Group);
-                
+
                 //If the Shopper group hasn't been selected
                 if(isEmpty($shopGrp)){
                     //Set the error message
@@ -979,7 +981,7 @@ function validateProd(){
     else if(!isset($_POST['prod_prices'])){
         $validated = false;
     }
-    
+
     //If all the inputs have gotten to this stage without setting
     //Validated to false, the form has been validated
     return $validated;
