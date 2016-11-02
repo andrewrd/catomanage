@@ -335,7 +335,7 @@ function validateCategory(){
     //set validated to true, all other checks upon fail will set it to false.
     //If none of the attributes pass then
     $validated = true;
-   
+
     $cat_name = $cat_desc = "";
 
 
@@ -379,7 +379,7 @@ function validateCategory(){
     }else if(!isset($_POST['cat_desc'])){
         $validated = false;
     }
-    
+
 //    //If the category variable has been set
 //    if(isset($_POST['cat'])){
 //        //Set the variable to the post variable, sanistisation isn't needed
@@ -435,7 +435,7 @@ function validateCategory(){
             move_uploaded_file($file_tmp, "../img/".$file_name);
             echo "Success";
         } else{
-            
+
             $validated = false;
         }
         $_POST['cat_img_error'] = $errors;
@@ -696,7 +696,7 @@ function validateProd(){
     else if(!isset($_POST['prod_weight'])){
         $validated = false;
     }
-   
+
     //If the product SKU is set
     if(isset($_POST['prod_sku'])){
         //Initialise the error message
@@ -844,7 +844,7 @@ function validateProd(){
         echo "cheesesteaks";
         $validated = false;
     }
-    
+
     if(isset($_FILES['prod_img_url']) && $validated){
         $errors = "";
         $file_name = $_FILES['prod_img_url']['name'];
@@ -1086,18 +1086,6 @@ function get_all_categories($dbo){
     $stmt = null;
 }
 
-function checkProdID() {
-  if (isset($_GET['prod_id'])) { //it exists, check to see if a valid product ID
-    if (isNumber($_GET['prod_id'])) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-  return false;
-}
-
-
 function displayproduct($dbo) {
     /* Displays only the details of the product on displayproduct.php page */
     $shopper_group = 1; //the default shopper group
@@ -1247,7 +1235,7 @@ function edit_prod($dbo){
     $validated = validateProd();
 
     //If the form passes the validation test
-    if ($validated==true) { 
+    if ($validated==true) {
         //add the form data info to the DB
         $prod_id = update_product($dbo);
         update_product_category($dbo, $prod_id);
@@ -1275,7 +1263,7 @@ function get_product_data($dbo){
 function update_product($dbo){
     $id = $_GET['prod_id'];
 
-    $stmt = $dbo->prepare("UPDATE PRODUCT SET 
+    $stmt = $dbo->prepare("UPDATE PRODUCT SET
     prod_name = (:prod_name),
     prod_desc = (:prod_desc),
     prod_img_url = (:prod_img_url),
@@ -1285,7 +1273,7 @@ function update_product($dbo){
     prod_weight = (:prod_weight),
     prod_l = (:prod_l),
     prod_w = (:prod_w),
-    prod_h = (:prod_h) 
+    prod_h = (:prod_h)
     WHERE prod_id = $id");
 
     $stmt->bindParam(':prod_name', $_POST['prod_name']);
@@ -1333,7 +1321,7 @@ function update_product_category($dbo, $prod_id) {
 
 function update_product_prices($dbo, $prod_id){
     //function updates the product prices for different shopper groups
-   
+
     $array = json_decode($_POST['prod_prices']);
     //passed a json array
 
@@ -1362,7 +1350,7 @@ function delete_prod($dbo){
     //quert to be completed
     //$stmt = $dbo->prepare("DELETE FROM cgprrel, prodprices, attributevalue, attribute, product
   //  WHERE ")
-    
+
     //page should redirect to catalogue.php
 }
 

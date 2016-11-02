@@ -10,11 +10,7 @@ include '../controller/controller.php';
       <!--Form-->
       <form class = "form-inline" method = "post" action = "addToCart.php" name = "addtocart" onsubmit="return validateAddToCart()">
         <div class="form-group">
-          <!--<label for="ex1">Qty:</label>
-          <input class = "form-control" id = "quantity" type="number" name="quantity" value = "1" min="1" max="6">
-          <br/><br/>-->
           <?php displayproductattributes($dbo); ?>
-          <!--<br/><br/><button type="submit" class="btn btn-default btn-lg btn-success">Add To Cart</button>-->
         </div>
       </form>
       <br/>
