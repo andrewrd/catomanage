@@ -794,7 +794,11 @@ function validateProd(){
 
         //Decode the json in the post into our variable
         $json_input = json_decode($_POST['prod_prices']);
-
+        if(empty($_POST['prod_prices'])){
+            $validated = false;
+            $prod_prices_error = "You have to enter at least one product price and shopper group for this product";
+        
+        }
         //if there is no prices entered into the prices variable
         if(count($json_input)==0){
             //Set the error message
@@ -837,6 +841,7 @@ function validateProd(){
     }
     //If prices aren't set, validation hasn't passed
     else if(!isset($_POST['prod_prices'])){
+        echo "cheesesteaks";
         $validated = false;
     }
     
