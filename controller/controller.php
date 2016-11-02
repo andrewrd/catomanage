@@ -175,8 +175,6 @@ function add_cat($dbo){
 
         //unset the post variables from the last form
         unsetCatForm();
-        //unset the post error message variables from the last form
-        unsetCatFormErrors();
 
         //echos out a link for testing purposes only DO NOT LEAVE THIS IN
 
@@ -194,10 +192,10 @@ function add_cat($dbo){
 function submit_category($dbo){
     //prepare statement to insert the basic category details into the product table
     //should break these statements up into smaller pieces
-    $stmt = $dbo->prepare("INSERT INTO category(cat_name, cat_desc, cat_img_url, cat_display_cmd) VALUES(:cat_name, :cat_desc, :cat_img_url, :cat_display_cmd");
+    $stmt = $dbo->prepare("INSERT INTO category(cat_name, cat_desc, cat_img_url, cat_display_cmd) VALUES(:cat_name_title, :cat_desc, :cat_img_url, :cat_display_cmd");
     /*bind variables, using post variables without any
     validation, which still needs to be done */
-    $stmt->bindParam(':cat_name', $_POST['cat_name']);
+    $stmt->bindParam(':cat_name_title', $_POST['cat_name_title']);
     $stmt->bindParam(':cat_desc', $_POST['cat_desc']);
     $stmt->bindParam(':cat_img_url', $_FILES['cat_img_url']['name']);
     $stmt->bindParam(':cat_display_cmd', $_POST['cat_display_cmd']);
@@ -219,12 +217,19 @@ function submit_category($dbo){
 
 //Submits the category's parents and child relations.
 function submit_category_rel($dbo, $cat_id){
-        $stmt = $dbo->prepare("INSERT INTO cgprrel(CAT_ID, CATCGRYREL_ID_PARENT, CGRYREL_ID_CHILD) VALUES(:cat_id, :category_parent_name), :category_child_name");
+    //redo this for the categories table, do I need to select child?
+    $cats = $_POST['cat'];
+    foreach($cats as $cat){
+        $stmt = $dbo->prepare("INSERT INTO cgprrel(CAT_ID, CATCGRYREL_ID_PARENT) VALUES(:cat_id, :id)");
         $stmt->bindParam(':cat_id', $cat_id);
-        $stmt->bindParam(':category_parent_name', $CATCGRYREL_ID_PARENT);
-        $stmt->bindParam(':category_child_name', $CATCGRYREL_ID_CHILD);
+        $stmt->bindParam(':id', $CATCGRYREL_ID_PARENT);
+        $stmt->bindParam(':category_child_name', '');
 
         try_or_die($stmt);
+    }
+
+    $stmt = null;
+
 }
 
 //Select category populates a dropdown menu, allowing the selection of categories.
@@ -268,6 +273,16 @@ function edit_category($dbo){
     }
 }
 
+//Function that unsets all post variables that were set from the form on the addcatform.php page
+function unsetCatForm(){
+    unset($_POST['cat_name_title']);
+    unset($_POST['cat_desc']);
+    unset($_POST['cat_display_cmd']);
+    unset($_POST['cat_img_url']);
+    unset($_POST['cat_id']);
+    unset($_POST['id']);
+    unset($_POST['category_child_name']);
+}
 
 /*Validation and sanitisation helper functions start here*/
 
