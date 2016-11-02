@@ -64,16 +64,17 @@
                 <!--Shopper group selection-->
                 <div class="col-xs-12 col-sm-9 col-md-9  col-lg-10">
                      <?php get_all_categories($dbo); ?>
+                    <p id="form-error-desc">
+
+                        <?php
+
+                        if(isset($_POST['cat_error'])){
+                            echo $_POST['cat_error'];
+                        }   
+                        ?>
+                    </p>
                 </div>
-                <p id="form-error-desc">
-
-                    <?php
-
-                    if(isset($_POST['cat_error'])){
-                        echo $_POST['cat_error'];
-                    }   
-                    ?>
-                </p>
+                
             </div>
             <!-- Add one for child category -->
 
@@ -102,6 +103,7 @@
 
 
                     </p>
+                    
                 </div>
             </div>
             <!--Packaging Information Ends-->

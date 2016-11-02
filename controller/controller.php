@@ -145,6 +145,7 @@ function add_cat($dbo){
     //Validate the form using validate_cat(). Set it to false to allow it to display until this is completed.
     //$validated = validateCategory();
     $validated = validateCategory();
+
     //If the form passes the validation test
     if ($validated==true) {
         //add the form data info to the DB using submit category, then figure out if parents are needed
@@ -173,13 +174,13 @@ function add_cat($dbo){
 function submit_category($dbo){
     //prepare statement to insert the basic category details into the product table
     //should break these statements up into smaller pieces
-    $stmt = $dbo->prepare("INSERT INTO category(cat_name, cat_desc, cat_img_url, cat_display_cmd) VALUES(:cat_name_title, :cat_desc, :cat_img_url, :cat_display_cmd");
+    $stmt = $dbo->prepare("INSERT INTO category(cat_name, cat_desc, cat_img_url, cat_disp_cmd) VALUES(:cat_name_title, :cat_desc, :cat_img_url, :cat_disp_cmd)");
     /*bind variables, using post variables without any
     validation, which still needs to be done */
     $stmt->bindParam(':cat_name_title', $_POST['cat_name_title']);
     $stmt->bindParam(':cat_desc', $_POST['cat_desc']);
     $stmt->bindParam(':cat_img_url', $_FILES['cat_img_url']['name']);
-    $stmt->bindParam(':cat_display_cmd', $_POST['cat_display_cmd']);
+    $stmt->bindParam(':cat_disp_cmd', $_POST['cat_disp_cmd']);
 
     try_or_die($stmt);
 
@@ -335,91 +336,127 @@ function validateCategory(){
     //set validated to true, all other checks upon fail will set it to false.
     //If none of the attributes pass then
     $validated = true;
-   
-    $cat_name = $cat_desc = "";
+    
+    //Set the variables to 0 for a starting value
+    $cat_name = $cat_desc = $cat = 0;
 
-
+    //If the product name is set
     if(isset($_POST['cat_name_title'])){
+        //set the variable to the sanitised version of the string
         $cat_name = sanitise_string($_POST['cat_name_title']);
+
+        //Initialise the input error message
         $cat_name_error = "";
+
+        //If the variable is empty
         if(isEmpty($cat_name)){
+            //Set the error message
             $cat_name_error = "The product name cannot be empty" ;
 
+            //Validation hasn't passed, validate is now false
             $validated = false;
         }
 
+        //Check if the input length is equal to or less than what is allowed in the database
         if(!isValidLength($cat_name, 40)){
+            //Set the error message
             $cat_name_error = "<br>The product name that you entered was either too short or too long(max " . 40 . " characters )";
+            //Validation hasn't passed, validate is now false
             $validated = false;
         }
+        //If the input contains characters other than letters, numbers, spaces or dashes
         if(!isAlphanumeric($cat_name)){
+            //Set error message
             $cat_name_error .= "<br>The product name that you entered included characters that weren't alphanumeric or spaces";
+            //Validation hasn't passed, validate is now false
             $validated = false;
         }
+        //Post the error message back to the page
         $_POST['cat_name_error'] = "<span class='errorMessage'>". $cat_name_error."</span>";
-    } else if(!isset($_POST['cat_name'])){
+    }
+    //If the post variable isn't set, validation hasn't passed
+    else if(!isset($_POST['cat_name_title'])){
         $validated = false;
     }
+
+    //If the product short description is set
     if(isset($_POST['cat_desc'])){
+        //set the variable to the sanitised version of the string
         $cat_desc = sanitise_string($_POST['cat_desc']);
+        //Initialise the input error message
         $cat_desc_error = "";
+
+        //If the variable is empty
         if(isEmpty($cat_desc)){
+            //Set the error message
             $cat_desc_error = "The product description cannot be empty";
+
+            //Validation hasn't passed, validate is now false
             $validated = false;
         }
+
+        //If is longer than what is allowed in the databse, it isn't valid
         if(!isValidLength($cat_desc, 128)){
+            //Set the error message
             $cat_desc_error = "The product description that you entered was either too short or too long(max " . 128 . " characters )";
+            //Validation hasn't passed, validate is now false
             $validated = false;
         }
+
+        //If the input contains characters other than letters, numbers, spaces or dashes
         if(!isAlphanumeric($cat_desc)){
+            //Set the error message
             $cat_desc_error = "The product name that you entered included characters that weren't alphanumeric or spaces";
+            //Validation hasn't passed, validate is now false
             $validated = false;
         }
+        //Post the error message back to the page
         $_POST['cat_desc_error'] = "<span class='errorMessage'>". $cat_desc_error . "</span>";
-    }else if(!isset($_POST['cat_desc'])){
+    }
+    //If the variable isn't set, set validated variable to false
+    else if(!isset($_POST['cat_desc'])){
         $validated = false;
     }
     
-//    //If the category variable has been set
-//    if(isset($_POST['cat'])){
-//        //Set the variable to the post variable, sanistisation isn't needed
-//        //since categorys are inserted by admins, and sanitised/validated at that point
-//        $cat = $_POST['cat'];
-//        $cat_error = "";
-//
-//        //If the post is false, validated is false
-//        if(empty($cat)){
-//            $validated = false;
-//            $cat_error = "You must select a category to add a product into.";
-//        }
-//
-//        //Post the category editor back to the page
-//        $_POST['cat_error'] = $cat_error;
-//    }
-//
-//    /*
-//    ISSUE: Since checkboxes are either posted or not depending on if they are clicked or not
-//    It is somewhat impossible to validate if it is set or not upon POST
-//    */
-//    //If the variable isn't set
-//    else if(!isset($_POST['cat'])){
-//        //Validated set to false
-//        $validated = false;
-//
-//        //Set error and pass it to the next page
-//        $cat_error = "You must select a category to add a product into.";
-//        $_POST['cat_error'] = "<span class='errorMessage'>" . $cat_error . "</p>";
-//    }
-//    echo  "cheese"+$validated;
+    //If the category variable has been set
+    if(isset($_POST['cat'])){
+        //Set the variable to the post variable, sanistisation isn't needed
+        //since categorys are inserted by admins, and sanitised/validated at that point
+        $cat = $_POST['cat'];
+        $cat_error = "";
+
+        //If the post is false, validated is false
+        if(empty($cat)){
+            $validated = false;
+            $cat_error = "You must select a category to add a product into.";
+        }
+
+        //Post the category editor back to the page
+        $_POST['cat_error'] = $cat_error;
+    }
+
+    /*
+    ISSUE: Since checkboxes are either posted or not depending on if they are clicked or not
+    It is somewhat impossible to validate if it is set or not upon POST
+    */
+    //If the variable isn't set
+    else if(!isset($_POST['cat'])){
+        //Validated set to false
+        $validated = false;
+
+        //Set error and pass it to the next page
+        $cat_error = "You must select a category to add a product into.";
+        $_POST['cat_error'] = "<span class='errorMessage'>" . $cat_error . "</p>";
+    }
+
     if(isset($_FILES['cat_img_url']) && $validated){
-        echo  "cheese"+$validated;
-        echo "got here";
         $errors = "";
         $file_name = $_FILES['cat_img_url']['name'];
         $file_size = $_FILES['cat_img_url']['size'];
         $file_tmp = $_FILES['cat_img_url']['tmp_name'];
         $file_type = $_FILES['cat_img_url']['type'];
-        $file_ext = strtolower(end(explode('.', $_FILES['cat_img_url']['name'])));
+        $exploded = explode('.', $_FILES['cat_img_url']['name']);
+        $file_ext = strtolower(end($exploded));
 
         $allowedExtensions = array("jpeg","jpg","png");
         if(empty($_FILES['prod_img_url']['name'])){
@@ -435,18 +472,13 @@ function validateCategory(){
             move_uploaded_file($file_tmp, "../img/".$file_name);
             echo "Success";
         } else{
-            
+            $_POST['cat_img_error'] = $errors;
             $validated = false;
         }
-        $_POST['cat_img_error'] = $errors;
     }
     else if(!isset($_FILES['cat_img_url'])){
         $validated = false;
-
     }
-
-
-
     return $validated;
 }
 
@@ -841,7 +873,7 @@ function validateProd(){
     }
     //If prices aren't set, validation hasn't passed
     else if(!isset($_POST['prod_prices'])){
-        echo "cheesesteaks";
+      
         $validated = false;
     }
     
