@@ -14,9 +14,7 @@ include '../controller/controller.php';
         </div>
       </form>
       <br/>
-      <a href = "ProductComparison.php">Compare this product</a>
-    </div>
-  </div>
+
   <div class = "row">
     <h3>Other Recommended Products</h3>
     <div class = "col-md-4 recommendation">

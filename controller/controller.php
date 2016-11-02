@@ -832,7 +832,7 @@ function validateProd(){
         if(empty($_POST['prod_prices'])){
             $validated = false;
             $prod_prices_error = "You have to enter at least one product price and shopper group for this product";
-        
+
         }
         //if there is no prices entered into the prices variable
         if(count($json_input)==0){
@@ -1143,21 +1143,21 @@ function displayproduct($dbo) {
       if ($stmt->rowCount() > 0) {
       /* Displays the product details */
         $result = true; //the product ID specified corresponds to a product in the DB
-        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
+        while($row = $stmt->fetch()) { ?>
             <div class = "row">
               <div class = "col-md-6">
-                <img src = "../img/<?php echo $row['PROD_IMG_URL'] ?>"/>
+                <img class = "productDisplay" src = "../img/<?php echo $row[1] ?>"/>
               </div>
             <div class = "col-md-6">
-            <h1><?php echo $row['PROD_NAME']?></h1>
+            <h1><?php echo $row[0]?></h1>
             <i class="fa fa-star" aria-hidden="true"></i>
             <i class="fa fa-star" aria-hidden="true"></i>
             <i class="fa fa-star" aria-hidden="true"></i>
             <i class="fa fa-star" aria-hidden="true"></i>
             <i class="fa fa-star-half-o" aria-hidden="true"></i>
             <a href = "#">See Reviews</a>
-            <h3 class = "price" id = "productPrice">$<?php echo $row['PRPR_PRICE'] ?></h3>
-            <p class = "lead"><?php echo $row['PROD_LONG_DESC'] ?></p>
+            <h3 class = "price" id = "productPrice">$<?php echo $row[3] ?></h3>
+            <p class = "lead"><?php echo $row[2] ?></p>
             <?php
         }
       } else { //there were no matches on the product ID specified
@@ -1166,7 +1166,13 @@ function displayproduct($dbo) {
       $stmt = null;
   }
     if (!$result) { //if no results to display, display a friendly sorry message
-      ?> <h2 class = "unavailable">Sorry, but we couldn't find what you were looking for. Please go back to the <a href = "catalogue.php">catalogue</a> and search for another product.</h2> <?php
+      ?>
+      <div class = "row unavailable">
+        <div class = "col-xs-12">
+          <h2 class = "notFound">Page not found</h2>
+          <h3>Sorry, but we couldn't find the product you were looking for. Please go back to the <a href = "catalogue.php">catalogue</a> and search for another product.</h3>
+        </div>
+      </div> <?php
     }
 }
 
@@ -1193,34 +1199,34 @@ function displayproductattributes($dbo) {
         $attribute_ids = array(); //create an array to store ID's of attributes
         $attribute_id_names = array(); //creates an array to store names of attributes
 
-        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $attribute_ids[] = $row['ID']; //contains ID's related to product
-            $attribute_id_names[$row['ID']]=$row['NAME']; //contains the ID's and their associated names
+        while($row = $stmt->fetch()) {
+            $attribute_ids[] = $row[0]; //contains ID's related to product
+            $attribute_id_names[$row[0]]=$row[2]; //contains the ID's and their associated names
         }
 
         $stmt = null;
 
         $arrlength = count($attribute_ids);
         for ($i = 0; $i < $arrlength; ++$i) { //for each attribute_id in $attribute_ids, find its attribute values
-            $stmt = $dbo->prepare("SELECT ATTRVAL_ID, ATTRVAL_VALUE, ATTRVAL_PRICE FROM ATTRIBUTEVALUE WHERE ATTRVAL_ATTR_ID = (:attrID)");
+            $stmt = $dbo->prepare("SELECT ATTRVAL_ID, ATTRVAL_VALUE FROM ATTRIBUTEVALUE WHERE ATTRVAL_ATTR_ID = (:attrID)");
             $stmt->bindParam(':attrID', $attribute_ids[$i]);
             try_or_die($stmt);
             $attribute_name = $attribute_id_names[$attribute_ids[$i]]; //assigns attribute_name by looking up from associative array using the ID of the attribute
             /* Populate the dropdown with its respective attribute values */
             ?> <label for="<?php echo $attribute_name ?>"><?php echo $attribute_name ?></label>
-            <select class = "form-control productAttr" name = "<?php echo $attribute_name ?>" onchange = "updatePrice(this)">
+            <select class = "form-control productAttr" name = "<?php echo $attribute_name ?>">
 
             <?php $count = $stmt->rowCount();
             if ($count == 1) { //then there's only one attribute value, display it as the default option value
-              while($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
-                <option value = "<?php echo $row['ATTRVAL_ID']?>"><?php echo $row['ATTRVAL_VALUE']?></option> <?php
+              while($row = $stmt->fetch()) { ?>
+                <option value = "<?php echo $row[0]?>"><?php echo $row[1]?></option> <?php
               } ?>
             </select>
             <?php } else {
               ?>
             <option value></option> <?php
-            while($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
-                <option value = "<?php echo $row['ATTRVAL_ID']?>"><?php echo $row['ATTRVAL_VALUE'] ?></option>
+            while($row = $stmt->fetch()) { ?>
+                <option value = "<?php echo $row[0]?>"><?php echo $row[1] ?></option>
             <?php }
             ?> </select>
             <?php }
