@@ -25,7 +25,14 @@
                 </div>
                 <div class="col-xs-12 col-sm-9  col-md-3 col-lg-4">
                     <input name="cat_name_title" type="text" class="text-input-underline" placeholder="Category Name" id="form-input-catName" oninput="checkString(this.id, 40)" required>
-                    <p id="form-error-catName"></p>
+                    <p id="form-error-catName">
+                        <?php
+
+                        if(isset($_POST['cat_name_error'])){
+                            echo $_POST['cat_name_error'];
+                        }   
+                        ?>
+                    </p>
                 </div>
                 <!--Product name Info ends-->
             </div>
@@ -37,7 +44,15 @@
                 </div>
                 <div class="col-xs-12 col-sm-9 col-md-9 col-lg-10">
                     <textarea name="cat_desc" class="form-control" id="form-input-desc" rows="2" placeholder="Description Text" required oninput="checkString(this.id, 128)"></textarea>
-                    <p id="form-error-desc"></p>
+                    <p id="form-error-desc">
+                    
+                        <?php
+
+                        if(isset($_POST['cat_desc_error'])){
+                            echo $_POST['cat_desc_error'];
+                        }   
+                        ?>
+                    </p>
                 </div>
             </div>
             <!--Short Description Ends-->
@@ -61,37 +76,38 @@
 
            
             <div class="form-group row">
-                
+
                 <div class="hidden-xs col-sm-3 col-md-3 col-lg-2">
                     <p class="labelText">Image URL</p>
                 </div>
-                <div class="col-xs-12 col-sm-3  col-md-3 col-lg-4">
-                    <input name="cat_img_url" type="text" class="text-input-underline" placeholder="Image URL" id="form-url-input">
+                <div class="col-xs-3 col-sm-3  col-md-3 col-lg-4">
+                    <input name="prod_img_url" type="file" class="text-input-underline" placeholder="Image URL" id="form-url-input">
+                    <p id="form-error-img">
+                        <?php
+
+
+                        if(isset($_POST['cat_img_error'])){
+                            echo $_POST['cat_img_error'];
+                        }
+                        ?>
+
+
+                    </p>
                 </div>
             </div>
             <!--Packaging Information Ends-->
-            <!--Display Product Starts-->
             <div class="form-group row">
-                <div class="hidden-xs col-sm-3 col-md-2 col-lg-2">
-                    <p class="labelText">Display Category</p>
+
+                <div class="hidden-xs col-sm-3 col-md-3 col-lg-2">
+                    <p class="labelText">Display Command</p>
                 </div>
-                <div class="col-xs-12 col-sm-3  col-md-3 col-lg-3">
-                    <div class="radio">
-                        <label>
-                            <input name="cat_disp_cmd" value="yes" type="radio" name="optradio" id="form-input-dispProd-yes" required>Yes</label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input name="cat_disp_cmd" value="no" type="radio" name="optradio" id="form-input-dispProd-no">No</label>
-                    </div>
+                <div class="col-xs-3 col-sm-3  col-md-3 col-lg-4">
+                    <input name="cat_disp_cmd" id="form-input-dispCmd" class="text-input-underline" maxlength="128" type="text" placeholder="DisplayCategory.php" value="DisplayCategory.php">
+                    
                 </div>
             </div>
-            <!--Product Display Ends-->
-            <!--Attribute Management Starts here-->
 
-            <!--Attribute Value and Price Inputs-->
-            
-            <!--Price Management Section Starts here-->
+
             
            
             <!--Form Submit button-->
