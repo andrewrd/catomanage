@@ -80,25 +80,26 @@ function get_category_products($dbo){
     $stmt = null;
     //free statement
 
+    //find the product ID's of products that are found in the category navigated to
     $stmt = $dbo->prepare("SELECT product.prod_id FROM product INNER JOIN cgprrel ON product.prod_id = cgprrel.cgpr_prod_id WHERE cgprrel.cgpr_cat_id = (:id)");
     $stmt->bindParam(':id', $parent_id);
 
     try_or_die($stmt);
 
-    $product_ids = array();
     while($row = $stmt->fetch()) {
-      $id = $row[0];
+      $id = $row[0]; //use $id to run another query to return its appropriate product details
       $stmt2 = $dbo->prepare("SELECT prod_id, prod_name, prod_desc, prod_img_url, prod_disp_cmd, prpr_price FROM product, prodprices where prod_id = (:prodid) and product.prod_id = prodprices.prpr_prod_id group by prod_id");
       $stmt2->bindParam(':prodid', $id);
       try_or_die($stmt2);
 
-      while($row2 = $stmt2->fetch()) { ?>
-          <a href = "<?php echo $row2[4]."?prod_id=".$row2[0]?>">
+      while($row2 = $stmt2->fetch()) { //displays the product details including their base price ?>
+          <a class = "product" href = "<?php echo $row2[4]."?prod_id=".$row2[0]?>">
             <div class=  "col-md-4 productBox">
               <img src = "../img/<?php echo $row2[3] ?>" width = "200" height = "200"/><br/>
               <h3 class = "productname"><?php echo $row2[1] ?></h3>
               <h3 class = "price">$<?php echo $row2[5] ?></h3>
               <p class = "desc"><?php echo $row2[2] ?></p>
+              <a href = "editprod.php?prod_id=<?php echo $row2[0]?>">Edit</a>
             </div>
           </a>
       <?php }
@@ -106,28 +107,6 @@ function get_category_products($dbo){
       $row2=null;
     }
 
-    /*
-    $stmt = null;
-    $arrlength = count($product_ids);
-
-    for ($i = 0; $i < $arrlength; ++$i) {
-      $id = $product_ids[$i];
-      $stmt = $dbo->prepare("SELECT prod_id, prod_name, prod_desc, prod_img_url, prod_disp_cmd, prpr_price FROM product, prodprices
-      where prod_id = (:prodid) and product.prod_id = prodprices.prpr_prod_id group by prod_id");
-      $stmt->bindParam(':prodid', $id);
-      try_or_die($stmt);
-
-    while($row = $stmt->fetch()) { ?>
-        <a href = "<?php echo $row[4]."?prod_id=".$row[0]?>">
-          <div class=  "col-md-4 productBox">
-            <img src = "../img/<?php echo $row[3] ?>" width = "250" height = "250"/><br/>
-            <h3 class = "productname"><?php echo $row[1] ?></h3>
-            <h3 class = "price"><?php echo $row[5] ?></h3>
-            <p class = "desc"><?php echo $row[2] ?></p>
-          </div>
-        </a>
-    <?php }
-  } */
 	$stmt = null;
 }
 
@@ -188,13 +167,13 @@ function add_cat($dbo){
     }
 }
 
-//Inserts a new category into the sql database 
+//Inserts a new category into the sql database
 function submit_category($dbo){
     //gets all posted categories
     //add them to the databse
 }
 
-//Select category populates a dropdown menu, allowing the selection of categories. 
+//Select category populates a dropdown menu, allowing the selection of categories.
 function select_category($dbo) {
     //role based access control
     check_user_permission_level();
@@ -978,79 +957,126 @@ function get_all_categories($dbo){
     $stmt = null;
 }
 
-function displayproduct($dbo) {
-    $prod_id = $_GET['prod_id'];
-    $shopper_group = 1;
-    $stmt = $dbo->prepare("SELECT PROD_NAME, PROD_IMG_URL, PROD_LONG_DESC, PRPR_PRICE FROM Product, ProdPrices where PROD_ID = (:id)
-    and Product.prod_id = ProdPrices.prpr_prod_id and prpr_shopgrp = (:shgroup) group by prod_id");
-    //I had to use a group by because duplicates were being returned
-    $stmt->bindParam(':id', $prod_id);
-    $stmt->bindParam(':shgroup', $shopper_group);
-    try_or_die($stmt);
-
-    while($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
-        <div class = "row">
-          <div class = "col-md-6">
-            <img src = "../img/<?php echo $row['PROD_IMG_URL'] ?>"/>
-          </div>
-        <div class = "col-md-6">
-        <h1><?php echo $row['PROD_NAME']?></h1>
-        <i class="fa fa-star" aria-hidden="true"></i>
-        <i class="fa fa-star" aria-hidden="true"></i>
-        <i class="fa fa-star" aria-hidden="true"></i>
-        <i class="fa fa-star" aria-hidden="true"></i>
-        <i class="fa fa-star-half-o" aria-hidden="true"></i>
-        <a href = "#">See Reviews</a>
-        <h3 class = "price" id = "productPrice">$<?php echo $row['PRPR_PRICE'] ?></h3>
-        <p class = "lead"><?php echo $row['PROD_LONG_DESC'] ?></p>
-        <?php
+function checkProdID() {
+  if (isset($_GET['prod_id'])) { //it exists, check to see if a valid product ID
+    if (isNumber($_GET['prod_id'])) {
+      return true;
+    } else {
+      return false;
     }
-    $stmt = null;
+  }
+  return false;
+}
+
+
+function displayproduct($dbo) {
+    /* Displays only the details of the product on displayproduct.php page */
+    $shopper_group = 1; //the default shopper group
+    //check whether a valid product ID is in GET parameter
+    $validated = false; //can't trust the browser, so assume prod_id is invalid
+    $result = false; //to keep track of whether we should display a friendly error message based on results returned from querying
+    if (isset($_GET['prod_id']) && !empty($_GET['prod_id'])) { //if a prod_id is specified
+      $id = sanitise_number($_GET['prod_id']); //sanitise the prod_id specified
+      if (isNumber($id)) { //if it is a number (product ID's can only be numbers)
+        $prod_id = $id; //get the product ID
+        $validated = true; //the product ID is valid
+      }
+    }
+    if ($validated) { //then query the db for respective product details
+      $stmt = $dbo->prepare("SELECT PROD_NAME, PROD_IMG_URL, PROD_LONG_DESC, PRPR_PRICE FROM Product, ProdPrices where PROD_ID = (:id)
+      and Product.prod_id = ProdPrices.prpr_prod_id and prpr_shopgrp = (:shgroup) group by prod_id"); //selects the product details
+      $stmt->bindParam(':id', $prod_id);
+      $stmt->bindParam(':shgroup', $shopper_group);
+      try_or_die($stmt);
+      if ($stmt->rowCount() > 0) {
+      /* Displays the product details */
+        $result = true; //the product ID specified corresponds to a product in the DB
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
+            <div class = "row">
+              <div class = "col-md-6">
+                <img src = "../img/<?php echo $row['PROD_IMG_URL'] ?>"/>
+              </div>
+            <div class = "col-md-6">
+            <h1><?php echo $row['PROD_NAME']?></h1>
+            <i class="fa fa-star" aria-hidden="true"></i>
+            <i class="fa fa-star" aria-hidden="true"></i>
+            <i class="fa fa-star" aria-hidden="true"></i>
+            <i class="fa fa-star" aria-hidden="true"></i>
+            <i class="fa fa-star-half-o" aria-hidden="true"></i>
+            <a href = "#">See Reviews</a>
+            <h3 class = "price" id = "productPrice">$<?php echo $row['PRPR_PRICE'] ?></h3>
+            <p class = "lead"><?php echo $row['PROD_LONG_DESC'] ?></p>
+            <?php
+        }
+      } else { //there were no matches on the product ID specified
+        $result = false;
+      }
+      $stmt = null;
+  }
+    if (!$result) { //if no results to display, display a friendly sorry message
+      ?> <h2 class = "unavailable">Sorry, but we couldn't find what you were looking for. Please go back to the <a href = "catalogue.php">catalogue</a> and search for another product.</h2> <?php
+    }
 }
 
 function displayproductattributes($dbo) {
-    $prod_id = $_GET['prod_id'];
-    $stmt = $dbo->prepare("SELECT ID, PRODUCT_PROD_ID, NAME FROM ATTRIBUTE WHERE PRODUCT_PROD_ID = (:id)");
-    $stmt->bindParam(':id', $prod_id);
-    try_or_die($stmt);
-    $attribute_ids = array(); //create an array to store ID's of attributes
-    $attribute_id_names = array();
-
-    while($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
-        <?php $attribute_ids[] = $row['ID']; //contains ID's related to product
-          $attribute_id_names[$row['ID']]=$row['NAME']; //contains the ID's and their associated names
-        ?>
-    <?php
-    }
-
-    $stmt = null;
-
-    $arrlength = count($attribute_ids);
-    for ($i = 0; $i < $arrlength; ++$i) {
-        $stmt = $dbo->prepare("SELECT ATTRVAL_ID, ATTRVAL_VALUE, ATTRVAL_PRICE FROM ATTRIBUTEVALUE WHERE ATTRVAL_ATTR_ID = (:attrID)");
-        $stmt->bindParam(':attrID', $attribute_ids[$i]);
-        try_or_die($stmt);
-        $attribute_name = $attribute_id_names[$attribute_ids[$i]]; //assigns attribute_name by looking up from associative array
-        ?> <label for="<?php echo $attribute_name ?>"><?php echo $attribute_name ?></label>
-        <select class = "form-control productAttr" name = "<?php echo $attribute_name ?>" onchange = "updatePrice(this)">
-
-        <?php $count = $stmt->rowCount();
-        if ($count == 1) { //then there's only one attribute value
-          while($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
-            <option id = "<?php echo $row['ATTRVAL_ID']?>" value = "<?php echo $row['ATTRVAL_PRICE']?>" name = "<?php echo $row['ATTRVAL_PRICE']?>"><?php echo $row['ATTRVAL_VALUE']?></option> <?php
-          } ?>
-        </select>
-        <?php } else {
-          ?>
-        <option value></option> <?php
-        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
-            <option id = "<?php echo $row['ATTRVAL_ID']?>" value = "<?php echo $row['ATTRVAL_PRICE']?>" name = "<?php echo $row['ATTRVAL_VALUE'] ?>"><?php echo $row['ATTRVAL_VALUE'] ?> </option>
-        <?php }
-        ?> </select>
-        <?php }
-        $stmt = null;
+    /* Displays the attributes of the product on displayprouct.php by populating
+    dropdowns with attribute values which can be chosen by the customer */
+    //check whether a valid product ID is in GET parameter
+    $validated = false; //can't trust the browser, so assume prod_id is invalid
+    if (isset($_GET['prod_id']) && !empty($_GET['prod_id'])) { //if a prod_id is specified
+      $id = sanitise_number($_GET['prod_id']); //sanitise the prod_id specified
+      if (isNumber($id)) { //if it is a number (product ID's can only be numbers)
+        $prod_id = $id; //get the product ID
+        $validated = true;
       }
     }
+    if ($validated) { //then query the db for respective product details
+      $stmt = $dbo->prepare("SELECT ID, PRODUCT_PROD_ID, NAME FROM ATTRIBUTE WHERE PRODUCT_PROD_ID = (:id)");
+      $stmt->bindParam(':id', $prod_id);
+      try_or_die($stmt);
+      if ($stmt->rowCount() > 0) { ?>
+        <label for="quantity">Qty:</label>
+        <input class = "form-control" id = "quantity" type="number" name="quantity" value = "1" min="1" max="6">
+        <br/><br/> <?php
+        $attribute_ids = array(); //create an array to store ID's of attributes
+        $attribute_id_names = array(); //creates an array to store names of attributes
+
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $attribute_ids[] = $row['ID']; //contains ID's related to product
+            $attribute_id_names[$row['ID']]=$row['NAME']; //contains the ID's and their associated names
+        }
+
+        $stmt = null;
+
+        $arrlength = count($attribute_ids);
+        for ($i = 0; $i < $arrlength; ++$i) { //for each attribute_id in $attribute_ids, find its attribute values
+            $stmt = $dbo->prepare("SELECT ATTRVAL_ID, ATTRVAL_VALUE, ATTRVAL_PRICE FROM ATTRIBUTEVALUE WHERE ATTRVAL_ATTR_ID = (:attrID)");
+            $stmt->bindParam(':attrID', $attribute_ids[$i]);
+            try_or_die($stmt);
+            $attribute_name = $attribute_id_names[$attribute_ids[$i]]; //assigns attribute_name by looking up from associative array using the ID of the attribute
+            /* Populate the dropdown with its respective attribute values */
+            ?> <label for="<?php echo $attribute_name ?>"><?php echo $attribute_name ?></label>
+            <select class = "form-control productAttr" name = "<?php echo $attribute_name ?>" onchange = "updatePrice(this)">
+
+            <?php $count = $stmt->rowCount();
+            if ($count == 1) { //then there's only one attribute value, display it as the default option value
+              while($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
+                <option value = "<?php echo $row['ATTRVAL_ID']?>"><?php echo $row['ATTRVAL_VALUE']?></option> <?php
+              } ?>
+            </select>
+            <?php } else {
+              ?>
+            <option value></option> <?php
+            while($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
+                <option value = "<?php echo $row['ATTRVAL_ID']?>"><?php echo $row['ATTRVAL_VALUE'] ?></option>
+            <?php }
+            ?> </select>
+            <?php }
+            $stmt = null;
+          } ?> <br/><br/><button type="submit" class="btn btn-default btn-lg btn-success">Add To Cart</button> <?php
+      }
+  }
+}
 
 function get_all_shopper_groups($dbo){
     /*function returns all the shopper groups in a list format,
