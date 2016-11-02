@@ -24,7 +24,7 @@
                     <p class="labelText">Category Name</p>
                 </div>
                 <div class="col-xs-12 col-sm-9  col-md-3 col-lg-4">
-                    <input name="cat_name" type="text" class="text-input-underline" placeholder="Category Name" id="form-input-catName" oninput="checkString(this.id, 40)" required>
+                    <input name="cat_name_title" type="text" class="text-input-underline" placeholder="Category Name" id="form-input-catName" oninput="checkString(this.id, 40)" required>
                     <p id="form-error-catName"></p>
                 </div>
                 <!--Product name Info ends-->
@@ -48,9 +48,7 @@
                 </div>
                 <!--Shopper group selection-->
                 <div class="col-xs-12 col-sm-9 col-md-9  col-lg-10">
-                    <select multiple class="form-control" id="form-input-parentCategory" name="category_parent_name">
-                        
-                    </select>
+                     <?php get_all_categories($dbo); ?>
                 </div>
             </div>
             <!-- Add one for child category -->

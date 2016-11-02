@@ -78,7 +78,7 @@ create table CGRYREL
 (
    CGRYREL_ID           int not null auto_increment,
    CGRYREL_ID_PARENT    int not null,
-   CGRYREL_ID_CHILD     int not null,
+   CGRYREL_ID_CHILD     int,
    CGRYREL_SEQUENCE     int,
    primary key (CGRYREL_ID)
 );
