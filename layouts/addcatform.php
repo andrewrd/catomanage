@@ -1,7 +1,6 @@
 
 
 
-
 <!-- Form Container starts here -->
 <div class="container">
     <!-- Main content starts here -->
@@ -24,7 +23,8 @@
                     <p class="labelText">Category Name</p>
                 </div>
                 <div class="col-xs-12 col-sm-9  col-md-3 col-lg-4">
-                    <input name="cat_name_title" type="text" class="text-input-underline" placeholder="Category Name" id="form-input-catName" oninput="checkString(this.id, 40)" required>
+                    <input name="cat_name_title" type="text" class="text-input-underline" placeholder="Category Name" id="form-input-catName" oninput="checkString(this.id, 40)" required 
+                    value="<?php if(isset($_POST['cat_name_title'])){$_POST['cat_name_title'];}?>">
                     <p id="form-error-catName">
                         <?php
 
@@ -65,6 +65,15 @@
                 <div class="col-xs-12 col-sm-9 col-md-9  col-lg-10">
                      <?php get_all_categories($dbo); ?>
                 </div>
+                <p id="form-error-desc">
+
+                    <?php
+
+                    if(isset($_POST['cat_error'])){
+                        echo $_POST['cat_error'];
+                    }   
+                    ?>
+                </p>
             </div>
             <!-- Add one for child category -->
 

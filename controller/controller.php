@@ -335,7 +335,7 @@ function validateCategory(){
     //set validated to true, all other checks upon fail will set it to false.
     //If none of the attributes pass then
     $validated = true;
-
+   
     $cat_name = $cat_desc = "";
 
 
@@ -378,6 +378,71 @@ function validateCategory(){
         $_POST['cat_desc_error'] = "<span class='errorMessage'>". $cat_desc_error . "</span>";
     }else if(!isset($_POST['cat_desc'])){
         $validated = false;
+    }
+    
+//    //If the category variable has been set
+//    if(isset($_POST['cat'])){
+//        //Set the variable to the post variable, sanistisation isn't needed
+//        //since categorys are inserted by admins, and sanitised/validated at that point
+//        $cat = $_POST['cat'];
+//        $cat_error = "";
+//
+//        //If the post is false, validated is false
+//        if(empty($cat)){
+//            $validated = false;
+//            $cat_error = "You must select a category to add a product into.";
+//        }
+//
+//        //Post the category editor back to the page
+//        $_POST['cat_error'] = $cat_error;
+//    }
+//
+//    /*
+//    ISSUE: Since checkboxes are either posted or not depending on if they are clicked or not
+//    It is somewhat impossible to validate if it is set or not upon POST
+//    */
+//    //If the variable isn't set
+//    else if(!isset($_POST['cat'])){
+//        //Validated set to false
+//        $validated = false;
+//
+//        //Set error and pass it to the next page
+//        $cat_error = "You must select a category to add a product into.";
+//        $_POST['cat_error'] = "<span class='errorMessage'>" . $cat_error . "</p>";
+//    }
+//    echo  "cheese"+$validated;
+    if(isset($_FILES['cat_img_url']) && $validated){
+        echo  "cheese"+$validated;
+        echo "got here";
+        $errors = "";
+        $file_name = $_FILES['cat_img_url']['name'];
+        $file_size = $_FILES['cat_img_url']['size'];
+        $file_tmp = $_FILES['cat_img_url']['tmp_name'];
+        $file_type = $_FILES['cat_img_url']['type'];
+        $file_ext = strtolower(end(explode('.', $_FILES['cat_img_url']['name'])));
+
+        $allowedExtensions = array("jpeg","jpg","png");
+        if(empty($_FILES['prod_img_url']['name'])){
+            $errors .="You have to add an image";
+        }
+        if(in_array($file_ext,$allowedExtensions)=== false){
+            $errors .="That extension isn't allowed, please only use JPEG, JPG or PNG";
+        }
+        if($file_size > 2097152){
+            $errors .= "File must be under 2MB";
+        }
+        if(empty($errors)==true){
+            move_uploaded_file($file_tmp, "../img/".$file_name);
+            echo "Success";
+        } else{
+            
+            $validated = false;
+        }
+        $_POST['cat_img_error'] = $errors;
+    }
+    else if(!isset($_FILES['cat_img_url'])){
+        $validated = false;
+
     }
 
 
@@ -631,30 +696,7 @@ function validateProd(){
     else if(!isset($_POST['prod_weight'])){
         $validated = false;
     }
-    if(isset($_FILES['prod_img_url'])){
-        $errors = array();
-        $file_name = $_FILES['prod_img_url']['name'];
-        $file_size = $_FILES['prod_img_url']['size'];
-        $file_tmp = $_FILES['prod_img_url']['tmp_name'];
-        $file_type = $_FILES['prod_img_url']['type'];
-        $file_ext = strtolower(end(explode('.', $_FILES['prod_img_url']['name'])));
-
-        $allowedExtensions = array("jpeg","jpg","png");
-
-        if(in_array($file_ext,$allowedExtensions)=== false){
-            $errors[] ="That extension isn't allowed, please only use JPEG, JPG or PNG";
-        }
-        if($file_size > 2097152){
-            $errors[] = "File must be under 2MB";
-        }
-        if(empty($errors)==true){
-            move_uploaded_file($file_tmp, "../img/".$file_name);
-            echo "Success";
-        } else{
-            print_r("errors");
-            $validated = false;
-        }
-    }
+   
     //If the product SKU is set
     if(isset($_POST['prod_sku'])){
         //Initialise the error message
@@ -795,6 +837,37 @@ function validateProd(){
     }
     //If prices aren't set, validation hasn't passed
     else if(!isset($_POST['prod_prices'])){
+        $validated = false;
+    }
+    
+    if(isset($_FILES['prod_img_url']) && $validated){
+        $errors = "";
+        $file_name = $_FILES['prod_img_url']['name'];
+        $file_size = $_FILES['prod_img_url']['size'];
+        $file_tmp = $_FILES['prod_img_url']['tmp_name'];
+        $file_type = $_FILES['prod_img_url']['type'];
+        $exploded = explode('.', $_FILES['prod_img_url']['name']);
+        $file_ext = strtolower(end($exploded));
+
+        $allowedExtensions = array("jpeg","jpg","png");
+        if(empty($_FILES['prod_img_url']['name'])){
+            $errors .="You have to add an image";
+        }
+        if(in_array($file_ext,$allowedExtensions)=== false){
+            $errors .="That extension isn't allowed, please only use JPEG, JPG or PNG";
+        }
+        if($file_size > 2097152){
+            $errors .= "File must be under 2MB";
+        }
+        if(empty($errors)==true){
+            move_uploaded_file($file_tmp, "../img/".$file_name);
+            echo "Success";
+        } else{
+            $_POST['prod_img_error'] = $errors;
+            $validated = false;
+        }
+    }
+    else if(!isset($_FILES['prod_img_url'])){
         $validated = false;
     }
 
