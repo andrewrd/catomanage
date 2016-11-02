@@ -48,7 +48,7 @@ a {
 }
 
 .errorMessage{
-    color:red;
+  color:red;
 }
 
 .productBox {
@@ -71,4 +71,8 @@ a {
   border: 1px solid black;
   padding: 18px;
   text-align: center;
+}
+
+.productDisplay {
+  max-width: 500px;
 }
