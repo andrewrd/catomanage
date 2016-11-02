@@ -1234,4 +1234,131 @@ function insert_product_prices($dbo, $prod_id){
     }
 }
 
+function edit_prod($dbo){
+    //function that handles editing an existing product
+    check_user_permission_level();
+
+    //Validate the form
+    $validated = validateProd();
+
+    //If the form passes the validation test
+    if ($validated==true) { 
+        //add the form data info to the DB
+        $prod_id = update_product($dbo);
+        update_product_category($dbo, $prod_id);
+        submit_product_category($dbo, $prod_id);
+        submit_product_attributes($dbo, $prod_id);
+        update_product_prices($dbo, $prod_id);
+        //unset the post variables from the last form
+        unsetProdForm();
+        //unset the post error message variables from the last form
+        unsetProdFormErrors();
+
+    }
+    else {
+        $validated = false;
+        //if info hasnt been added, show the form to edit the info again
+        include '../layouts/editprodform.php';
+    }
+}
+
+//this function gets the product data
+function get_product_data($dbo){
+
+}
+
+function update_product($dbo){
+    $id = $_GET['prod_id'];
+
+    $stmt = $dbo->prepare("UPDATE PRODUCT SET 
+    prod_name = (:prod_name),
+    prod_desc = (:prod_desc),
+    prod_img_url = (:prod_img_url),
+    prod_long_desc = (:prod_long_desc),
+    prod_sku = (:prod_sku),
+    prod_disp_cmd = (:prod_disp_cmd),
+    prod_weight = (:prod_weight),
+    prod_l = (:prod_l),
+    prod_w = (:prod_w),
+    prod_h = (:prod_h) 
+    WHERE prod_id = $id");
+
+    $stmt->bindParam(':prod_name', $_POST['prod_name']);
+    $stmt->bindParam(':prod_desc', $_POST['prod_desc']);
+    $stmt->bindParam(':prod_img_url', $_POST['prod_img_url']);
+    $stmt->bindParam(':prod_long_desc', $_POST['prod_long_desc']);
+    $stmt->bindParam(':prod_sku', $_POST['prod_sku']);
+    $stmt->bindParam(':prod_disp_cmd', $_POST['prod_disp_cmd']);
+    $stmt->bindParam(':prod_weight', $_POST['prod_weight']);
+    $stmt->bindParam(':prod_l', $_POST['prod_l']);
+    $stmt->bindParam(':prod_w', $_POST['prod_w']);
+    $stmt->bindParam(':prod_h', $_POST['prod_h']);
+
+    try_or_die($stmt);
+
+    //need to get the prod_id of the new product
+    $stmt = $dbo->prepare("SELECT prod_id FROM product WHERE prod_name = (:prod_name)");
+    $stmt->bindParam(':prod_name', $_POST['prod_name']);
+
+    try_or_die($stmt);
+
+    $prod_id = $stmt->fetchColumn();
+
+    return $prod_id;
+
+}
+
+function update_product_category($dbo, $prod_id) {
+    //function to update product-category relationship
+    //delete the removed relationships first, then insert the newly selected ones
+
+    //not sure how to delete the category relationships that have been unselected
+
+   $cats = $_POST['cat'];
+    foreach($cats as $cat){
+        //delete the row where the cgprrel = prod_id and cat_id=removed cat
+        $stmt = $dbo->prepare("DELETE FROM cgprrel WHERE cgpr_prod_id == $prod_id && CgPr_cat_id == ");
+        $stmt->bindParam(':cat_id', $cat);
+        $stmt->bindParam(':prod_id', $prod_id);
+
+        try_or_die($stmt);
+    }
+
+}
+
+function update_product_prices($dbo, $prod_id){
+    //function updates the product prices for different shopper groups
+   
+    $array = json_decode($_POST['prod_prices']);
+    //passed a json array
+
+    $updateStatement = $dbo->prepare("UPDATE prodprices SET prpr_prod_id = :prod_id, prpr_shopgrp = :shopgrp, prpr_price = :price");
+    //statement prepared
+
+    for($i = 0; $i < sizeOf($array); $i++){
+        //for each shopper group, price is inserted
+        $updateStatement->bindParam(':prod_id', $prod_id);
+        $updateStatement->bindParam(':shopgrp', $array[$i]->Group);
+        $updateStatement->bindParam(':price', $array[$i]->Price);
+
+        try_or_die($updateStatement);
+    }
+}
+
+
+
+function delete_prod($dbo){
+
+    check_user_permission_level();
+
+    //function to delete a product from the db
+    $id = $_GET['prod_id'];
+
+    //quert to be completed
+    //$stmt = $dbo->prepare("DELETE FROM cgprrel, prodprices, attributevalue, attribute, product
+  //  WHERE ")
+    
+    //page should redirect to catalogue.php
+}
+
 ?>
