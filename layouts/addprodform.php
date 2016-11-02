@@ -79,114 +79,17 @@
                 </div>
                 <div class="col-xs-12 col-sm-9 col-md-9  col-lg-10">
                     <?php get_all_categories($dbo); ?>
-                </div>
-                <p id="form-error-cat">
-                    <?php 
-                    if(isset($_POST['cat_error']))
-                    {
-                        echo $_POST['cat_error'];
-                    }
-                    ?>
-
-                </p>
-            </div>
-            <!--Add to Category Ends-->
-        </section>
-        <section>
-            <!--Packaging Information Starts-->
-            <div class="form-group">
-                <div class="hidden-xs col-sm-3 col-md-3 col-lg-2">
-                    <p class="labelText">Packaging Dimensions</p>
-                </div>
-                <!--Length Label-->
-                <div class="hidden-xs col-sm-1 col-md-1 col-lg-1">
-                    <p class="labelText">Length:</p>
-                </div>
-                <!--Length Input-->
-                <div class="col-xs-12 col-sm-1  col-md-1 col-lg-2">
-                    <input name="prod_l" type="number" class="text-input-underline" placeholder="Length" id="form-input-length" oninput="checkNumber(this.id)" value="<?php if(isset($_POST['prod_l'])){echo $_POST['prod_l'];}?>" required>
-                    <p id="form-error-length">
+                    <p id="form-error-cat">
                         <?php 
-                        if(isset($_POST['prod_l_error'])){
-                            echo $_POST['prod_l_error'];
+                        if(isset($_POST['cat_error']))
+                        {
+                            echo $_POST['cat_error'];
                         }
-                        ?>
-                    </p>
-                </div>
-                <!--Width Label-->
-                <div class="hidden-xs col-sm-1 col-md-1 col-lg-1">
-                    <p class="labelText">Width</p>
-
-                </div>
-                <!--Width input-->
-                <div class="col-xs-12 col-sm-2  col-md-2 col-lg-2">
-                    <input name="prod_w" type="number" class="text-input-underline" placeholder="Width" id="form-input-width" oninput="checkNumber(this.id)" value="<?php if(isset($_POST['prod_w'])){echo $_POST['prod_w'];}?>" required>
-                    <p id="form-error-width">
-                        <?php 
-
-                        if(isset($_POST['prod_w_error'])){
-                            echo $_POST['prod_w_error'];
-                        }
-
-                        ?>
-                    </p>
-                </div>
-                <div class="hidden-xs col-sm-1 col-md-1 col-lg-1">
-                    <p class="labelText">Height:</p>
-                </div>
-                <div class="col-xs-12 col-sm-2  col-md-2 col-lg-2">
-                    <input name="prod_h" type="number" class="text-input-underline" placeholder="Height" id="form-input-height" oninput="checkNumber(this.id)" value="<?php if(isset($_POST['prod_h'])){echo $_POST['prod_h'];}?>" required>
-                    <p id="form-error-height">
-                        <?php 
-
-                        if(isset($_POST['prod_h_error'])){
-                            echo $_POST['prod_h_error'];
-                        }
-
                         ?>
 
                     </p>
                 </div>
-            </div>
-            <div class="form-group row">
-                <!--Weight Starts Here-->
-                <div class="hidden-xs col-sm-3 col-md-2 col-lg-2">
-                    <p class="labelText">Weight</p>
-                </div>
-                <div class="col-xs-12 col-sm-3  col-md-3 col-lg-3">
-                    <input name="prod_weight" type="number" class="text-input-underline" placeholder="Weight" id="form-input-weight" oninput="checkNumber(this.id)" value="<?php if(isset($_POST['prod_weight'])){echo $_POST['prod_weight'];}?>" required>
-                    <p id="form-error-weight">
-                        <?php 
-
-                        if(isset($_POST['prod_weight_error'])){
-                            echo $_POST['prod_weight_error'];
-                        }
-
-                        ?>
-
-
-                    </p>
-                </div>
-                <!--Weight Ends here-->
-                <!--Product SKU Starts here-->
-                <div class="hidden-xs col-sm-3 col-md-3 col-lg-2">
-                    <p class="labelText">Product SKU</p>
-                </div>
-                <div class="col-xs-12 col-sm-3  col-md-3 col-lg-4">
-                    <input name="prod_sku" type="text" class="text-input-underline" placeholder="Product SKU" id="form-input-sku" oninput="checkSKU(this.id)" value="<?php if(isset($_POST['prod_sku'])){echo $_POST['prod_sku'];}?>" required>
-                    <p id="form-error-sku">
-                        <?php
-                        
-                        
-                        if(isset($_POST['prod_sku_error'])){
-                            echo $_POST['prod_sku_error'];
-                        }
-                    ?>
-
-
-                    </p>
-                </div>
-                <!--Product SKU Ends here-->
+                
             </div>
             <div class="form-group row">
 
@@ -195,23 +98,33 @@
                 </div>
                 <div class="col-xs-12 col-sm-3  col-md-3 col-lg-4">
                     <input name="prod_img_url" type="file" class="text-input-underline" placeholder="Image URL" id="form-url-input">
+                    <p id="form-error-img">
+                        <?php
+
+
+                        if(isset($_POST['prod_img_error'])){
+                            echo $_POST['prod_img_error'];
+                        }
+                        ?>
+
+
+                    </p>
                 </div>
             </div>
+            <!--Add to Category Ends-->
+        </section>
+        <section>
+            <!--Packaging Information Starts-->
+
             <!--Packaging Information Ends-->
             <!--Display Product Starts-->
             <div class="form-group row">
                 <div class="hidden-xs col-sm-3 col-md-2 col-lg-2">
                     <p class="labelText">Display Product</p>
                 </div>
-                <div class="col-xs-12 col-sm-3  col-md-3 col-lg-3">
-                    <div class="radio">
-                        <label>
-                            <input name="prod_disp_cmd" value="yes" type="radio" name="optradio" id="form-input-dispProd-yes" required>Yes</label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input name="prod_disp_cmd" value="no" type="radio" name="optradio" id="form-input-dispProd-no">No</label>
-                    </div>
+                <div class="col-xs-12 col-sm-3  col-md-3 col-lg-4">
+                    <input name="prod_disp_cmd" id="form-input-dispCmd" class="text-input-underline" maxlength="128" type="text" placeholder="DisplayProduct.php" value="DisplayProduct.php">
+                   
                 </div>
             </div>
             <!--Product Display Ends-->
@@ -344,12 +257,107 @@
                         }
                         
                     ?>
-                    
-                    
-                    
                     </p>
                 </div>
             </div>
+
+            <div class="form-group">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h3 class="subHeader">Packaging Dimensions</h3>
+                </div>
+            </div>
+            <div class="form-group row">
+                <!--Length Label-->
+                <div class="hidden-xs col-sm-2 col-md-2 col-lg-2">
+                    <p class="labelText">Length:</p>
+                </div>
+                <!--Length Input-->
+                <div class="col-xs-12 col-sm-2  col-md-2 col-lg-2">
+                    <input name="prod_l" type="number" class="text-input-underline" placeholder="Length" id="form-input-length" oninput="checkNumber(this.id)" value="<?php if(isset($_POST['prod_l'])){echo $_POST['prod_l'];}?>" required>
+                    <p id="form-error-length">
+                        <?php 
+                        if(isset($_POST['prod_l_error'])){
+                            echo $_POST['prod_l_error'];
+                        }
+                        ?>
+                    </p>
+                </div>
+                <!--Width Label-->
+                <div class="hidden-xs col-sm-1 col-md-1 col-lg-2">
+                    <p class="labelText">Width</p>
+
+                </div>
+                <!--Width input-->
+                <div class="col-xs-12 col-sm-2  col-md-2 col-lg-2">
+                    <input name="prod_w" type="number" class="text-input-underline" placeholder="Width" id="form-input-width" oninput="checkNumber(this.id)" value="<?php if(isset($_POST['prod_w'])){echo $_POST['prod_w'];}?>" required>
+                    <p id="form-error-width">
+                        <?php 
+
+                        if(isset($_POST['prod_w_error'])){
+                            echo $_POST['prod_w_error'];
+                        }
+
+                        ?>
+                    </p>
+                </div>
+                <div class="hidden-xs col-sm-1 col-md-1 col-lg-1">
+                    <p class="labelText">Height:</p>
+                </div>
+                <div class="col-xs-12 col-sm-2  col-md-2 col-lg-2">
+                    <input name="prod_h" type="number" class="text-input-underline" placeholder="Height" id="form-input-height" oninput="checkNumber(this.id)" value="<?php if(isset($_POST['prod_h'])){echo $_POST['prod_h'];}?>" required>
+                    <p id="form-error-height">
+                        <?php 
+
+                        if(isset($_POST['prod_h_error'])){
+                            echo $_POST['prod_h_error'];
+                        }
+
+                        ?>
+
+                    </p>
+                </div>
+            </div>
+            <div class="form-group row">
+                <!--Weight Starts Here-->
+                <div class="hidden-xs col-sm-3 col-md-2 col-lg-2">
+                    <p class="labelText">Weight</p>
+                </div>
+                <div class="col-xs-12 col-sm-3  col-md-3 col-lg-2">
+                    <input name="prod_weight" type="number" class="text-input-underline" placeholder="Weight" id="form-input-weight" oninput="checkNumber(this.id)" value="<?php if(isset($_POST['prod_weight'])){echo $_POST['prod_weight'];}?>" required>
+                    <p id="form-error-weight">
+                        <?php 
+
+                        if(isset($_POST['prod_weight_error'])){
+                            echo $_POST['prod_weight_error'];
+                        }
+
+                        ?>
+
+
+                    </p>
+                </div>
+                <!--Weight Ends here-->
+                <!--Product SKU Starts here-->
+                <div class="hidden-xs col-sm-3 col-md-3 col-lg-2">
+                    <p class="labelText">Product SKU</p>
+                </div>
+                <div class="col-xs-12 col-sm-3  col-md-3 col-lg-2">
+                    <input name="prod_sku" type="text" class="text-input-underline" placeholder="Product SKU" id="form-input-sku" oninput="checkSKU(this.id)" value="<?php if(isset($_POST['prod_sku'])){echo $_POST['prod_sku'];}?>" required>
+                    <p id="form-error-sku">
+                        <?php
+
+
+                        if(isset($_POST['prod_sku_error'])){
+                            echo $_POST['prod_sku_error'];
+                        }
+                        ?>
+
+
+                    </p>
+                </div>
+                <!--Product SKU Ends here-->
+            </div>
+            
             <!--Form Submit button-->
             <div class="form-group row">
                 <div class="form-group">
