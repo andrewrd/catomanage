@@ -97,10 +97,7 @@ function checkNumber(elemId){
         errorMessage = "You didn't enter a value, please enter a value";
     }
     
-    if(correctInput){
-        //Cast the value to a Number
-        var intValue = Number(nameElement.value);
-        
+    if(correctInput){        
         //if the value is not a number, correct input is false
         if(!isNumber(nameElement.value)){
             correctInput = false;
