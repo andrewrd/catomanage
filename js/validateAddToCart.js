@@ -38,6 +38,7 @@ function updatePrice(dropdown) {
   var attr = document.getElementsByClassName('productAttr'); //finds all dropwdowns on the page
   var len = attr.length;
   var i;
+  var quantity = document.forms["addtocart"]['quantity'].value; //gets the quantity specified
   var newPrice = 0;
   var additionalPrices = 0;
   for (i = 0; i < len; i++) { //loops through each <select> dropdown
@@ -51,5 +52,5 @@ function updatePrice(dropdown) {
   }
 
   newPrice = parseFloat(basePrice) + additionalPrices; //parse the base price and attribute value price
-  d.innerHTML = "$" + newPrice.toFixed(2); //update the price element
+  d.innerHTML = "$" + (newPrice * quantity).toFixed(2); //update the price element taking quantity into account
 }

@@ -1194,7 +1194,7 @@ function displayproductattributes($dbo) {
       try_or_die($stmt);
       if ($stmt->rowCount() > 0) { ?>
         <label for="quantity">Qty:</label>
-        <input class = "form-control" id = "quantity" type="number" name="quantity" value = "1" min="1" max="6">
+        <input class = "form-control" id = "quantity" type="number" name="quantity" value = "1" min="1" max="6" onchange = "updatePrice()">
         <br/><br/> <?php
         $attribute_ids = array(); //create an array to store ID's of attributes
         $attribute_id_names = array(); //creates an array to store names of attributes
