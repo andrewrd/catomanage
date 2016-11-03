@@ -1208,25 +1208,25 @@ function displayproductattributes($dbo) {
 
         $arrlength = count($attribute_ids);
         for ($i = 0; $i < $arrlength; ++$i) { //for each attribute_id in $attribute_ids, find its attribute values
-            $stmt = $dbo->prepare("SELECT ATTRVAL_ID, ATTRVAL_VALUE FROM ATTRIBUTEVALUE WHERE ATTRVAL_ATTR_ID = (:attrID)");
+            $stmt = $dbo->prepare("SELECT ATTRVAL_ID, ATTRVAL_VALUE, ATTRVAL_PRICE FROM ATTRIBUTEVALUE WHERE ATTRVAL_ATTR_ID = (:attrID)");
             $stmt->bindParam(':attrID', $attribute_ids[$i]);
             try_or_die($stmt);
             $attribute_name = $attribute_id_names[$attribute_ids[$i]]; //assigns attribute_name by looking up from associative array using the ID of the attribute
             /* Populate the dropdown with its respective attribute values */
             ?> <label for="<?php echo $attribute_name ?>"><?php echo $attribute_name ?></label>
-            <select class = "form-control productAttr" name = "<?php echo $attribute_name ?>">
+            <select class = "form-control productAttr" name = "<?php echo $attribute_name ?>" onchange = "updatePrice(this)">
 
             <?php $count = $stmt->rowCount();
             if ($count == 1) { //then there's only one attribute value, display it as the default option value
               while($row = $stmt->fetch()) { ?>
-                <option value = "<?php echo $row[0]?>"><?php echo $row[1]?></option> <?php
+                <option value = "<?php echo $row[0]?>|<?php echo $row[2]?>"><?php echo $row[1]?></option> <?php
               } ?>
             </select>
             <?php } else {
               ?>
             <option value></option> <?php
             while($row = $stmt->fetch()) { ?>
-                <option value = "<?php echo $row[0]?>"><?php echo $row[1] ?></option>
+                <option value = "<?php echo $row[0]?>|<?php echo $row[2]?>"><?php echo $row[1] ?></option>
             <?php }
             ?> </select>
             <?php }
