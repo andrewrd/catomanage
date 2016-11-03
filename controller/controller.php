@@ -314,7 +314,7 @@ function isAlphanumeric($input){
     return true;
 }
 
-//Function that uses 
+//Function that uses
 function isPHPFilename($input){
     if(!preg_match("/^[a-z0-9-]+\.php$/", $input)){
         return false;
@@ -650,16 +650,16 @@ function validateProd(){
         //Post the category editor back to the page
         $_POST['cat_error'] = $cat_error;
     }
-    
+
     if(isset($_POST['prod_disp_cmd'])){
         $prod_disp_cmd = sanitise_string($_POST['prod_disp_cmd']);
-        
+
         $prod_disp_cmd_error = "";
-        
+
         if(isEmpty($prod_disp_cmd)){
             $prod_disp_cmd_error .= "<br>The display command you entered cannot be empty";
         }
-        
+
         if(!isPHPFileName($prod_disp_cmd)){
             $prod_disp_cmd_error .= "<br> The display command has to be a PHP filename.";
         }
@@ -752,7 +752,7 @@ function validateProd(){
     else if(!isset($_POST['prod_h'])){
         $validated = false;
     }
-    
+
     //If the product weight is set
     if(isset($_POST['prod_weight'])){
         //Initialise the error message
@@ -1317,11 +1317,11 @@ function edit_prod($dbo){
     $validated = validateProd();
 
     //If the form passes the validation test
-    if ($validated==true) { 
-       
+    if ($validated==true) {
+
         //update the product data info to the DB
         $prod_id = update_product($dbo);
-        
+
         //unset the post variables from the last form
         unsetProdForm();
         //unset the post error message variables from the last form
@@ -1337,15 +1337,29 @@ function edit_prod($dbo){
 //this function gets the product data to be displayed in forms when editprod is loaded
 //not sure how l can use these with the form
 function get_product_data($dbo){
-    $id = $_GET['prod_id'];
+    $id = $_GET['prod_id']; //this needs to be sanitised and validated
 
-    $stmt = mysql_query("SELECT * FROM product WHERE prod_id=$id");
-
+    //$stmt = mysql_query("SELECT * FROM product WHERE prod_id=$id");
+    //should use PDO and prepared statements to avoid SQL injection
+    $stmt = $dbo->prepare("SELECT * FROM product WHERE prod_id=(:id)");
+    $stmt->bindParam(':id', $id);
     try_or_die($stmt);
 
-    $row = mysql_fetch_array($stmt);
+    //$row = mysql_fetch_array($stmt);
+    while($row = $stmt->fetch()) {
+      $prod_name = $row[0];
+      $prod_desc = $row[1];
+      $prod_long_desc = $row[2];
+      $prod_sku = $row[3];
+      $prod_weight = $row[4];
+      $prod_l = $row[5];
+      $prod_w = $row[6];
+      $prod_h = $row[7];
+    }
 
+    $stmt = null;
     //getting product values from db
+/*
     $prod_name = $row['prod_name'];
     $prod_desc = $row['prod_desc'];
     $prod_long_desc = $row['prod_long_desc'];
@@ -1354,13 +1368,14 @@ function get_product_data($dbo){
     $prod_l = $row['prod_l'];
     $prod_w = $row['prod_w'];
     $prod_h = $row['prod_h'];
+*/
 }
 
 function update_product($dbo){
     $id = $_GET['prod_id'];
 
     //statement to update product values
-    $stmt = $dbo->prepare("UPDATE PRODUCT SET 
+    $stmt = $dbo->prepare("UPDATE PRODUCT SET
     prod_name = (:prod_name),
     prod_desc = (:prod_desc),
     prod_img_url = (:prod_img_url),
@@ -1370,7 +1385,7 @@ function update_product($dbo){
     prod_weight = (:prod_weight),
     prod_l = (:prod_l),
     prod_w = (:prod_w),
-    prod_h = (:prod_h) 
+    prod_h = (:prod_h)
     WHERE prod_id = $id");
 
     $stmt->bindParam(':prod_name', $_POST['prod_name']);
@@ -1407,7 +1422,7 @@ function update_product_category($dbo, $prod_id) {
         //delete the row where the cgprrel = prod_id and cat_id=removed cat
         $stmt = $dbo->prepare("DELETE FROM cgprrel WHERE cgpr_prod_id == $prod_id AND cgpr_cat_id == (:cat_id) ;
         INSERT INTO cgprrel(cgpr_cat_id, cgpr_prod_id) VALUES(:cat_id, :prod_id);");
-        
+
         $stmt->bindParam(':cat_id', $cat);
         $stmt->bindParam(':prod_id', $prod_id);
 
@@ -1456,7 +1471,7 @@ function delete_product_price($dbo, $prod_id) {
     //1st: add product attribute to Attribute table
     //2nd: add attribute values for new attribute to AttributeValue table
     //This is done by the submit_product_attributes function
-    
+
     //if attribute_removed
     //1st: remove attribute values from AttributeValue table
     //2nd: remove attribute from the Attribute table
@@ -1469,7 +1484,7 @@ function remove_attribute($dbo, $prod_id){
 
     $stmt = $dbo->prepare("DELETE FROM attributevalue WHERE attrval_prod_id = (:prod_id) AND attrval_attr_id = (:attr_id) AND attrval_value = (:value) AND attrval_price = (:price);
         DELETE FROM attribute WHERE product_prod_id = (:prod_id) AND name = (:name);");
-                        
+
 
     //loop through the properties and their values
     foreach(get_object_vars($json) as $property=>$value) {
