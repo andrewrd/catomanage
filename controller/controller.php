@@ -187,7 +187,7 @@ function submit_category($dbo){
     $stmt = null;
 
     //need to get the prod_id of the new product
-    $stmt = $dbo->prepare("SELECT prod_id FROM product WHERE prod_name = (:prod_name)");
+    $stmt = $dbo->prepare("SELECT cat_id FROM category WHERE cat_name = (:cat_name_title)");
     $stmt->bindParam(':prod_name', $_POST['prod_name']);
 
     try_or_die($stmt);
