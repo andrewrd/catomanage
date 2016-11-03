@@ -144,7 +144,7 @@ function add_cat($dbo){
 
     //Validate the form using validate_cat(). Set it to false to allow it to display until this is completed.
     //$validated = validateCategory();
-    $validated = validateCategory();
+    $validated = true;
 
     //If the form passes the validation test
     if ($validated==true) {
@@ -188,7 +188,7 @@ function submit_category($dbo){
 
     //need to get the prod_id of the new product
     $stmt = $dbo->prepare("SELECT cat_id FROM category WHERE cat_name = (:cat_name_title)");
-    $stmt->bindParam(':prod_name', $_POST['prod_name']);
+    $stmt->bindParam(':cat_name_title', $_POST['cat_name_title']);
 
     try_or_die($stmt);
 
@@ -202,10 +202,9 @@ function submit_category_rel($dbo, $cat_id){
     //redo this for the categories table, do I need to select child?
     $cats = $_POST['cat'];
     foreach($cats as $cat){
-        $stmt = $dbo->prepare("INSERT INTO cgprrel(CAT_ID, CATCGRYREL_ID_PARENT) VALUES(:cat_id, :id)");
+        $stmt = $dbo->prepare("INSERT INTO CGRYREL(CGRYREL_ID_PARENT, CGRYREL_ID_CHILD) VALUES(:id, :cat_id)");
         $stmt->bindParam(':cat_id', $cat_id);
         $stmt->bindParam(':id', $CATCGRYREL_ID_PARENT);
-        $stmt->bindParam(':category_child_name', '');
 
         try_or_die($stmt);
     }
