@@ -23,7 +23,22 @@
                 <div class="col-xs-12 col-sm-12 col-md-13 col-lg-12">
                     <h3 class="subHeader">Product Details</h3>
                 </div>
+                <!--Product Name Info-->
+                <div class="hidden-xs col-sm-3 col-md-3 col-lg-2">
+                    <p class="labelText">Product Name</p>
+                </div>
+                <div class="col-xs-12 col-sm-9  col-md-3 col-lg-4">
+                    <input name="prod_name" type="text" class="text-input-underline" placeholder="Product Name" id="form-input-productName" oninput="checkString(this.id, 40)" value="<?php if(isset($_POST['prod_name'])){echo $_POST['prod_name'];}?>" required>
+                    <p id="form-error-productName">
+                        <?php 
 
+                        if(isset($_POST['prod_name_error']))
+                        {
+                            echo $_POST['prod_name_error'];
+                        }
+                        ?>
+                    </p>
+                </div>
                 <!--Product name Info ends-->
             </div>
             <!--Short Description Starts-->
@@ -68,7 +83,7 @@
             <!--Add to Category Starts-->
             <div class="form-group row">
                 <div class="hidden-xs col-sm-3 col-md-3 col-lg-2">
-                    <p class="labelText">Alter Category</p>
+                    <p class="labelText">Change Category</p>
                 </div>
                 <div class="col-xs-12 col-sm-9 col-md-9  col-lg-10">
                     <?php get_all_categories($dbo); ?>
@@ -248,6 +263,11 @@
             <div class="form-group row">
                 <div class="col-xs-3 col-sm-2 col-md-2 col-lg-12 ">
                     <button type="button" value="Edit Price" id="btn-editPrice" class="btn btn-default">Edit Price</button>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-xs-3 col-sm-2 col-md-2 col-lg-12 ">
+                    <button type="button" value="Delete Price" id="btn-editPrice" class="btn btn-default">Delete Price</button>
                 </div>
             </div>
             <div class="form-group row">

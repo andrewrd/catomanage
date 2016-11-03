@@ -144,7 +144,7 @@ function add_cat($dbo){
 
     //Validate the form using validate_cat(). Set it to false to allow it to display until this is completed.
     //$validated = validateCategory();
-    $validated = validateCategory();
+    $validated = true;
 
     //If the form passes the validation test
     if ($validated==true) {
@@ -187,8 +187,8 @@ function submit_category($dbo){
     $stmt = null;
 
     //need to get the prod_id of the new product
-    $stmt = $dbo->prepare("SELECT prod_id FROM product WHERE prod_name = (:prod_name)");
-    $stmt->bindParam(':prod_name', $_POST['prod_name']);
+    $stmt = $dbo->prepare("SELECT cat_id FROM category WHERE cat_name = (:cat_name_title)");
+    $stmt->bindParam(':cat_name_title', $_POST['cat_name_title']);
 
     try_or_die($stmt);
 
@@ -202,10 +202,9 @@ function submit_category_rel($dbo, $cat_id){
     //redo this for the categories table, do I need to select child?
     $cats = $_POST['cat'];
     foreach($cats as $cat){
-        $stmt = $dbo->prepare("INSERT INTO cgprrel(CAT_ID, CATCGRYREL_ID_PARENT) VALUES(:cat_id, :id)");
+        $stmt = $dbo->prepare("INSERT INTO CGRYREL(CGRYREL_ID_PARENT, CGRYREL_ID_CHILD) VALUES(:id, :cat_id)");
         $stmt->bindParam(':cat_id', $cat_id);
         $stmt->bindParam(':id', $CATCGRYREL_ID_PARENT);
-        $stmt->bindParam(':category_child_name', '');
 
         try_or_die($stmt);
     }
@@ -1218,7 +1217,7 @@ function displayproductattributes($dbo) {
       try_or_die($stmt);
       if ($stmt->rowCount() > 0) { ?>
         <label for="quantity">Qty:</label>
-        <input class = "form-control" id = "quantity" type="number" name="quantity" value = "1" min="1" max="6">
+        <input class = "form-control" id = "quantity" type="number" name="quantity" value = "1" min="1" max="6" onchange = "updatePrice()">
         <br/><br/> <?php
         $attribute_ids = array(); //create an array to store ID's of attributes
         $attribute_id_names = array(); //creates an array to store names of attributes
@@ -1232,25 +1231,25 @@ function displayproductattributes($dbo) {
 
         $arrlength = count($attribute_ids);
         for ($i = 0; $i < $arrlength; ++$i) { //for each attribute_id in $attribute_ids, find its attribute values
-            $stmt = $dbo->prepare("SELECT ATTRVAL_ID, ATTRVAL_VALUE FROM ATTRIBUTEVALUE WHERE ATTRVAL_ATTR_ID = (:attrID)");
+            $stmt = $dbo->prepare("SELECT ATTRVAL_ID, ATTRVAL_VALUE, ATTRVAL_PRICE FROM ATTRIBUTEVALUE WHERE ATTRVAL_ATTR_ID = (:attrID)");
             $stmt->bindParam(':attrID', $attribute_ids[$i]);
             try_or_die($stmt);
             $attribute_name = $attribute_id_names[$attribute_ids[$i]]; //assigns attribute_name by looking up from associative array using the ID of the attribute
             /* Populate the dropdown with its respective attribute values */
             ?> <label for="<?php echo $attribute_name ?>"><?php echo $attribute_name ?></label>
-            <select class = "form-control productAttr" name = "<?php echo $attribute_name ?>">
+            <select class = "form-control productAttr" name = "<?php echo $attribute_name ?>" onchange = "updatePrice(this)">
 
             <?php $count = $stmt->rowCount();
             if ($count == 1) { //then there's only one attribute value, display it as the default option value
               while($row = $stmt->fetch()) { ?>
-                <option value = "<?php echo $row[0]?>"><?php echo $row[1]?></option> <?php
+                <option value = "<?php echo $row[0]?>|<?php echo $row[2]?>"><?php echo $row[1]?></option> <?php
               } ?>
             </select>
             <?php } else {
               ?>
             <option value></option> <?php
             while($row = $stmt->fetch()) { ?>
-                <option value = "<?php echo $row[0]?>"><?php echo $row[1] ?></option>
+                <option value = "<?php echo $row[0]?>|<?php echo $row[2]?>"><?php echo $row[1] ?></option>
             <?php }
             ?> </select>
             <?php }
@@ -1300,18 +1299,15 @@ function edit_prod($dbo){
     $validated = validateProd();
 
     //If the form passes the validation test
-    if ($validated==true) {
-        //add the form data info to the DB
+    if ($validated==true) { 
+       
+        //update the product data info to the DB
         $prod_id = update_product($dbo);
-        update_product_category($dbo, $prod_id);
-        submit_product_category($dbo, $prod_id);
-        submit_product_attributes($dbo, $prod_id);
-        update_product_prices($dbo, $prod_id);
+        
         //unset the post variables from the last form
         unsetProdForm();
         //unset the post error message variables from the last form
         unsetProdFormErrors();
-
     }
     else {
         $validated = false;
@@ -1320,15 +1316,33 @@ function edit_prod($dbo){
     }
 }
 
-//this function gets the product data
+//this function gets the product data to be displayed in forms when editprod is loaded
+//not sure how l can use these with the form
 function get_product_data($dbo){
+    $id = $_GET['prod_id'];
 
+    $stmt = mysql_query("SELECT * FROM product WHERE prod_id=$id");
+
+    try_or_die($stmt);
+
+    $row = mysql_fetch_array($stmt);
+
+    //getting product values from db
+    $prod_name = $row['prod_name'];
+    $prod_desc = $row['prod_desc'];
+    $prod_long_desc = $row['prod_long_desc'];
+    $prod_sku = $row['prod_sku'];
+    $prod_weight = $row['prod_weight'];
+    $prod_l = $row['prod_l'];
+    $prod_w = $row['prod_w'];
+    $prod_h = $row['prod_h'];
 }
 
 function update_product($dbo){
     $id = $_GET['prod_id'];
 
-    $stmt = $dbo->prepare("UPDATE PRODUCT SET
+    //statement to update product values
+    $stmt = $dbo->prepare("UPDATE PRODUCT SET 
     prod_name = (:prod_name),
     prod_desc = (:prod_desc),
     prod_img_url = (:prod_img_url),
@@ -1338,7 +1352,7 @@ function update_product($dbo){
     prod_weight = (:prod_weight),
     prod_l = (:prod_l),
     prod_w = (:prod_w),
-    prod_h = (:prod_h)
+    prod_h = (:prod_h) 
     WHERE prod_id = $id");
 
     $stmt->bindParam(':prod_name', $_POST['prod_name']);
@@ -1368,23 +1382,22 @@ function update_product($dbo){
 
 function update_product_category($dbo, $prod_id) {
     //function to update product-category relationship
-    //delete the removed relationships first, then insert the newly selected ones
-
-    //not sure how to delete the category relationships that have been unselected
+    //delete the relationships first, then insert the newly selected ones
 
    $cats = $_POST['cat'];
     foreach($cats as $cat){
         //delete the row where the cgprrel = prod_id and cat_id=removed cat
-        $stmt = $dbo->prepare("DELETE FROM cgprrel WHERE cgpr_prod_id == $prod_id && CgPr_cat_id == ");
+        $stmt = $dbo->prepare("DELETE FROM cgprrel WHERE cgpr_prod_id == $prod_id AND cgpr_cat_id == (:cat_id) ;
+        INSERT INTO cgprrel(cgpr_cat_id, cgpr_prod_id) VALUES(:cat_id, :prod_id);");
+        
         $stmt->bindParam(':cat_id', $cat);
         $stmt->bindParam(':prod_id', $prod_id);
 
         try_or_die($stmt);
     }
-
 }
 
-function update_product_prices($dbo, $prod_id){
+function update_product_price($dbo, $prod_id){
     //function updates the product prices for different shopper groups
 
     $array = json_decode($_POST['prod_prices']);
@@ -1403,20 +1416,80 @@ function update_product_prices($dbo, $prod_id){
     }
 }
 
+function delete_product_price($dbo, $prod_id) {
+    //function to delete product price
+
+    $array = json_decode($_POST['prod_prices']);
+
+    $deleteStatement = $dbo->prepare("DELETE FROM prodprices WHERE prpr_prod_id = (:prod_id) AND prpr_shopgrp = (:shopgrp) AND prpr_price = (:price);");
+    //statement prepared
+
+    for($i = 0; $i < sizeOf($array); $i++){
+        //for each shopper group, price is deleted
+        $deleteStatement->bindParam(':prod_id', $prod_id);
+        $deleteStatement->bindParam(':shopgrp', $array[$i]->Group);
+        $deleteStatement->bindParam(':price', $array[$i]->Price);
+
+        try_or_die($deleteStatement);
+    }
+
+}
+    //if attribute added
+    //1st: add product attribute to Attribute table
+    //2nd: add attribute values for new attribute to AttributeValue table
+    //This is done by the submit_product_attributes function
+    
+    //if attribute_removed
+    //1st: remove attribute values from AttributeValue table
+    //2nd: remove attribute from the Attribute table
+
+function remove_attribute($dbo, $prod_id){
+    //function not yet completed
+
+    //a php object is created out of the json string posted to the server
+    $json = json_decode($_POST['json']);
+
+    $stmt = $dbo->prepare("DELETE FROM attributevalue WHERE attrval_prod_id = (:prod_id) AND attrval_attr_id = (:attr_id) AND attrval_value = (:value) AND attrval_price = (:price);
+        DELETE FROM attribute WHERE product_prod_id = (:prod_id) AND name = (:name);");
+                        
+
+    //loop through the properties and their values
+    foreach(get_object_vars($json) as $property=>$value) {
+
+        //binds the passed product id and pro
+        $stmt->bindParam(':prod_id', $prod_id);
+        $stmt->bindParam(':name', $property);
+
+        //Deletes the attribute value and attribute
+        try_or_die($stmt);
+
+    }
+}
 
 
-function delete_prod($dbo){
-
+/*function delete_prod($dbo){
+    //function to delete a product from the db
     check_user_permission_level();
 
-    //function to delete a product from the db
-    $id = $_GET['prod_id'];
+    $prod_id = $_GET['prod_id'];
 
-    //quert to be completed
-    //$stmt = $dbo->prepare("DELETE FROM cgprrel, prodprices, attributevalue, attribute, product
-  //  WHERE ")
+    //statement for deleting the attribute, prices, category relationship and product values
+	//not yet completed
+    $stmt = $dbo->prepare("DELETE FROM cgprrel WHERE cgpr_prod_id == $prod_id AND cgpr_cat_id == (:cat_id);
+        DELETE FROM prodprices WHERE prpr_prod_id = (:prod_id) AND prpr_shopgrp = (:shopgrp) AND prpr_price = (:price);
+        DELETE FROM attributevalue WHERE attrval_prod_id = (:prod_id) AND attrval_attr_id = (:attr_id) AND attrval_value = (:value) AND attrval_price = (:price);
+        DELETE FROM attribute WHERE product_prod_id = (:prod_id) AND name = (:name);
+        DELETE FROM product
+        ";);
 
-    //page should redirect to catalogue.php
+        $stmt->bindParam(':cat_id', $cat);
+        $stmt->bindParam(':prod_id', $prod_id);
+        $stmt->bindParam(':name', $property);
+        $stmt->bindParam(':prod_id', $prod_id);
+        $stmt->bindParam(':name', $property);
+
+    //page should probably redirect to catalogue.php after product is deleted.
 }
+*/
 
 ?>

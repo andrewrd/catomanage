@@ -34,20 +34,23 @@ function updatePrice(dropdown) {
   and the purporse of this is to simply provide convenience of seeing the
   price dynamically update without a page reload */
 
-  var basePrice = currentPrice.substr(1,currentPrice.length); //
-  var attr = document.getElementsByClassName('productAttr');
+  var basePrice = currentPrice.substr(1,currentPrice.length); //removes the $ sign from price
+  var attr = document.getElementsByClassName('productAttr'); //finds all dropwdowns on the page
   var len = attr.length;
   var i;
+  var quantity = document.forms["addtocart"]['quantity'].value; //gets the quantity specified
   var newPrice = 0;
   var additionalPrices = 0;
-  for (i = 0; i < len; i++) {
-    var name = attr[i].getAttribute("name");
-    var attrPrice = document.forms["addtocart"][name].value;
+  for (i = 0; i < len; i++) { //loops through each <select> dropdown
+    var name = attr[i].getAttribute("name"); //gets dropdown's name
+    var attrValue = document.forms["addtocart"][name].value; //gets dropdowns selected option value
+    var delimiterIndex = attrValue.indexOf('|');
+    var attrPrice = attrValue.substr(delimiterIndex+1); //splits the price from the attributeID in the option value
     if (attrPrice) {
       additionalPrices += parseFloat(attrPrice);
     }
   }
 
   newPrice = parseFloat(basePrice) + additionalPrices; //parse the base price and attribute value price
-  d.innerHTML = "$" + newPrice.toFixed(2); //update the price element
+  d.innerHTML = "$" + (newPrice * quantity).toFixed(2); //update the price element taking quantity into account
 }

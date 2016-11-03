@@ -337,3 +337,9 @@ insert into PRODPRICES values (DEFAULT, 5, 3, 22599.00);
 insert into PRODPRICES values (DEFAULT, 3, 1, 29.99);
 insert into PRODPRICES values (DEFAULT, 3, 2, 25.99);
 insert into PRODPRICES values (DEFAULT, 3, 3, 19.99);
+
+insert into STOCK values (DEFAULT, 6, 18, 3, 'XKCD-RED', 'North Sydney');
+
+insert into STOCK values (DEFAULT, 5, 23, 3,  'BODY-JEEP', 'North Sydney');
+insert into STOCK values (DEFAULT, 5, 24, 2, 'TR-AUTO', 'North Sydney');
+insert into STOCK values (DEFAULT, 5, 25, 1, 'TR-MAN', 'North Sydney');
