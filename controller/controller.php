@@ -225,35 +225,38 @@ function select_category($dbo) {
 
 //This updates the category after displaying a dropdown to select using select_category()
 function edit_category($dbo){
-    //role based access control
+    //from role based access control
     check_user_permission_level();
 
     //Validate the form using validate_cat(). Set it to false to allow it to display until this is completed.
     //$validated = validateCategory();
-    $validated = false;
+    $validated = validateCategory();
+
+    if($validated==true){
     //If the form passes the validation test
-    if ($validated==true) {
-        //Update the form data info to the DB using update category, then figure out if parents are needed
-        //This adds the categi to the database
-        $cat_id =  update_category($dbo);
+   // if ($validated==true) {
+        //add the form data info to the DB using submit category, then figure out if parents are needed
+        //This adds the product to the database
+        $cat_id = submit_category($dbo);
         //Submits the category parent
         submit_category_rel($dbo, $cat_id);
 
-        //unset the post variables from the last form/do this function
+        //unset the post variables from the last form
         unsetCatForm();
-        //unset the post error message variables from the last form/do
         unsetCatFormErrors();
 
         //echos out a link for testing purposes only DO NOT LEAVE THIS IN
 
         echo "<p>Category has successfully updated to the system.</p>";
         echo "<p><p><a href='editcat.php'>Update another category</a></p></p>";
-    }
+     }
     else {
-        $validated = false;
+    //      $validated = false;
         //if info hasnt been added, show the form to add new info
         include '../layouts/editcatform.php';
     }
+
+
 }
 
 //Function that unsets all post variables that were set from the form on the addcatform.php page
