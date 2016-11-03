@@ -144,10 +144,11 @@ function add_cat($dbo){
 
     //Validate the form using validate_cat(). Set it to false to allow it to display until this is completed.
     //$validated = validateCategory();
-    $validated = true;
+    $validated = false;
 
+    if($_POST['cat_name_title']!=null){
     //If the form passes the validation test
-    if ($validated==true) {
+   // if ($validated==true) {
         //add the form data info to the DB using submit category, then figure out if parents are needed
         //This adds the product to the database
         $cat_id = submit_category($dbo);
@@ -162,9 +163,9 @@ function add_cat($dbo){
 
         echo "<p>Category has successfully been added to the system.</p>";
         echo "<p><p><a href='addcategory.php'>Add another category</a></p></p>";
-    }
+     }
     else {
-        $validated = false;
+    //      $validated = false;
         //if info hasnt been added, show the form to add new info
         include '../layouts/addcatform.php';
     }
@@ -205,7 +206,7 @@ function submit_category_rel($dbo, $cat_id){
     foreach($cats as $cat){
         $stmt = $dbo->prepare("INSERT INTO CGRYREL(CGRYREL_ID_PARENT, CGRYREL_ID_CHILD) VALUES(:id, :cat_id)");
         $stmt->bindParam(':cat_id', $cat_id);
-        $stmt->bindParam(':id', $CATCGRYREL_ID_PARENT);
+        $stmt->bindParam(':id', $cat);
 
         try_or_die($stmt);
     }
