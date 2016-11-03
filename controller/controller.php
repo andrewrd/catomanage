@@ -156,6 +156,7 @@ function add_cat($dbo){
 
         //unset the post variables from the last form
         unsetCatForm();
+        unsetCatFormErrors();
 
         //echos out a link for testing purposes only DO NOT LEAVE THIS IN
 
@@ -258,11 +259,26 @@ function edit_category($dbo){
 function unsetCatForm(){
     unset($_POST['cat_name_title']);
     unset($_POST['cat_desc']);
-    unset($_POST['cat_display_cmd']);
+    unset($_POST['cat_disp_cmd']);
     unset($_POST['cat_img_url']);
     unset($_POST['cat_id']);
     unset($_POST['id']);
     unset($_POST['category_child_name']);
+}
+
+function unsetCatFormErrors(){
+    if(isset($_POST['cat_name_error'])){
+        unset($_POST['cat_name_error']);
+    }
+    if(isset($_POST['cat_desc_error'])){
+        unset($_POST['cat_desc_error']);
+    }
+    if(isset($_POST['cat_error'])){
+        unset($_POST['cat_error']);
+    }
+    if(isset($_POST['cat_img_error'])){
+        unset($_POST['cat_img_error']);
+    }
 }
 
 /*Validation and sanitisation helper functions start here*/
