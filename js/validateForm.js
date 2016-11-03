@@ -55,7 +55,7 @@ function changeColour(ele,eleType,colour){
 /*Composite Functions*/
 
 /*
-    Function that checks whether or not a string can fulfill our checks.
+    Function that checks whether or not a string can fulfill our string validation checks.
     Inputs and error divs must be named exactly apart from having input and error changed
     to describe what they are. 
     E.g. input field - form-input-name
@@ -127,7 +127,14 @@ function checkString(elemId,len){
     return correctInput;
     
 }
-
+/*
+    Function that checks whether or not a string can fulfill our number validation checks
+    For this function to work properly, input and error elements have to be named strictly
+    input elements should have 'input' in their name, and the same for error. 
+    These keywords must also be in the exact same place
+    e.g. input field - form-input-name
+         error field - form-error-name
+*/
 function checkNumber(elemId){
     /*Stores the element that we are checking into a variable*/
     var nameElement = document.getElementById(elemId);
@@ -173,6 +180,14 @@ function checkNumber(elemId){
     
 }
 
+/*
+    Function that checks whether or not a string can fulfill our SKU validation checks
+    For this function to work properly, input and error elements have to be named strictly
+    input elements should have 'input' in their name, and the same for error. 
+    These keywords must also be in the exact same place
+    e.g. input field - form-input-name
+         error field - form-error-name
+*/
 function checkSKU(elemId){
     /*Stores the element that we are checking into a variable*/
     var nameElement = document.getElementById(elemId);
@@ -218,6 +233,14 @@ function checkSKU(elemId){
 
 }
 
+/*
+    Function that checks whether or not a string can fulfill our Filename validation checks
+    For this function to work properly, input and error elements have to be named strictly
+    input elements should have 'input' in their name, and the same for error. 
+    These keywords must also be in the exact same place
+    e.g. input field - form-input-name
+         error field - form-error-name
+*/
 function checkFilename(elemId,len){
     /*Acts as a boolean value throughout the code, will get turned off 
     if our tests fail*/
@@ -280,6 +303,21 @@ function checkFilename(elemId,len){
         errorElement.innerHTML = "";
     }
     return correctInput;
+
+}
+/*
+Function to check whether or not all the validation fields return true or not
+Check if all our function return true or not
+*/
+function validateProductForm(){
+    
+
+    if(checkString("form-input-productName", 40) &&checkString("form-input-shortDesc", 40)&&checkString("form-input-longDesc", 40)&&checkNumber("form-input-length")&&checkNumber("form-input-weight")&&checkNumber("form-input-height")&&checkNumber("form-input-width")&&checkSKU("form-input-sku")){
+        return true;
+    }
+    else{
+        return false;
+    }
 
 }
 

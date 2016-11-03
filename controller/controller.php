@@ -286,21 +286,21 @@ function unsetCatFormErrors(){
 
 //Sanitisation: Function to sanitise input strings from the internet
 function sanitise_string($input){
-    $input = trim($input);
-    $input = stripslashes($input);
-    $input = strip_tags($input);
-    $input = htmlspecialchars($input);
-    $input = filter_var($input, FILTER_SANITIZE_STRING);
-    return $input;
+    $newinput = trim($input);
+    $newinput = stripslashes($newinput);
+    $newinput = strip_tags($newinput);
+    $newinput = htmlspecialchars($newinput);
+    $newinput = filter_var($newinput, FILTER_SANITIZE_STRING);
+    return $newinput;
 }
 
 function sanitise_number($input){
-    $input = trim($input);
-    $input = stripslashes($input);
-    $input = strip_tags($input);
-    $input = htmlspecialchars($input);
-    $input = filter_var($input, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-    return $input;
+    $newinput = trim($input);
+    $newinput = stripslashes($newinput);
+    $newinput = strip_tags($newinput);
+    $newinput = htmlspecialchars($newinput);
+    $newinput = filter_var($newinput, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+    return $newinput;
 }
 
 //Validation: checks whether a string matches letters, numbers, dashes or spaces.
@@ -1187,15 +1187,15 @@ function displayproduct($dbo) {
                 <img class = "productDisplay" src = "../img/<?php echo $row[1] ?>"/>
               </div>
             <div class = "col-md-6">
-            <h1><?php echo $row[0]?></h1>
+                <h1><?php echo sanitise_string($row[0]);?></h1>
             <i class="fa fa-star" aria-hidden="true"></i>
             <i class="fa fa-star" aria-hidden="true"></i>
             <i class="fa fa-star" aria-hidden="true"></i>
             <i class="fa fa-star" aria-hidden="true"></i>
             <i class="fa fa-star-half-o" aria-hidden="true"></i>
             <a href = "#">See Reviews</a>
-            <h3 class = "price" id = "productPrice">$<?php echo $row[3] ?></h3>
-            <p class = "lead"><?php echo $row[2] ?></p>
+                <h3 class = "price" id = "productPrice">$<?php echo sanitise_number($row[3]) ?></h3>
+            <p class = "lead"><?php echo sanitise_string($row[2]) ?></p>
             <?php
         }
       } else { //there were no matches on the product ID specified
@@ -1251,20 +1251,20 @@ function displayproductattributes($dbo) {
             try_or_die($stmt);
             $attribute_name = $attribute_id_names[$attribute_ids[$i]]; //assigns attribute_name by looking up from associative array using the ID of the attribute
             /* Populate the dropdown with its respective attribute values */
-            ?> <label for="<?php echo $attribute_name ?>"><?php echo $attribute_name ?></label>
-            <select class = "form-control productAttr" name = "<?php echo $attribute_name ?>" onchange = "updatePrice(this)">
+            ?> <label for="<?php echo $attribute_name ?>"><?php echo sanitise_string($attribute_name) ?></label>
+            <select class = "form-control productAttr" name = "<?php echo sanitise_string($attribute_name) ?>" onchange = "updatePrice(this)">
 
             <?php $count = $stmt->rowCount();
             if ($count == 1) { //then there's only one attribute value, display it as the default option value
               while($row = $stmt->fetch()) { ?>
-                <option value = "<?php echo $row[0]?>|<?php echo $row[2]?>"><?php echo $row[1]?></option> <?php
+                <option value = "<?php echo sanitise_string($row[0])?>|<?php echo sanitise_string($row[2])?>"><?php echo sanitise_string($row[1])?></option> <?php
               } ?>
             </select>
             <?php } else {
               ?>
             <option value></option> <?php
             while($row = $stmt->fetch()) { ?>
-                <option value = "<?php echo $row[0]?>|<?php echo $row[2]?>"><?php echo $row[1] ?></option>
+                <option value = "<?php echo sanitise_string($row[0])?>|<?php echo sanitise_string($row[2])?>"><?php echo sanitise_string($row[1]) ?></option>
             <?php }
             ?> </select>
             <?php }
