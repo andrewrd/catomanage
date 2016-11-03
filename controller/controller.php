@@ -287,13 +287,23 @@ function sanitise_number($input){
     return $input;
 }
 
+
+
 //Validation: checks whether a string matches letters, numbers, dashes or spaces.
 function isAlphanumeric($input){
-    if(!preg_match("/^[\w\-\s]+$/", $input)){
+    if(!preg_match("/^[\w\-\s&#;]+$/", $input)){
         return false;
     }
     return true;
 }
+
+function isPHPFilename($input){
+    if(!preg_match("/^[a-z0-9-]+\.php$/", $input)){
+        return false;
+    }
+    return true;
+}
+
 
 function isEmpty($input){
     if(strlen($input)<=0){
@@ -494,7 +504,7 @@ function validateProd(){
     $validated = true;
 
     //Set the variables to 0 for a starting value
-    $prod_name = $cat = $prod_desc = $prod_img_url = $prod_long_desc = $prod_sku = $prod_display_cmd = 0;
+    $prod_name = $cat = $prod_desc = $prod_img_url = $prod_long_desc = $prod_sku = $prod_disp_cmd = 0;
     $prod_weight = $prod_l = $prod_w = $prod_h = 0;
 
     //If the product name is set
@@ -521,7 +531,7 @@ function validateProd(){
             //Validation hasn't passed, validate is now false
             $validated = false;
         }
-        //If the input contains characters other than letters, numbers, spaces or dashes
+//        If the input contains characters other than letters, numbers, spaces or dashes
         if(!isAlphanumeric($prod_name)){
             //Set error message
             $prod_name_error .= "<br>The product name that you entered included characters that weren't alphanumeric or spaces";
@@ -623,7 +633,21 @@ function validateProd(){
         //Post the category editor back to the page
         $_POST['cat_error'] = $cat_error;
     }
-
+    
+    if(isset($_POST['prod_disp_cmd'])){
+        $prod_disp_cmd = sanitise_string($_POST['prod_disp_cmd']);
+        
+        $prod_disp_cmd_error = "";
+        
+        if(isEmpty($prod_disp_cmd)){
+            $prod_disp_cmd_error .= "<br>The display command you entered cannot be empty";
+        }
+        
+        if(!isPHPFileName($prod_disp_cmd)){
+            $prod_disp_cmd_error .= "<br> The display command has to be a PHP filename.";
+        }
+        $_POST['prod_disp_cmd_error'] = $prod_disp_cmd_error;
+    }
     /*
     ISSUE: Since checkboxes are either posted or not depending on if they are clicked or not
     It is somewhat impossible to validate if it is set or not upon POST
@@ -711,7 +735,7 @@ function validateProd(){
     else if(!isset($_POST['prod_h'])){
         $validated = false;
     }
-
+    
     //If the product weight is set
     if(isset($_POST['prod_weight'])){
         //Initialise the error message
@@ -1019,16 +1043,16 @@ function submit_product($dbo){
     $stmt = $dbo->prepare("INSERT INTO product(prod_name, prod_desc, prod_img_url, prod_long_desc, prod_sku, prod_disp_cmd, prod_weight, prod_l, prod_w, prod_h) VALUES(:prod_name, :prod_desc, :prod_img_url, :prod_long_desc, :prod_sku, :prod_disp_cmd, :prod_weight, :prod_l, :prod_w, :prod_h)");
     /*bind variables, using post variables without any
     validation, which still needs to be done */
-	$stmt->bindParam(':prod_name', $_POST['prod_name']);
-    $stmt->bindParam(':prod_desc', $_POST['prod_desc']);
-    $stmt->bindParam(':prod_img_url', $_FILES['prod_img_url']['name']);
-    $stmt->bindParam(':prod_long_desc', $_POST['prod_long_desc']);
-    $stmt->bindParam(':prod_sku', $_POST['prod_sku']);
-    $stmt->bindParam(':prod_disp_cmd', $_POST['prod_disp_cmd']);
-    $stmt->bindParam(':prod_weight', $_POST['prod_weight']);
-    $stmt->bindParam(':prod_l', $_POST['prod_l']);
-    $stmt->bindParam(':prod_w', $_POST['prod_w']);
-    $stmt->bindParam(':prod_h', $_POST['prod_h']);
+    $stmt->bindParam(':prod_name', $_POST['prod_name'], PDO::PARAM_STR);
+    $stmt->bindParam(':prod_desc', $_POST['prod_desc'], PDO::PARAM_STR);
+    $stmt->bindParam(':prod_img_url', $_FILES['prod_img_url']['name'], PDO::PARAM_STR);
+    $stmt->bindParam(':prod_long_desc', $_POST['prod_long_desc'],PDO::PARAM_STR);
+    $stmt->bindParam(':prod_sku', $_POST['prod_sku'], PDO::PARAM_STR);
+    $stmt->bindParam(':prod_disp_cmd', $_POST['prod_disp_cmd'], PDO::PARAM_STR);
+    $stmt->bindParam(':prod_weight', $_POST['prod_weight'], PDO::PARAM_INT);
+    $stmt->bindParam(':prod_l', $_POST['prod_l'], PDO::PARAM_INT);
+    $stmt->bindParam(':prod_w', $_POST['prod_w'], PDO::PARAM_INT);
+    $stmt->bindParam(':prod_h', $_POST['prod_h'], PDO::PARAM_INT);
 
 	try_or_die($stmt);
 

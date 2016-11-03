@@ -12,9 +12,16 @@ function checkLength(str, minLim, maxLim){
 function isEmpty(str){
     return str.length == 0;
 }
+//
+//http://stackoverflow.com/questions/1787322/htmlspecialchars-equivalent-in-javascript/4835406#4835406
 
 function isAlphanumeric(str){
-    return str.match(/^[\w\-\s]+$/);
+    return str.match(/^[\w\-\s&#;'",.]+$/);
+}
+
+
+function isFilename(str){
+    return str.match(/^[a-zA-Z0-9-]+\.php$/);
 }
 
 function isSKU(str){
@@ -56,7 +63,7 @@ function checkString(elemId,len){
     var errorMessage = "";
     if(!checkLength(currentVal, 0, len)){
         correctInput = false;
-        errorMessage += "The length of this field is either too short or too long."; 
+        errorMessage = "The length of this field is either too short or too long."; 
     }
     if(isEmpty(currentVal)){
         correctInput = false;
@@ -66,6 +73,7 @@ function checkString(elemId,len){
         errorMessage += "This field cannot be empty."; 
     }
     if(!isAlphanumeric(currentVal)){
+        
         correctInput = false;
         if(errorMessage.length > 0){
             errorMessage += "<br>";
@@ -152,6 +160,46 @@ function checkSKU(elemId){
     }
 
 }
+
+function checkFilename(elemId,len){
+    var correctInput = true;
+
+    var nameElement = document.getElementById(elemId);
+    var errorElement = document.getElementById(elemId.replace("input", "error"));
+    var currentVal = nameElement.value;
+    var errorMessage = "";
+    if(!checkLength(currentVal, 0, len)){
+        correctInput = false;
+        errorMessage = "The length of this field is either too short or too long."; 
+    }
+    if(isEmpty(currentVal)){
+        correctInput = false;
+        if(errorMessage.length > 0){
+            errorMessage += "<br>";
+        }
+        errorMessage += "This field cannot be empty."; 
+    }
+    if(!isFilename(currentVal)){
+
+        correctInput = false;
+        if(errorMessage.length > 0){
+            errorMessage += "<br>";
+        }
+        errorMessage += "The display command has to be a PHP filename."; 
+    }
+    if(!correctInput){
+        changeColour(nameElement, nameElement.tagName, "red");
+
+        errorElement.innerHTML = errorMessage;
+    }
+    else if(correctInput){
+        changeColour(nameElement, nameElement.tagName, "green");
+        errorElement.innerHTML = "";
+    }
+
+}
+
+
 
 
 

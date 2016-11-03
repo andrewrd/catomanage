@@ -20,7 +20,7 @@
                     <p class="labelText">Product Name</p>
                 </div>
                 <div class="col-xs-12 col-sm-9  col-md-3 col-lg-4">
-                    <input name="prod_name" type="text" class="text-input-underline" placeholder="Product Name" id="form-input-productName" oninput="checkString(this.id, 40)" value="<?php if(isset($_POST['prod_name'])){echo $_POST['prod_name'];}?>" required>
+                    <input name="prod_name" type="text" class="text-input-underline" placeholder="Product Name" id="form-input-productName" oninput="checkString(this.id, 40)" maxlength="40" value="<?php if(isset($_POST['prod_name'])){echo $_POST['prod_name'];}?>" required>
                     <p id="form-error-productName">
                         <?php 
 
@@ -123,9 +123,20 @@
                     <p class="labelText">Display Product</p>
                 </div>
                 <div class="col-xs-12 col-sm-3  col-md-3 col-lg-4">
-                    <input name="prod_disp_cmd" id="form-input-dispCmd" class="text-input-underline" maxlength="128" type="text" placeholder="DisplayProduct.php" value="DisplayProduct.php">
-                   
+                    <input name="prod_disp_cmd" id="form-input-dispCmd" class="text-input-underline" maxlength="128" type="text" placeholder="DisplayProduct.php" value="DisplayProduct.php" oninput="checkFilename(this.id,128 )">
+                    <p id="form-error-dispCmd">
+                        <?php
+
+
+                        if(isset($_POST['prod_disp_cmd_error'])){
+                            echo $_POST['prod_disp_cmd_error'];
+                        }
+                        ?>
+
+
+                    </p>
                 </div>
+                
             </div>
             <!--Product Display Ends-->
             <!--Attribute Management Starts here-->
@@ -179,7 +190,7 @@
                     <p class="labelText">Attribute Price</p>
                 </div>
                 <div class="col-xs-12 col-sm-3  col-md-3 col-lg-3">
-                    <input type="text" class="text-input-underline" placeholder="Attribute Price" id="form-input-attributePrice" oninput="checkNumber(this.id)">
+                    <input type="number" class="text-input-underline" placeholder="Attribute Price" id="form-input-attributePrice" oninput="checkNumber(this.id)">
                     <p id="form-error-attributePrice"></p>
                 </div>
                 <input name="json" id="json-input">
@@ -224,7 +235,7 @@
                     <p class="labelText">Product Price</p>
                 </div>
                 <div class="col-xs-12 col-sm-9  col-md-3 col-lg-4">
-                    <input type="text" class="text-input-underline" placeholder="Product Price" id="form-input-productPrice" oninput="checkNumber(this.id)">
+                    <input type="number" class="text-input-underline" placeholder="Product Price" id="form-input-productPrice" oninput="checkNumber(this.id)">
                     <p id="form-error-productPrice"></p>
                 </div>
             </div>
