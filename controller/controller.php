@@ -1265,7 +1265,7 @@ function displayproductattributes($dbo) {
             </select>
             <?php } else {
               ?>
-            <option value></option> <?php
+            <option value>--Select--</option> <?php
             while($row = $stmt->fetch()) { ?>
                 <option value = "<?php echo sanitise_string($row[0])?>|<?php echo sanitise_string($row[2])?>"><?php echo sanitise_string($row[1]) ?></option>
             <?php }
