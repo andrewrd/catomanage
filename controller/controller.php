@@ -417,10 +417,10 @@ function validateCategory(){
     else if(!isset($_POST['cat_desc'])){
         $validated = false;
     }
-    
+
     //If the category variable has been set
     if(isset($_POST['cat'])){
-        
+
         //Set the variable to the post variable, sanistisation isn't needed
         //since categorys are inserted by admins, and sanitised/validated at that point
         $cat = $_POST['cat'];
@@ -876,7 +876,7 @@ function validateProd(){
     }
     //If prices aren't set, validation hasn't passed
     else if(!isset($_POST['prod_prices'])){
-      
+
         $validated = false;
     }
 
@@ -1231,7 +1231,7 @@ function displayproductattributes($dbo) {
             ?> </select>
             <?php }
             $stmt = null;
-          } ?> <br/><br/><button type="submit" class="btn btn-default btn-lg btn-success">Add To Cart</button> <?php
+          } ?> <br/><br/><button type="submit" class="btn btn-default btn-lg btn-success" name="product" value="<?php echo $prod_id;?>">Add To Cart</button> <?php
       }
   }
 }
