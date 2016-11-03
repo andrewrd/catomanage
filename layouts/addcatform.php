@@ -113,7 +113,19 @@
                     <p class="labelText">Display Command</p>
                 </div>
                 <div class="col-xs-3 col-sm-3  col-md-3 col-lg-4">
-                    <input name="cat_disp_cmd" id="form-input-dispCmd" class="text-input-underline" maxlength="128" type="text" placeholder="DisplayCategory.php" value="DisplayCategory.php">
+                    <input name="cat_disp_cmd" id="form-input-dispCmd" class="text-input-underline" maxlength="128" type="text" placeholder="DisplayCategory.php" value="DisplayCategory.php" oninput="checkFilename(this.id,128 )">
+                    
+                    <p id="form-error-dispCmd">
+                        <?php
+
+
+                        if(isset($_POST['prod_disp_cmd_error'])){
+                            echo $_POST['prod_disp_cmd_error'];
+                        }
+                        ?>
+
+
+                    </p>
                     
                 </div>
             </div>

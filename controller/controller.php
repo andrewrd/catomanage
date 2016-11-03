@@ -144,7 +144,7 @@ function add_cat($dbo){
 
     //Validate the form using validate_cat(). Set it to false to allow it to display until this is completed.
     //$validated = validateCategory();
-    $validated = true;
+    $validated = validateCategory();
 
     //If the form passes the validation test
     if ($validated==true) {
