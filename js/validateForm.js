@@ -106,7 +106,7 @@ function checkString(elemId,len){
             errorMessage += "<br>";
         }
         /*Set and concatenate our error message*/
-        errorMessage += "This field can only contain numbers,letters, ampersand, hash, comma, apostrophe, quotation mark and period"; 
+        errorMessage += "This field can only contain numbers,letters, ampersand, hash, comma, apostrophe, quotation mark and period "; 
     }
     
     /*If the input isn't the result we want*/
@@ -124,6 +124,7 @@ function checkString(elemId,len){
         /*Destroy any error message that was in there before*/
         errorElement.innerHTML = "";
     }
+    return correctInput;
     
 }
 
@@ -168,6 +169,7 @@ function checkNumber(elemId){
         changeColour(nameElement, nameElement.tagName, "green");
         errorElement.innerHTML = "";
     }
+    return correctInput;
     
 }
 
@@ -212,6 +214,7 @@ function checkSKU(elemId){
         /*Destroy any error message that might exist*/
         errorElement.innerHTML = "";
     }
+    return correctInput;
 
 }
 
@@ -276,6 +279,7 @@ function checkFilename(elemId,len){
         /*Destroy any error message in there currently*/
         errorElement.innerHTML = "";
     }
+    return correctInput;
 
 }
 

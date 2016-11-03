@@ -144,9 +144,9 @@ function add_cat($dbo){
 
     //Validate the form using validate_cat(). Set it to false to allow it to display until this is completed.
     //$validated = validateCategory();
-    $validated = false;
+    $validated = validateCategory();
 
-    if($_POST['cat_name_title']!=null){
+    if($validated==true){
     //If the form passes the validation test
    // if ($validated==true) {
         //add the form data info to the DB using submit category, then figure out if parents are needed
@@ -303,8 +303,6 @@ function sanitise_number($input){
     return $input;
 }
 
-
-
 //Validation: checks whether a string matches letters, numbers, dashes or spaces.
 function isAlphanumeric($input){
     if(!preg_match("/^[\w\-\s&#;]+$/", $input)){
@@ -313,13 +311,13 @@ function isAlphanumeric($input){
     return true;
 }
 
+//Function that uses 
 function isPHPFilename($input){
     if(!preg_match("/^[a-z0-9-]+\.php$/", $input)){
         return false;
     }
     return true;
 }
-
 
 function isEmpty($input){
     if(strlen($input)<=0){
@@ -487,7 +485,7 @@ function validateCategory(){
         $file_ext = strtolower(end($exploded));
 
         $allowedExtensions = array("jpeg","jpg","png");
-        if(empty($_FILES['prod_img_url']['name'])){
+        if(empty($_FILES['cat_img_url']['name'])){
             $errors .="You have to add an image";
         }
         if(in_array($file_ext,$allowedExtensions)=== false){
