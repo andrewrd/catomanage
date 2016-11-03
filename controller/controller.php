@@ -1298,7 +1298,7 @@ function edit_prod($dbo){
 function get_product_data($dbo){
     $id = $_GET['prod_id'];
 
-    $stmt = mysql_query("SELECT * FROM product WHERE prod_id=$id")
+    $stmt = mysql_query("SELECT * FROM product WHERE prod_id=$id");
 
     try_or_die($stmt);
 
