@@ -1444,7 +1444,7 @@ function remove_attribute($dbo, $prod_id){
 }
 
 
-function delete_prod($dbo){
+/*function delete_prod($dbo){
     //function to delete a product from the db
     check_user_permission_level();
 
@@ -1467,5 +1467,6 @@ function delete_prod($dbo){
 
     //page should probably redirect to catalogue.php after product is deleted.
 }
+*/
 
 ?>
