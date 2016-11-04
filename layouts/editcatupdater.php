@@ -127,8 +127,28 @@
             </div>
 
 
-            
-           
+            <div class="form-group row">
+
+                <div class="hidden-xs col-sm-3 col-md-3 col-lg-2">
+                    <p class="labelText">CategoryID</p>
+                </div>
+                <div class="col-xs-3 col-sm-3  col-md-3 col-lg-4">
+                    <input name="cat_id" id="form-input-dispCmd" class="text-input-underline" maxlength="128" type="number" placeholder="<?php $name = get_cat_info($dbo, $_POST['cats']); echo $name[0];?>" value="<?php $name = get_cat_info($dbo, $_POST['cats']); echo $name[0];?>" hidden>
+                    
+                    <p id="form-error-dispCmd">
+                        <?php
+
+
+                        if(isset($_POST['cat_id'])){
+                            echo $_POST['cat_id'];
+                        }
+                        ?>
+
+
+                    </p>
+                    
+                </div>
+            </div>
             <!--Form Submit button-->
             <div class="form-group row">
                 <div class="form-group">

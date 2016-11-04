@@ -713,7 +713,7 @@ function get_all_categories_edit($dbo){
     //outputs the html for category selection, with a checkbox for each possible category
 
     ?>
-    <select name="cats">
+    <select class="form-control" name="cats">
     <?php
     while($row = $stmt->fetch()) { ?>
                 <option value="<?php echo $row['cat_id']; ?>">
@@ -721,8 +721,7 @@ function get_all_categories_edit($dbo){
     }
 
     ?>
-</select>
-        <button class="btn" type="submit" value="Submit">Submit</button>
+</select><br><button class="btn btn-success" type="submit" value="Submit">Submit</button>
     <?php
     $stmt = null;
 }
@@ -1000,9 +999,9 @@ function update_cat($dbo){
    // if ($validated==true) {
         //add the form data info to the DB using submit category, then figure out if parents are needed
         //This adds the product to the database
-        $cat_id = submit_category($dbo);
+        $cat_id = update_category($dbo);
         //Submits the category parent
-        submit_category_rel($dbo, $cat_id);
+        update_category_rel($dbo, $cat_id);
 
         //unset the post variables from the last form
         unsetCatForm();
@@ -1021,13 +1020,15 @@ function update_cat($dbo){
 function update_category($dbo){
     //prepare statement to insert the basic category details into the product table
     //should break these statements up into smaller pieces
-    $stmt = $dbo->prepare("INSERT INTO category(cat_name, cat_desc, cat_img_url, cat_disp_cmd) VALUES(:cat_name_title, :cat_desc, :cat_img_url, :cat_disp_cmd)");
+    $stmt = $dbo->prepare("UPDATE category SET cat_name=:cat_name_title, cat_desc=:cat_desc, cat_img_url=:cat_img_url, cat_disp_cmd=:cat_disp_cmd WHERE cat_id=:cat");
     /*bind variables, using post variables without any
     validation, which still needs to be done */
     $stmt->bindParam(':cat_name_title', $_POST['cat_name_title']);
     $stmt->bindParam(':cat_desc', $_POST['cat_desc']);
-    $stmt->bindParam(':cat_img_url', $_FILES['cat_img_url']['name']);
+    $stmt->bindParam(':cat_img_url', $_POST['cat_img_url']);
     $stmt->bindParam(':cat_disp_cmd', $_POST['cat_disp_cmd']);
+    $stmt->bindParam(':cat', $_POST['cat']);
+
 
     try_or_die($stmt);
 
@@ -1039,9 +1040,8 @@ function update_category($dbo){
 
     try_or_die($stmt);
 
-    $cat_id = $stmt->fetchColumn();
 
-    return $cat_id;
+
 }
 
 //Submits the category's parents and child relations.
