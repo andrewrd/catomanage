@@ -133,16 +133,9 @@ function get_categories($dbo){
 	$stmt = null;
 }
 
-function check_user_permission_level() {
-    //placeholder function for the role based access control functionality
-    return;
-}
-
 //This function handles the adding of categories into the database.
 function add_cat($dbo){
 
-    //from role based access control
-    check_user_permission_level();
 
     //Validate the form using validate_cat(). Set it to false to allow it to display until this is completed.
     //$validated = validateCategory();
@@ -219,8 +212,7 @@ function submit_category_rel($dbo, $cat_id){
 
 //Select category populates a dropdown menu, allowing the selection of categories.
 function select_category($dbo) {
-    //role based access control
-    check_user_permission_level();
+
 
     //list categories using a function call to populate a dropdown
 }
@@ -228,8 +220,7 @@ function select_category($dbo) {
 
 //This updates the category after displaying a dropdown to select using select_category()
 function edit_category_form($dbo){
-    //from role based access control
-    check_user_permission_level();
+
     //Validate the form using validate_cat(). Set it to false to allow it to display until this is completed.
     //$validated = validateCategory();
     $cats = $_POST['cats'];
@@ -537,8 +528,7 @@ function validateCategory(){
 //Function that validates the add product from
 
 function add_prod($dbo){
-    //function that handles adding a new product into the database
-    check_user_permission_level();
+
 
 
     //Validate the form
@@ -850,8 +840,7 @@ function insert_product_prices($dbo, $prod_id){
 }
 
 function edit_prod($dbo){
-    //function that handles editing an existing product
-    check_user_permission_level();
+
 
     //Validate the form
     $validated = validateProd();
@@ -1062,8 +1051,7 @@ function remove_attribute($dbo, $prod_id){
 
 
 function delete_prod($dbo){
-    //function to delete a product from the db
-    check_user_permission_level();
+
 
     $validated = false; //can't trust the browser, so assume prod_id is invalid
     if (isset($_GET['prod_id']) && !empty($_GET['prod_id'])) { //if a prod_id is specified
