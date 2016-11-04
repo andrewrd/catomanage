@@ -9,7 +9,7 @@ include '../controller/controller.php';
 
 <?php
 
- edit_category_form($dbo); ?>
+ update_cat($dbo); ?>
 
 <?php
 

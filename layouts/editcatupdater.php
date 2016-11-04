@@ -1,11 +1,11 @@
 <!-- Form Container starts here -->
 <div class="container">
     <!-- Main content starts here -->
-    <form action="addcategory.php" method="POST" class="form-horizontal" enctype="multipart/form-data">
+    <form action="editcatsub.php" method="POST" class="form-horizontal" enctype="multipart/form-data">
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 header">
-                <h3 class="title">Add Category</h3>
+                <h3 class="title">Edit Category</h3>
 
             </div>
         </div>

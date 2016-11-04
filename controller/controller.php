@@ -234,20 +234,27 @@ function get_cat_info($dbo, $cats){
     }
 }
 
-//This gets the relational information for the form
-function get_parent_info($dbo, $cats){
-    if($cats!=null){
-        sanitise_number($cats);
+//This gets the relational information for the editcatoform
+function get_parent_info($dbo, $post_id, $child_id){
+        sanitise_number($post_id);
 
-        $stmt = $dbo->prepare("SELECT * FROM CGRYREL WHERE CGRYREL_ID_CHILD = (:id)");
-        $stmt->bindParam(':id', $cats);
+        $stmt = $dbo->prepare("SELECT CGRYREL_ID_CHILD FROM CGRYREL WHERE CGRYREL_ID_PARENT = (:id) AND CGRYREL_ID_CHILD = (:cat_check)");
+        $stmt->bindParam(':id', $post_id);
+        $stmt->bindParam(':cat_check', $child_id);
 
         try_or_die($stmt);
 
         $row = $stmt->fetch();
 
-        return $row;
-    }
+        if($row != null) {
+            return true;
+        }
+    /*    for ($i=0; $i<count($row); $i++){
+            if($row[$i]==$post_id){
+                return true;
+            }
+        } */
+
 }
 //This updates the category after displaying a dropdown to select using select_category()
 function edit_category_form($dbo){
@@ -266,14 +273,7 @@ function edit_category_form($dbo){
 
         $row = $stmt->fetch();
         include '../layouts/editcatupdater.php';
-    }
-    else {
-        include '../layouts/editcatform.php';
-    }
-
-
-    $stmt = null;
-/*    if($validated==true){
+        /*    if($validated==true){
     //If the form passes the validation test
    // if ($validated==true) {
         //add the form data info to the DB using submit category, then figure out if parents are needed
@@ -297,7 +297,15 @@ function edit_category_form($dbo){
         include '../layouts/editcatform.php';
     }
 */
+    }
+    else {
+        include '../layouts/editcatform.php';
+    }
+
+
+    $stmt = null;
 }
+
 
 //Function that unsets all post variables that were set from the form on the addcatform.php page
 function unsetCatForm(){
@@ -310,6 +318,7 @@ function unsetCatForm(){
     unset($_POST['category_child_name']);
 }
 
+//This function unsets all the errors from the addcat.php page
 function unsetCatFormErrors(){
     if(isset($_POST['cat_name_error'])){
         unset($_POST['cat_name_error']);
@@ -337,6 +346,7 @@ function sanitise_string($input){
     return $newinput;
 }
 
+//This functiin sanitise number inputs
 function sanitise_number($input){
     $newinput = trim($input);
     $newinput = stripslashes($newinput);
@@ -354,28 +364,29 @@ function isAlphanumeric($input){
     return true;
 }
 
-//Function that uses
+//Function that uses regex to match whether or not a file has the right pattern for a php file
 function isPHPFilename($input){
     if(!preg_match("/^[a-z0-9-]+\.php$/", $input)){
         return false;
     }
     return true;
 }
-
+//Function to check whether or not a input is empty
 function isEmpty($input){
     if(strlen($input)<=0){
         return true;
     }
     return false;
 }
-
+//Function to check whether or not an array is empty
 function isArrayEmpty($input){
     if(empty($input)){
         return true;
     }
     return false;
 }
-
+//Function to check whether or not a string is of the right length,
+//$input is the string and $maxLen is the maximum length
 function isValidLength($input, $maxLen){
     if(strlen($input)>$maxLen){
         return false;
@@ -383,6 +394,8 @@ function isValidLength($input, $maxLen){
     return true;
 }
 
+//Function to check whether or not an input is a number
+//Accepts whole numbers or decimal placed numbers. I.e 4 or 4.2 but not 4..2 or +4.2 etc
 function isNumber($input){
     if(!preg_match("/^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$/", $input) ){
         return false;
@@ -518,35 +531,53 @@ function validateCategory(){
     }
 
     if(isset($_FILES['cat_img_url']) && $validated){
-
+        /*Initialise the errors for the image*/
         $errors = "";
+        /*Grab the name of the image*/
         $file_name = $_FILES['cat_img_url']['name'];
+        /*Grab the size of the image that has been input*/
         $file_size = $_FILES['cat_img_url']['size'];
+        /*Grab the temp name of the img that has been stored*/
         $file_tmp = $_FILES['cat_img_url']['tmp_name'];
+        /*Grab te file type of the image that has been stored*/
         $file_type = $_FILES['cat_img_url']['type'];
+        /*Separate the name of the file from its extension*/
         $exploded = explode('.', $_FILES['cat_img_url']['name']);
+        /*Grab the file extension from the exploded file and set it to case insensitive*/
         $file_ext = strtolower(end($exploded));
-
+        /*These are the allowed extensions for the images*/
         $allowedExtensions = array("jpeg","jpg","png");
+        /*If the image name was empty*/
         if(empty($_FILES['cat_img_url']['name'])){
+            /*Set the error message*/
             $errors .="You have to add an image";
         }
+        /*If the file extension isn't in the allowed extensions*/
         if(in_array($file_ext,$allowedExtensions)=== false){
+            /*Set the error message*/
             $errors .="<br>That extension isn't allowed, please only use JPEG, JPG or PNG";
         }
+        /*If the file size is over 2mb*/
         if($file_size > 2097152){
+            /*Set the error message*/
             $errors .= "File must be under 2MB";
         }
+        /*If the image passed our checks without an error*/
         if(empty($errors)==true){
+            /*Move the uploaded file to our image folder with the right name */
             move_uploaded_file($file_tmp, "../img/".$file_name);
-            echo "Success";
-        } else{
-
+        }
+        /*If there were errors*/
+        else{
+            /*Post the errors back to the page*/
             $_POST['cat_img_error'] = "<span class='errorMessage'>". $errors . "</span>";
+            /*Set validated is false*/
             $validated = false;
         }
     }
+    /*If the image isn't set*/
     else if(!isset($_FILES['cat_img_url'])){
+        /*Set validated to false*/
         $validated = false;
     }
     return $validated;
@@ -727,18 +758,17 @@ function get_all_categories_editor($dbo, $params){
     try_or_die($stmt);
 
     //outputs the html for category selection, with a checkbox for each possible category
-    while($row = $stmt->fetch()) { ?>
+    while($row = $stmt->fetch()) {?>
         <div class="checkbox">
             <label>
                 <input <?php
-
-                $rower = get_parent_info($dbo, $row['cat_id']);
-                    for ($i=0; $i<rower.length; $i++){
-                        if($rower[$i]== $row['cat_id']){
+                        if (get_parent_info($dbo, $row['cat_id'], $_POST['cats'])==true){
                             echo "checked";
                         }
-                    } //iterated loop to check whether they match }
+
+                     //iterated loop to check whether they match }
                  ?>
+
                 type="checkbox" name="cat[]" value="<?php echo $row['cat_id']; ?>">
                 <?php echo $row['cat_name']; ?>
             </label>
@@ -981,6 +1011,76 @@ function delete_prod($dbo){
 
       //link back to catalogue page
       echo '<br><br><a href="catalogue.php">Back to Catalogue</a>';
+}
+
+//This function handles the adding of categories into the database.
+function update_cat($dbo){
+    //Validate the form using validate_cat(). Set it to false to allow it to display until this is completed.
+    //$validated = validateCategory();
+    $validated = validateCategory();
+
+    //If the form passes the validation test
+   // if ($validated==true) {
+        //add the form data info to the DB using submit category, then figure out if parents are needed
+        //This adds the product to the database
+        $cat_id = submit_category($dbo);
+        //Submits the category parent
+        submit_category_rel($dbo, $cat_id);
+
+        //unset the post variables from the last form
+        unsetCatForm();
+        unsetCatFormErrors();
+
+        //echos out a link for testing purposes only DO NOT LEAVE THIS IN
+
+        echo "<div class='container'>";
+        echo "<p>Category has been updated.</p>";
+        echo "<p><p><a href='catalogue.php'>Return to the catalogue</a></p></p>";
+        echo "</div>";
+}
+
+//Inserts a new category into the sql database
+//Gets all posted categories from layouts/addcatform.php and adds them to the database.
+function update_category($dbo){
+    //prepare statement to insert the basic category details into the product table
+    //should break these statements up into smaller pieces
+    $stmt = $dbo->prepare("INSERT INTO category(cat_name, cat_desc, cat_img_url, cat_disp_cmd) VALUES(:cat_name_title, :cat_desc, :cat_img_url, :cat_disp_cmd)");
+    /*bind variables, using post variables without any
+    validation, which still needs to be done */
+    $stmt->bindParam(':cat_name_title', $_POST['cat_name_title']);
+    $stmt->bindParam(':cat_desc', $_POST['cat_desc']);
+    $stmt->bindParam(':cat_img_url', $_FILES['cat_img_url']['name']);
+    $stmt->bindParam(':cat_disp_cmd', $_POST['cat_disp_cmd']);
+
+    try_or_die($stmt);
+
+    $stmt = null;
+
+    //need to get the prod_id of the new product
+    $stmt = $dbo->prepare("SELECT cat_id FROM category WHERE cat_name = (:cat_name_title)");
+    $stmt->bindParam(':cat_name_title', $_POST['cat_name_title']);
+
+    try_or_die($stmt);
+
+    $cat_id = $stmt->fetchColumn();
+
+    return $cat_id;
+}
+
+//Submits the category's parents and child relations.
+function update_category_rel($dbo, $cat_id){
+    //redo this for the categories table, do I need to select child?
+    $cats = $_POST['cat'];
+    foreach($cats as $cat){
+        $stmt = $dbo->prepare("INSERT INTO CGRYREL(CGRYREL_ID_PARENT, CGRYREL_ID_CHILD) VALUES(:id, :cat_id)");
+        $stmt->bindParam(':cat_id', $cat_id);
+        $stmt->bindParam(':id', $cat);
+
+        try_or_die($stmt);
+    }
+
+    $stmt = null;
+
 }
 
 ?>
