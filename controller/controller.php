@@ -255,8 +255,9 @@ function edit_category_form($dbo){
 
     //Validate the form using validate_cat(). Set it to false to allow it to display until this is completed.
     //$validated = validateCategory();
-    $cats = $_POST['cats'];
-    if($cats!=null){
+if(isset($_POST['cats'])){$cats = $_POST['cats'];}else{$cats=null;};    
+
+if($cats!=null){
         sanitise_number($cats);
 
         //need to get the prod_id of the new product
@@ -743,7 +744,7 @@ function get_all_categories_edit($dbo){
     $stmt = null;
 }
 
-function get_all_categories_editor($dbo, $params){
+function get_all_categories_editor($dbo){
     /* function that gets all of the categories and their ids for using in adding
     producs to categories. this is done for editing, it loops and compares the values and determines the parent categories and checks them */
     $stmt = $dbo->prepare("SELECT cat_id, cat_name FROM category");
