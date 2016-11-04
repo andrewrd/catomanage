@@ -318,6 +318,7 @@ function unsetCatForm(){
     unset($_POST['category_child_name']);
 }
 
+//This function unsets all the errors from the addcat.php page
 function unsetCatFormErrors(){
     if(isset($_POST['cat_name_error'])){
         unset($_POST['cat_name_error']);
@@ -345,6 +346,7 @@ function sanitise_string($input){
     return $newinput;
 }
 
+//This functiin sanitise number inputs
 function sanitise_number($input){
     $newinput = trim($input);
     $newinput = stripslashes($newinput);
@@ -362,28 +364,29 @@ function isAlphanumeric($input){
     return true;
 }
 
-//Function that uses
+//Function that uses regex to match whether or not a file has the right pattern for a php file
 function isPHPFilename($input){
     if(!preg_match("/^[a-z0-9-]+\.php$/", $input)){
         return false;
     }
     return true;
 }
-
+//Function to check whether or not a input is empty
 function isEmpty($input){
     if(strlen($input)<=0){
         return true;
     }
     return false;
 }
-
+//Function to check whether or not an array is empty
 function isArrayEmpty($input){
     if(empty($input)){
         return true;
     }
     return false;
 }
-
+//Function to check whether or not a string is of the right length, 
+//$input is the string and $maxLen is the maximum length
 function isValidLength($input, $maxLen){
     if(strlen($input)>$maxLen){
         return false;
@@ -391,6 +394,8 @@ function isValidLength($input, $maxLen){
     return true;
 }
 
+//Function to check whether or not an input is a number
+//Accepts whole numbers or decimal placed numbers. I.e 4 or 4.2 but not 4..2 or +4.2 etc
 function isNumber($input){
     if(!preg_match("/^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$/", $input) ){
         return false;
@@ -526,35 +531,53 @@ function validateCategory(){
     }
 
     if(isset($_FILES['cat_img_url']) && $validated){
-
+        /*Initialise the errors for the image*/
         $errors = "";
+        /*Grab the name of the image*/
         $file_name = $_FILES['cat_img_url']['name'];
+        /*Grab the size of the image that has been input*/
         $file_size = $_FILES['cat_img_url']['size'];
+        /*Grab the temp name of the img that has been stored*/
         $file_tmp = $_FILES['cat_img_url']['tmp_name'];
+        /*Grab te file type of the image that has been stored*/
         $file_type = $_FILES['cat_img_url']['type'];
+        /*Separate the name of the file from its extension*/
         $exploded = explode('.', $_FILES['cat_img_url']['name']);
+        /*Grab the file extension from the exploded file and set it to case insensitive*/
         $file_ext = strtolower(end($exploded));
-
+        /*These are the allowed extensions for the images*/
         $allowedExtensions = array("jpeg","jpg","png");
+        /*If the image name was empty*/
         if(empty($_FILES['cat_img_url']['name'])){
+            /*Set the error message*/
             $errors .="You have to add an image";
         }
+        /*If the file extension isn't in the allowed extensions*/
         if(in_array($file_ext,$allowedExtensions)=== false){
+            /*Set the error message*/
             $errors .="<br>That extension isn't allowed, please only use JPEG, JPG or PNG";
         }
+        /*If the file size is over 2mb*/
         if($file_size > 2097152){
+            /*Set the error message*/
             $errors .= "File must be under 2MB";
         }
+        /*If the image passed our checks without an error*/
         if(empty($errors)==true){
+            /*Move the uploaded file to our image folder with the right name */
             move_uploaded_file($file_tmp, "../img/".$file_name);
-            echo "Success";
-        } else{
-
+        } 
+        /*If there were errors*/
+        else{
+            /*Post the errors back to the page*/
             $_POST['cat_img_error'] = "<span class='errorMessage'>". $errors . "</span>";
+            /*Set validated is false*/
             $validated = false;
         }
     }
+    /*If the image isn't set*/
     else if(!isset($_FILES['cat_img_url'])){
+        /*Set validated to false*/
         $validated = false;
     }
     return $validated;
