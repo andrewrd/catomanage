@@ -344,7 +344,7 @@
                     <p class="labelText">Weight</p>
                 </div>
                 <div class="col-xs-12 col-sm-3  col-md-3 col-lg-2">
-                    <input name="prod_weight" type="number" class="text-input-underline" placeholder="Weight" id="form-input-weight" oninput="checkNumber(this.id)" value="<?php if(isset($_POST['prod_weight'])){echo $_POST['prod_weight'];}?>" required>
+                    <input name="prod_weight" type="number" class="text-input-underline" placeholder="Weight" id="form-input-weight" oninput="checkNumber(this.id)" value="<?php if(isset($_POST['prod_weight'])){echo $_POST['prod_weight'];}else{echo $row[1]}?>" required>
                     <p id="form-error-weight">
                         <?php
 

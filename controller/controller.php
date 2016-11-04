@@ -133,16 +133,9 @@ function get_categories($dbo){
 	$stmt = null;
 }
 
-function check_user_permission_level() {
-    //placeholder function for the role based access control functionality
-    return;
-}
-
 //This function handles the adding of categories into the database.
 function add_cat($dbo){
 
-    //from role based access control
-    check_user_permission_level();
 
     //Validate the form using validate_cat(). Set it to false to allow it to display until this is completed.
     //$validated = validateCategory();
@@ -219,17 +212,46 @@ function submit_category_rel($dbo, $cat_id){
 
 //Select category populates a dropdown menu, allowing the selection of categories.
 function select_category($dbo) {
-    //role based access control
-    check_user_permission_level();
+
 
     //list categories using a function call to populate a dropdown
 }
 
+//This function is used in the view to retrieve category info for updating and displaying the past information
+function get_cat_info($dbo, $cats){
+    if($cats!=null){
+        sanitise_number($cats);
 
+
+        $stmt = $dbo->prepare("SELECT * FROM category WHERE cat_id = (:id)");
+        $stmt->bindParam(':id', $cats);
+
+        try_or_die($stmt);
+
+        $row = $stmt->fetch();
+
+        return $row;
+    }
+}
+
+//This gets the relational information for the form
+function get_parent_info($dbo, $cats){
+    if($cats!=null){
+        sanitise_number($cats);
+
+        $stmt = $dbo->prepare("SELECT * FROM CGRYREL WHERE CGRYREL_ID_CHILD = (:id)");
+        $stmt->bindParam(':id', $cats);
+
+        try_or_die($stmt);
+
+        $row = $stmt->fetch();
+
+        return $row;
+    }
+}
 //This updates the category after displaying a dropdown to select using select_category()
 function edit_category_form($dbo){
-    //from role based access control
-    check_user_permission_level();
+
     //Validate the form using validate_cat(). Set it to false to allow it to display until this is completed.
     //$validated = validateCategory();
     $cats = $_POST['cats'];
@@ -244,11 +266,6 @@ function edit_category_form($dbo){
 
         $row = $stmt->fetch();
         include '../layouts/editcatupdater.php';
-      session_start();
-      $_SESSION['category_name'] = $row[1];
-      $_SESSION['category_description'] = $row[2];
-      $_SESSION['category_img_url'] = $row[3];
-      $_SESSION['category_disp_cmd'] = $row[4];
     }
     else {
         include '../layouts/editcatform.php';
@@ -282,6 +299,10 @@ function edit_category_form($dbo){
 */
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4136c922d36b9bc80ce4fe03280acbc334b48095
 //Function that unsets all post variables that were set from the form on the addcatform.php page
 function unsetCatForm(){
     unset($_POST['cat_name_title']);
@@ -538,8 +559,7 @@ function validateCategory(){
 //Function that validates the add product from
 
 function add_prod($dbo){
-    //function that handles adding a new product into the database
-    check_user_permission_level();
+
 
 
     //Validate the form
@@ -702,6 +722,37 @@ function get_all_categories_edit($dbo){
     <?php
     $stmt = null;
 }
+
+function get_all_categories_editor($dbo, $params){
+    /* function that gets all of the categories and their ids for using in adding
+    producs to categories. this is done for editing, it loops and compares the values and determines the parent categories and checks them */
+    $stmt = $dbo->prepare("SELECT cat_id, cat_name FROM category");
+    $stmt->bindParam(':id', $parent_id);
+    try_or_die($stmt);
+
+    //outputs the html for category selection, with a checkbox for each possible category
+    while($row = $stmt->fetch()) { ?>
+        <div class="checkbox">
+            <label>
+                <input <?php
+
+                $rower = get_parent_info($dbo, $row['cat_id']);
+                    for ($i=0; $i<rower.length; $i++){
+                        if($rower[$i]== $row['cat_id']){
+                            echo "checked";
+                        }
+                    } //iterated loop to check whether they match }
+                 ?>
+                type="checkbox" name="cat[]" value="<?php echo $row['cat_id']; ?>">
+                <?php echo $row['cat_name']; ?>
+            </label>
+        </div>
+       <?php
+    }
+
+    $stmt = null;
+}
+
 
 function displayproduct($dbo) {
     /* Displays only the details of the product on displayproduct.php page */
@@ -885,8 +936,7 @@ function submit_edit_prod($dbo){
 }
 
 function delete_prod($dbo){
-    //function to delete a product from the db
-    check_user_permission_level();
+
 
     $validated = false; //can't trust the browser, so assume prod_id is invalid
     if (isset($_GET['prod_id']) && !empty($_GET['prod_id'])) { //if a prod_id is specified

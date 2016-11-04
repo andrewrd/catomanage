@@ -4,12 +4,15 @@ var pricesArray= [];
 document.getElementById('btn-addNewAttr').onclick = function(){
   //get the name of the new attribute
   var attr_name = document.getElementById('form-input-attributeName').value;
+  if(attr_name.length > 0){
+    //add that name to the json object
+    json[attr_name] = [];
 
-  //add that name to the json object
-  json[attr_name] = [];
+    //output all the values
+    outputAttrs(json);
+  }
 
-  //output all the values
-  outputAttrs(json);
+
 };
 
 var getKeys = function(obj){
@@ -107,24 +110,30 @@ function addValue(clickedVal) {
   //this function should add the current values to the required object property array
   var attr_val = document.getElementById('form-input-attributeValue').value;
   var attr_price = document.getElementById('form-input-attributePrice').value;
-  var obj = {"Value":attr_val, "Price":attr_price};
+  if(attr_val.length > 0 && attr_price.length > 0){
+    var obj = {"Value":attr_val, "Price":attr_price};
 
-  json[clickedVal].push(obj);
+    json[clickedVal].push(obj);
 
-  outputAttrs(json);
+    outputAttrs(json);
+  }
+
 }
 
 document.getElementById('btn-addNewShopGrpDisc').onclick = function(){
   var price = document.getElementById('form-input-productPrice').value;
   var group = document.getElementById('form-input-specialShopGroup').value;
+  if(price.length >0 && group.length>0){
+    var obj = {"Price":price, "Group":group};
 
-  var obj = {"Price":price, "Group":group};
+    pricesArray.push(obj);
 
-  pricesArray.push(obj);
+    outputArray(pricesArray);
 
-  outputArray(pricesArray);
+    document.getElementById("prod_prices").value = JSON.stringify(pricesArray);
+  }
 
-  document.getElementById("prod_prices").value = JSON.stringify(pricesArray);
+
 }
 
 function outputArray(array){
