@@ -1,7 +1,7 @@
 <!-- Form Container starts here -->
 <div class="container">
     <!-- Main content starts here -->
-    <?php get_product_data($dbo); ?>
+    <?php echo $row[1]; ?>
     <form action="editprod.php" method="POST" class="form-horizontal">
 
         <div class="form-group">
@@ -26,7 +26,7 @@
                     <p class="labelText">Product Name</p>
                 </div>
                 <div class="col-xs-12 col-sm-9  col-md-3 col-lg-4">
-                    <input name="prod_name" type="text" class="text-input-underline" placeholder="Product Name" id="form-input-productName" oninput="checkString(this.id, 40)" value="<?php if(isset($_POST['$prod_name'])){echo $_POST['$prod_name'];}?>" required>
+                    <input name="prod_name" type="text" class="text-input-underline" placeholder="Product Name" id="form-input-productName" oninput="checkString(this.id, 40)" value="<?php if(isset($_POST['$prod_name'])){echo $_POST['$prod_name'];}else{ echo $row[1];}?>" required>
                     <p id="form-error-productName">
                         <?php
 
@@ -46,7 +46,7 @@
                         <br>(Max 128 Characters)</p>
                 </div>
                 <div class="col-xs-12 col-sm-9 col-md-9 col-lg-10">
-                    <textarea name="prod_desc" class="form-control" id="form-input-shortDesc" rows="2" placeholder="Description Text" oninput="checkString(this.id, 128)" maxlength="128" required><?php if(isset($_POST['prod_desc'])){echo $_POST['prod_desc'];}?></textarea>
+                    <textarea name="prod_desc" class="form-control" id="form-input-shortDesc" rows="2" placeholder="Description Text" oninput="checkString(this.id, 128)" maxlength="128" required><?php if(isset($_POST['prod_desc'])){echo $_POST['prod_desc'];}else{ echo $row[1];}?></textarea>
                     <p id="form-error-shortDesc">
                         <?php
                         if(isset($_POST['prod_desc_error']))
@@ -66,7 +66,7 @@
                         <br>(Max 256 Characters)</p>
                 </div>
                 <div class="col-xs-12 col-sm-9 col-md-9 col-lg-10">
-                    <textarea name="prod_long_desc" class="form-control exampleTextarea" id="form-input-longDesc" rows="4" placeholder="Description Text" oninput="checkString(this.id, 256)" maxlength="256" required><?php if(isset($_POST['prod_long_desc'])){echo $_POST['prod_long_desc'];}?></textarea>
+                    <textarea name="prod_long_desc" class="form-control exampleTextarea" id="form-input-longDesc" rows="4" placeholder="Description Text" oninput="checkString(this.id, 256)" maxlength="256" required><?php if(isset($_POST['prod_long_desc'])){echo $_POST['prod_long_desc'];}else{ echo $row[1];}?></textarea>
                     <p id="form-error-longDesc">
                         <?php
                         if(isset($_POST['prod_long_desc_error']))
@@ -363,7 +363,7 @@
                     <p class="labelText">Product SKU</p>
                 </div>
                 <div class="col-xs-12 col-sm-3  col-md-3 col-lg-2">
-                    <input name="prod_sku" type="text" class="text-input-underline" placeholder="Product SKU" id="form-input-sku" oninput="checkSKU(this.id)" value="<?php if(isset($_POST['prod_sku'])){echo $_POST['prod_sku'];}?>" required>
+                    <input name="prod_sku" type="text" class="text-input-underline" placeholder="Product SKU" id="form-input-sku" oninput="checkSKU(this.id)" value="<?php if(isset($_POST['prod_sku'])){echo $_POST['prod_sku'];}else{echo $row[5];}?>" required>
                     <p id="form-error-sku">
                         <?php
 

@@ -281,6 +281,7 @@ function edit_category_form($dbo){
     }
 */
 }
+
 //Function that unsets all post variables that were set from the form on the addcatform.php page
 function unsetCatForm(){
     unset($_POST['cat_name_title']);
@@ -850,216 +851,38 @@ function insert_product_prices($dbo, $prod_id){
 }
 
 function edit_prod($dbo){
-    //function that handles editing an existing product
-    check_user_permission_level();
-
-    //Validate the form
-    $validated = validateProd();
-
-    //If the form passes the validation test
-    if ($validated==true) {
-
-        //update the product data info to the DB
-        $prod_id = update_product($dbo);
-
-        //unset the post variables from the last form
-        unsetProdForm();
-        //unset the post error message variables from the last form
-        unsetProdFormErrors();
-    }
-    else {
-        $validated = false;
-        //if info hasnt been added, show the form to edit the info again
-        include '../layouts/editprodform.php';
-    }
-}
-
-//this function gets the product data to be displayed in forms when editprod is loaded
-//not sure how l can use these with the form
-function get_product_data($dbo){
-
-  $validated = false; //can't trust the browser, so assume prod_id is invalid
-  if (isset($_GET['prod_id']) && !empty($_GET['prod_id'])) { //if a prod_id is specified
-    $id = sanitise_number($_GET['prod_id']); //sanitise the prod_id specified
-    if (isNumber($id)) { //if it is a number (product ID's can only be numbers)
-      $prod_id = $id; //get the product ID
-      $validated = true;
-    }
+  if(isset($_POST['prod_id'])){
+    submit_edit_prod($dbo);
   }
-    if ($validated == true){
-    //$stmt = mysql_query("SELECT * FROM product WHERE prod_id=$id");
-    //should use PDO and prepared statements to avoid SQL injection
-    $stmt = null;
-    $stmt = $dbo->prepare("SELECT prod_name, prod_desc, prod_long_desc, prod_sku, prod_weight, prod_l, prod_w, prod_h FROM product WHERE prod_id=(:id)");
+  else{
+    if(isset($_GET['prod_id'])){
+      $prod_id = $_GET['prod_id'];
 
-    $stmt->bindParam(':id', $prod_id);
-    try_or_die($stmt);
-
-    //$row = mysql_fetch_array($stmt);
-    while($row = $stmt->fetch()) {
-      $prod_name = $row[1];
-      $prod_desc = $row[2];
-      $prod_long_desc = $row[4];
-      $prod_sku = $row[5];
-      $prod_weight = $row[7];
-      $prod_l = $row[8];
-      $prod_w = $row[9];
-      $prod_h = $row[10];
+      $row = get_product_info($dbo, $prod_id);
+      include '../layouts/editprodform.php';
+    } else {
+      echo 'not a valid product';
     }
   }
 }
 
-function update_product($dbo){
+function get_product_info($dbo, $prod_id){
+  //function that gets all of the information for the product to be edited, and returns it so that it may be prefilled
+  $stmt = $dbo->prepare("SELECT * FROM product WHERE prod_id = (:prod_id)");
 
-    $validated = false; //can't trust the browser, so assume prod_id is invalid
-    if (isset($_GET['prod_id']) && !empty($_GET['prod_id'])) { //if a prod_id is specified
-      $id = sanitise_number($_GET['prod_id']); //sanitise the prod_id specified
-      if (isNumber($id)) { //if it is a number (product ID's can only be numbers)
-        $prod_id = $id; //get the product ID
-        $validated = true;
-      }
-    }
-      if ($validated == true){
-    //statement to update product values
-    $stmt = $dbo->prepare("UPDATE PRODUCT SET
-    prod_name = (:prod_name),
-    prod_desc = (:prod_desc),
-    prod_img_url = (:prod_img_url),
-    prod_long_desc = (:prod_long_desc),
-    prod_sku = (:prod_sku),
-    prod_disp_cmd = (:prod_disp_cmd),
-    prod_weight = (:prod_weight),
-    prod_l = (:prod_l),
-    prod_w = (:prod_w),
-    prod_h = (:prod_h)
-    WHERE prod_id = $id");
+  $stmt->bindParam(':prod_id', $prod_id);
 
-    $stmt->bindParam(':prod_name', $_POST['prod_name']);
-    $stmt->bindParam(':prod_desc', $_POST['prod_desc']);
-    $stmt->bindParam(':prod_img_url', $_POST['prod_img_url']);
-    $stmt->bindParam(':prod_long_desc', $_POST['prod_long_desc']);
-    $stmt->bindParam(':prod_sku', $_POST['prod_sku']);
-    $stmt->bindParam(':prod_disp_cmd', $_POST['prod_disp_cmd']);
-    $stmt->bindParam(':prod_weight', $_POST['prod_weight']);
-    $stmt->bindParam(':prod_l', $_POST['prod_l']);
-    $stmt->bindParam(':prod_w', $_POST['prod_w']);
-    $stmt->bindParam(':prod_h', $_POST['prod_h']);
+  try_or_die($stmt);
 
-    try_or_die($stmt);
+  $row = $stmt->fetch();
 
-    //need to get the prod_id of the new product
-    $stmt = $dbo->prepare("SELECT prod_id FROM product WHERE prod_name = (:prod_name)");
-    $stmt->bindParam(':prod_name', $_POST['prod_name']);
-
-    try_or_die($stmt);
-
-    $prod_id = $stmt->fetchColumn();
-
-    return $prod_id;
-  }
+  return $row;
 }
 
-function update_product_category($dbo, $prod_id) {
-    //function to update product-category relationship
-    //delete the relationships first, then insert the newly selected ones
-
-   $cats = $_POST['cat'];
-    foreach($cats as $cat){
-        //delete the row where the cgprrel = prod_id and cat_id=removed cat
-        $stmt = $dbo->prepare("DELETE FROM cgprrel WHERE cgpr_prod_id == (:prod_id) AND cgpr_cat_id == (:cat_id);");
-
-        $stmt->bindParam(':cat_id', $cat);
-        $stmt->bindParam(':prod_id', $prod_id);
-
-        try_or_die($stmt);
-
-        $stmt = $dbo->prepare("INSERT INTO cgprrel(cgpr_cat_id, cgpr_prod_id) VALUES(:cat_id, :prod_id);");
-
-        $stmt->bindParam(':cat_id', $cat);
-        $stmt->bindParam(':prod_id', $prod_id);
-
-        try_or_die($stmt);
-    }
+function submit_edit_prod($dbo){
+  //function needs to submit updated product information to the database
+  return;
 }
-
-function update_product_price($dbo, $prod_id){
-    //function updates the product prices for different shopper groups
-
-    $array = json_decode($_POST['prod_prices']);
-    //passed a json array
-
-    $updateStatement = $dbo->prepare("UPDATE prodprices SET prpr_prod_id = :prod_id, prpr_shopgrp = :shopgrp, prpr_price = :price");
-    //statement prepared
-
-    for($i = 0; $i < sizeOf($array); $i++){
-        //for each shopper group, price is inserted
-        $updateStatement->bindParam(':prod_id', $prod_id);
-        $updateStatement->bindParam(':shopgrp', $array[$i]->Group);
-        $updateStatement->bindParam(':price', $array[$i]->Price);
-
-        try_or_die($updateStatement);
-    }
-}
-
-function delete_product_price($dbo, $prod_id) {
-    //function to delete product price
-
-    $array = json_decode($_POST['prod_prices']);
-
-    $deleteStatement = $dbo->prepare("DELETE FROM prodprices WHERE prpr_prod_id = (:prod_id) AND prpr_shopgrp = (:shopgrp) AND prpr_price = (:price);");
-    //statement prepared
-
-    for($i = 0; $i < sizeOf($array); $i++){
-        //for each shopper group, price is deleted
-        $deleteStatement->bindParam(':prod_id', $prod_id);
-        $deleteStatement->bindParam(':shopgrp', $array[$i]->Group);
-        $deleteStatement->bindParam(':price', $array[$i]->Price);
-
-        try_or_die($deleteStatement);
-    }
-
-}
-    //if attribute added
-    //1st: add product attribute to Attribute table
-    //2nd: add attribute values for new attribute to AttributeValue table
-    //This is done by the submit_product_attributes function
-
-    //if attribute_removed
-    //1st: remove attribute values from AttributeValue table
-    //2nd: remove attribute from the Attribute table
-
-function remove_attribute($dbo, $prod_id){
-
-    //a php object is created out of the json string posted to the server
-    $json = json_decode($_POST['json']);
-
-	//prepare db statement
-    $stmt = $dbo->prepare("DELETE FROM attributevalue WHERE attrval_prod_id = (:prod_id) AND attrval_attr_id = (:attr_id) AND attrval_value = (:value) AND attrval_price = (:price);");
-
-    foreach(get_object_vars($json) as $property=>$value) {
-
-    $stmt->bindParam(':prod_id', $prod_id);
-    $stmt->bindParam(':name', $property);
-
-    try_or_die($stmt);
-
-    }
-
-    $stmt = $dbo->prepare("DELETE FROM attribute WHERE product_prod_id = (:prod_id) AND name = (:name);");
-
-    //loop through the properties and their values
-    foreach(get_object_vars($json) as $property=>$value) {
-
-        //binds the passed product id and pro
-        $stmt->bindParam(':prod_id', $prod_id);
-        $stmt->bindParam(':name', $property);
-
-        //Deletes the attribute value and attribute
-        try_or_die($stmt);
-
-    }
-}
-
 
 function delete_prod($dbo){
     //function to delete a product from the db
