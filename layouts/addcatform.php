@@ -119,8 +119,8 @@
                         <?php
 
 
-                        if(isset($_POST['prod_disp_cmd_error'])){
-                            echo $_POST['prod_disp_cmd_error'];
+                        if(isset($_POST['cat_disp_cmd_error'])){
+                            echo $_POST['cat_disp_cmd_error'];
                         }
                         ?>
 

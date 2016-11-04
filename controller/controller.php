@@ -94,12 +94,13 @@ function get_category_products($dbo){
     //gathers product details for each of the products
 
     while($row2 = $stmt2->fetch()) { ?>
-        <a href = "<?php echo $row2[4]."?prod_id=".$row2[0]?>">
+        <a class = "productLink" href = "<?php echo $row2[4]."?prod_id=".$row2[0]?>">
           <div class=  "col-md-4 productBox">
             <img src = "../img/<?php echo $row2[3] ?>" width = "200" height = "200"/><br/>
             <h3 class = "productname"><?php echo $row2[1] ?></h3>
             <h3 class = "price">$<?php echo $row2[5] ?></h3>
             <p class = "desc"><?php echo $row2[2] ?></p>
+            <a href = "editprod.php?prod_id=<?php echo $row2[0]?>">Edit</a>
           </div>
         </a>
     <?php }
@@ -257,6 +258,71 @@ function edit_category($dbo){
     }
 
 
+}
+
+//This updates the category after displaying a dropdown to select using select_category()
+function edit_category_form($dbo){
+    //from role based access control
+    check_user_permission_level();
+    //Validate the form using validate_cat(). Set it to false to allow it to display until this is completed.
+    //$validated = validateCategory();
+    $cats = $_POST['cat'];
+    if($cats!=null){
+        include '../layouts/editcatupdater.php';
+        foreach($cats as $cat){
+            $stmt->bindParam(':id', $cat);
+        }
+    }
+    else {
+        include '../layouts/editcatform.php';
+    }
+
+
+    $stmt = null;
+/*    if($validated==true){
+    //If the form passes the validation test
+   // if ($validated==true) {
+        //add the form data info to the DB using submit category, then figure out if parents are needed
+        //This adds the product to the database
+        $cat_id = submit_category($dbo);
+        //Submits the category parent
+        submit_category_rel($dbo, $cat_id);
+
+        //unset the post variables from the last form
+        unsetCatForm();
+        unsetCatFormErrors();
+
+        //echos out a link for testing purposes only DO NOT LEAVE THIS IN
+
+        echo "<p>Category has successfully updated to the system.</p>";
+        echo "<p><p><a href='editcat.php'>Update another category</a></p></p>";
+     }
+    else {
+    //      $validated = false;
+        //if info hasnt been added, show the form to add new info
+        include '../layouts/editcatform.php';
+    }
+*/
+}
+
+function get_cat_name($cat_id){
+
+}
+
+function get_cat_desc($cat_id){
+    
+}
+
+function get_catdisp_cmd($cat_id){
+    
+}
+
+function get_catimg_url($cat_id){
+    
+}
+
+function get_cat_childname($cat_id){
+    
 }
 
 //Function that unsets all post variables that were set from the form on the addcatform.php page
@@ -492,7 +558,7 @@ function validateCategory(){
             $errors .="You have to add an image";
         }
         if(in_array($file_ext,$allowedExtensions)=== false){
-            $errors .="That extension isn't allowed, please only use JPEG, JPG or PNG";
+            $errors .="<br>That extension isn't allowed, please only use JPEG, JPG or PNG";
         }
         if($file_size > 2097152){
             $errors .= "File must be under 2MB";
@@ -502,7 +568,7 @@ function validateCategory(){
             echo "Success";
         } else{
 
-            $_POST['cat_img_error'] = $errors;
+            $_POST['cat_img_error'] = "<span class='errorMessage'>". $errors . "</span>";
             $validated = false;
         }
     }
@@ -935,16 +1001,15 @@ function validateProd(){
             $errors .="You have to add an image";
         }
         if(in_array($file_ext,$allowedExtensions)=== false){
-            $errors .="That extension isn't allowed, please only use JPEG, JPG or PNG";
+            $errors .="<br>That extension isn't allowed, please only use JPEG, JPG or PNG";
         }
         if($file_size > 2097152){
-            $errors .= "File must be under 2MB";
+            $errors .= "<br>File must be under 2MB";
         }
         if(empty($errors)==true){
             move_uploaded_file($file_tmp, "../img/".$file_name);
-            echo "Success";
         } else{
-            $_POST['prod_img_error'] = $errors;
+            $_POST['prod_img_error'] = "<span class='errorMessage'>".$errors. "</span>";
             $validated = false;
         }
     }
@@ -1162,6 +1227,28 @@ function get_all_categories($dbo){
     $stmt = null;
 }
 
+function get_all_categories_edit($dbo){
+    /* function that gets all of the categories and their ids for using in adding
+    producs to categories - we might also want to filter out the root category
+    as an option */
+    $stmt = $dbo->prepare("SELECT cat_id, cat_name FROM category");
+    $stmt->bindParam(':id', $parent_id);
+    try_or_die($stmt);
+
+    //outputs the html for category selection, with a checkbox for each possible category
+    while($row = $stmt->fetch()) { ?>
+        <div class="checkbox">
+            <label>
+                <input class="btn" type="submit" name="cat[]" value="<?php echo $row['cat_id']; ?>">
+                <?php echo $row['cat_name']; ?>
+            </label>
+        </div>
+       <?php
+    }
+
+    $stmt = null;
+}
+
 function displayproduct($dbo) {
     /* Displays only the details of the product on displayproduct.php page */
     $shopper_group = 1; //the default shopper group
@@ -1337,43 +1424,49 @@ function edit_prod($dbo){
 //this function gets the product data to be displayed in forms when editprod is loaded
 //not sure how l can use these with the form
 function get_product_data($dbo){
-    $id = $_GET['prod_id']; //this needs to be sanitised and validated
 
+  $validated = false; //can't trust the browser, so assume prod_id is invalid
+  if (isset($_GET['prod_id']) && !empty($_GET['prod_id'])) { //if a prod_id is specified
+    $id = sanitise_number($_GET['prod_id']); //sanitise the prod_id specified
+    if (isNumber($id)) { //if it is a number (product ID's can only be numbers)
+      $prod_id = $id; //get the product ID
+      $validated = true;
+    }
+  }
+    if ($validated == true){
     //$stmt = mysql_query("SELECT * FROM product WHERE prod_id=$id");
     //should use PDO and prepared statements to avoid SQL injection
-    $stmt = $dbo->prepare("SELECT * FROM product WHERE prod_id=(:id)");
-    $stmt->bindParam(':id', $id);
+    $stmt = null;
+    $stmt = $dbo->prepare("SELECT prod_name, prod_desc, prod_long_desc, prod_sku, prod_weight, prod_l, prod_w, prod_h FROM product WHERE prod_id=(:id)");
+
+    $stmt->bindParam(':id', $prod_id);
     try_or_die($stmt);
 
     //$row = mysql_fetch_array($stmt);
     while($row = $stmt->fetch()) {
-      $prod_name = $row[0];
-      $prod_desc = $row[1];
-      $prod_long_desc = $row[2];
-      $prod_sku = $row[3];
-      $prod_weight = $row[4];
-      $prod_l = $row[5];
-      $prod_w = $row[6];
-      $prod_h = $row[7];
+      $prod_name = $row[1];
+      $prod_desc = $row[2];
+      $prod_long_desc = $row[4];
+      $prod_sku = $row[5];
+      $prod_weight = $row[7];
+      $prod_l = $row[8];
+      $prod_w = $row[9];
+      $prod_h = $row[10];
     }
-
-    $stmt = null;
-    //getting product values from db
-/*
-    $prod_name = $row['prod_name'];
-    $prod_desc = $row['prod_desc'];
-    $prod_long_desc = $row['prod_long_desc'];
-    $prod_sku = $row['prod_sku'];
-    $prod_weight = $row['prod_weight'];
-    $prod_l = $row['prod_l'];
-    $prod_w = $row['prod_w'];
-    $prod_h = $row['prod_h'];
-*/
+  }
 }
 
 function update_product($dbo){
-    $id = $_GET['prod_id'];
 
+    $validated = false; //can't trust the browser, so assume prod_id is invalid
+    if (isset($_GET['prod_id']) && !empty($_GET['prod_id'])) { //if a prod_id is specified
+      $id = sanitise_number($_GET['prod_id']); //sanitise the prod_id specified
+      if (isNumber($id)) { //if it is a number (product ID's can only be numbers)
+        $prod_id = $id; //get the product ID
+        $validated = true;
+      }
+    }
+      if ($validated == true){
     //statement to update product values
     $stmt = $dbo->prepare("UPDATE PRODUCT SET
     prod_name = (:prod_name),
@@ -1410,7 +1503,7 @@ function update_product($dbo){
     $prod_id = $stmt->fetchColumn();
 
     return $prod_id;
-
+  }
 }
 
 function update_product_category($dbo, $prod_id) {
@@ -1420,8 +1513,14 @@ function update_product_category($dbo, $prod_id) {
    $cats = $_POST['cat'];
     foreach($cats as $cat){
         //delete the row where the cgprrel = prod_id and cat_id=removed cat
-        $stmt = $dbo->prepare("DELETE FROM cgprrel WHERE cgpr_prod_id == $prod_id AND cgpr_cat_id == (:cat_id) ;
-        INSERT INTO cgprrel(cgpr_cat_id, cgpr_prod_id) VALUES(:cat_id, :prod_id);");
+        $stmt = $dbo->prepare("DELETE FROM cgprrel WHERE cgpr_prod_id == (:prod_id) AND cgpr_cat_id == (:cat_id);");
+
+        $stmt->bindParam(':cat_id', $cat);
+        $stmt->bindParam(':prod_id', $prod_id);
+
+        try_or_die($stmt);
+
+        $stmt = $dbo->prepare("INSERT INTO cgprrel(cgpr_cat_id, cgpr_prod_id) VALUES(:cat_id, :prod_id);");
 
         $stmt->bindParam(':cat_id', $cat);
         $stmt->bindParam(':prod_id', $prod_id);
@@ -1477,14 +1576,23 @@ function delete_product_price($dbo, $prod_id) {
     //2nd: remove attribute from the Attribute table
 
 function remove_attribute($dbo, $prod_id){
-    //function not yet completed
 
     //a php object is created out of the json string posted to the server
     $json = json_decode($_POST['json']);
 
-    $stmt = $dbo->prepare("DELETE FROM attributevalue WHERE attrval_prod_id = (:prod_id) AND attrval_attr_id = (:attr_id) AND attrval_value = (:value) AND attrval_price = (:price);
-        DELETE FROM attribute WHERE product_prod_id = (:prod_id) AND name = (:name);");
+	//prepare db statement
+    $stmt = $dbo->prepare("DELETE FROM attributevalue WHERE attrval_prod_id = (:prod_id) AND attrval_attr_id = (:attr_id) AND attrval_value = (:value) AND attrval_price = (:price);");
 
+    foreach(get_object_vars($json) as $property=>$value) {
+
+    $stmt->bindParam(':prod_id', $prod_id);
+    $stmt->bindParam(':name', $property);
+
+    try_or_die($stmt);
+
+    }
+
+    $stmt = $dbo->prepare("DELETE FROM attribute WHERE product_prod_id = (:prod_id) AND name = (:name);");
 
     //loop through the properties and their values
     foreach(get_object_vars($json) as $property=>$value) {
@@ -1500,29 +1608,57 @@ function remove_attribute($dbo, $prod_id){
 }
 
 
-/*function delete_prod($dbo){
+function delete_prod($dbo){
     //function to delete a product from the db
     check_user_permission_level();
 
-    $prod_id = $_GET['prod_id'];
+    $validated = false; //can't trust the browser, so assume prod_id is invalid
+    if (isset($_GET['prod_id']) && !empty($_GET['prod_id'])) { //if a prod_id is specified
+      $id = sanitise_number($_GET['prod_id']); //sanitise the prod_id specified
+      if (isNumber($id)) { //if it is a number (product ID's can only be numbers)
+        $prod_id = $id; //get the product ID
+        $validated = true;
+      }
+    }
+      if ($validated == true){
 
-    //statement for deleting the attribute, prices, category relationship and product values
-	//not yet completed
-    $stmt = $dbo->prepare("DELETE FROM cgprrel WHERE cgpr_prod_id == $prod_id AND cgpr_cat_id == (:cat_id);
-        DELETE FROM prodprices WHERE prpr_prod_id = (:prod_id) AND prpr_shopgrp = (:shopgrp) AND prpr_price = (:price);
-        DELETE FROM attributevalue WHERE attrval_prod_id = (:prod_id) AND attrval_attr_id = (:attr_id) AND attrval_value = (:value) AND attrval_price = (:price);
-        DELETE FROM attribute WHERE product_prod_id = (:prod_id) AND name = (:name);
-        DELETE FROM product
-        ";);
+  //statement for deleting the attribute, prices, category relationship and product values
+    $stmt = $dbo->prepare("DELETE FROM cgprrel WHERE cgpr_prod_id = (:prod_id);");
 
-        $stmt->bindParam(':cat_id', $cat);
-        $stmt->bindParam(':prod_id', $prod_id);
-        $stmt->bindParam(':name', $property);
-        $stmt->bindParam(':prod_id', $prod_id);
-        $stmt->bindParam(':name', $property);
+    $stmt->bindParam(':prod_id', $prod_id);
 
-    //page should probably redirect to catalogue.php after product is deleted.
+    try_or_die($stmt);
+
+    $stmt = $dbo->prepare("DELETE FROM prodprices WHERE prpr_prod_id = (:prod_id);");
+
+    $stmt->bindParam(':prod_id', $prod_id);
+
+    try_or_die($stmt);
+
+    $stmt = $dbo->prepare("DELETE FROM attributevalue WHERE attrval_prod_id = (:prod_id);");
+
+    $stmt->bindParam(':prod_id', $prod_id);
+
+    try_or_die($stmt);
+
+    $stmt = $dbo->prepare("DELETE FROM attribute WHERE product_prod_id = (:prod_id);");
+
+    $stmt->bindParam(':prod_id', $prod_id);
+
+    try_or_die($stmt);
+
+    $stmt = $dbo->prepare("DELETE FROM product WHERE prod_id = (:prod_id);");
+
+    $stmt->bindParam(':prod_id', $prod_id);
+
+    try_or_die($stmt);
+      }
+
+      //confirmation message
+      echo("This product has been successfully deleted");
+
+      //link back to catalogue page
+      echo '<br><br><a href="catalogue.php">Back to Catalogue</a>';
 }
-*/
 
 ?>

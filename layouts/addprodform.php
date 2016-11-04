@@ -17,7 +17,7 @@
                 </div>
                 <!--Product Name Info-->
                 <div class="hidden-xs col-sm-3 col-md-3 col-lg-2">
-                    <p class="labelText">Product Name(40 characters max)</p>
+                    <p class="labelText">Product Name<br>(40 characters max)</p>
                 </div>
                 <div class="col-xs-12 col-sm-9  col-md-3 col-lg-4">
                     <input name="prod_name" type="text" class="text-input-underline" placeholder="Product Name" id="form-input-productName" oninput="checkString(this.id, 40)" maxlength="40" value="<?php if(isset($_POST['prod_name'])){echo $_POST['prod_name'];}?>" required>
@@ -119,7 +119,7 @@
             <!--Packaging Information Ends-->
             <!--Display Product Starts-->
             <div class="form-group row">
-                <div class="hidden-xs col-sm-3 col-md-2 col-lg-2">
+                <div class="hidden-xs col-sm-3 col-md-3 col-lg-2">
                     <p class="labelText">Display Product</p>
                 </div>
                 <div class="col-xs-12 col-sm-3  col-md-3 col-lg-4">
