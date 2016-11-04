@@ -13,7 +13,7 @@
     <!-- Static navbar -->
     <nav class="navbar navbar-default">
       <div class="container">
-        <a class="navbar-brand" href="/catomange/pages/catalogue.php">COMP344</a>
+        <a class="navbar-brand" href="/catomanage/pages/catalogue.php">COMP344</a>
         <ul class="nav navbar-nav">
           <li><a href="/catomanage/pages/catalogue.php">Catalogue</a></li>
           <li><a href="/catomanage/pages/addcategory.php">Add Category</a></li>
