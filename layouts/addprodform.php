@@ -22,7 +22,7 @@
                 <div class="col-xs-12 col-sm-9  col-md-3 col-lg-4">
                     <input name="prod_name" type="text" class="text-input-underline" placeholder="Product Name" id="form-input-productName" oninput="checkString(this.id, 40)" maxlength="40" value="<?php if(isset($_POST['prod_name'])){echo $_POST['prod_name'];}?>" required>
                     <p id="form-error-productName">
-                        <?php 
+                        <?php
 
                         if(isset($_POST['prod_name_error']))
                         {
@@ -42,7 +42,7 @@
                 <div class="col-xs-12 col-sm-9 col-md-9 col-lg-10">
                     <textarea name="prod_desc" class="form-control" id="form-input-shortDesc" rows="2" placeholder="Description Text" oninput="checkString(this.id, 128)" maxlength="128" required><?php if(isset($_POST['prod_desc'])){echo $_POST['prod_desc'];}?></textarea>
                     <p id="form-error-shortDesc">
-                        <?php 
+                        <?php
                         if(isset($_POST['prod_desc_error']))
                         {
                             echo $_POST['prod_desc_error'];
@@ -62,7 +62,7 @@
                 <div class="col-xs-12 col-sm-9 col-md-9 col-lg-10">
                     <textarea name="prod_long_desc" class="form-control exampleTextarea" id="form-input-longDesc" rows="4" placeholder="Description Text" oninput="checkString(this.id, 256)" maxlength="256" required><?php if(isset($_POST['prod_long_desc'])){echo $_POST['prod_long_desc'];}?></textarea>
                     <p id="form-error-longDesc">
-                        <?php 
+                        <?php
                         if(isset($_POST['prod_long_desc_error']))
                         {
                             echo $_POST['prod_long_desc_error'];
@@ -80,7 +80,7 @@
                 <div class="col-xs-12 col-sm-9 col-md-9  col-lg-10">
                     <?php get_all_categories($dbo); ?>
                     <p id="form-error-cat">
-                        <?php 
+                        <?php
                         if(isset($_POST['cat_error']))
                         {
                             echo $_POST['cat_error'];
@@ -89,7 +89,7 @@
 
                     </p>
                 </div>
-                
+
             </div>
             <div class="form-group row">
 
@@ -136,7 +136,7 @@
 
                     </p>
                 </div>
-                
+
             </div>
             <!--Product Display Ends-->
             <!--Attribute Management Starts here-->
@@ -146,7 +146,7 @@
                     <p class="col-xs-12 col-sm-8 col-md-8 col-lg-8">To add options/attributes to a item(e.g. Colour) write in the specified attribute that you would like to add and click the "Add New Attribute" button.<br> Afterwards to add in specific value options(e.g. red/blue) to the attribute you just added, write in the value you want and how much extra the price should be for that option and click the "Add Attribute Values" button.
                     <br> Multiple Attributes can be added with also multiple attribute values as well. </p>
                 </div>
-                
+
             </div>
             <!--Current Set Attributes Starts here-->
             <div class="form-group">
@@ -206,7 +206,7 @@
 
                     if(isset($_POST['prod_price_error'])){
                         echo $_POST['prod_price_error'];
-                    }   
+                    }
                     ?>
 
                         </p>
@@ -251,7 +251,7 @@
                 </div>
                 <!--Shopper group selection-->
                 <div class="col-xs-12 col-sm-3 col-md-3  col-lg-4">
-                    <select multiple class="form-control" id="form-input-specialShopGroup">
+                    <select class="form-control" id="form-input-specialShopGroup">
                         <?php get_all_shopper_groups($dbo); ?>
                     </select>
                 </div>
@@ -266,11 +266,11 @@
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 ">
                     <p id="prod_prices_error">
                     <?php
-                    
+
                         if(isset($_POST['product_shopGrp_error'])){
                             echo $_POST['product_shopGrp_error'];
                         }
-                        
+
                     ?>
                     </p>
                 </div>
@@ -290,7 +290,7 @@
                 <div class="col-xs-12 col-sm-2  col-md-2 col-lg-2">
                     <input name="prod_l" type="number" class="text-input-underline" placeholder="Length" id="form-input-length" oninput="checkNumber(this.id)" value="<?php if(isset($_POST['prod_l'])){echo $_POST['prod_l'];}?>" required>
                     <p id="form-error-length">
-                        <?php 
+                        <?php
                         if(isset($_POST['prod_l_error'])){
                             echo $_POST['prod_l_error'];
                         }
@@ -306,7 +306,7 @@
                 <div class="col-xs-12 col-sm-2  col-md-2 col-lg-2">
                     <input name="prod_w" type="number" class="text-input-underline" placeholder="Width" id="form-input-width" oninput="checkNumber(this.id)" value="<?php if(isset($_POST['prod_w'])){echo $_POST['prod_w'];}?>" required>
                     <p id="form-error-width">
-                        <?php 
+                        <?php
 
                         if(isset($_POST['prod_w_error'])){
                             echo $_POST['prod_w_error'];
@@ -321,7 +321,7 @@
                 <div class="col-xs-12 col-sm-2  col-md-2 col-lg-2">
                     <input name="prod_h" type="number" class="text-input-underline" placeholder="Height" id="form-input-height" oninput="checkNumber(this.id)" value="<?php if(isset($_POST['prod_h'])){echo $_POST['prod_h'];}?>" required>
                     <p id="form-error-height">
-                        <?php 
+                        <?php
 
                         if(isset($_POST['prod_h_error'])){
                             echo $_POST['prod_h_error'];
@@ -340,7 +340,7 @@
                 <div class="col-xs-12 col-sm-3  col-md-3 col-lg-2">
                     <input name="prod_weight" type="number" class="text-input-underline" placeholder="Weight" id="form-input-weight" oninput="checkNumber(this.id)" value="<?php if(isset($_POST['prod_weight'])){echo $_POST['prod_weight'];}?>" required>
                     <p id="form-error-weight">
-                        <?php 
+                        <?php
 
                         if(isset($_POST['prod_weight_error'])){
                             echo $_POST['prod_weight_error'];
@@ -372,7 +372,7 @@
                 </div>
                 <!--Product SKU Ends here-->
             </div>
-            
+
             <!--Form Submit button-->
             <div class="form-group row">
                 <div class="form-group">
