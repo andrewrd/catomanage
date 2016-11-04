@@ -235,11 +235,12 @@ function get_cat_info($dbo, $cats){
 }
 
 //This gets the relational information for the editcatoform
-function get_parent_info($dbo, $post_id){
+function get_parent_info($dbo, $post_id, $child_id){
         sanitise_number($post_id);
 
-        $stmt = $dbo->prepare("SELECT CGRYREL_ID_CHILD FROM CGRYREL WHERE CGRYREL_ID_PARENT = (:id)");
+        $stmt = $dbo->prepare("SELECT CGRYREL_ID_CHILD FROM CGRYREL WHERE CGRYREL_ID_PARENT = (:id) AND CGRYREL_ID_CHILD = (:cat_check)");
         $stmt->bindParam(':id', $post_id);
+        $stmt->bindParam(':cat_check', $child_id);
 
         try_or_die($stmt);
 
@@ -738,7 +739,7 @@ function get_all_categories_editor($dbo, $params){
         <div class="checkbox">
             <label>
                 <input <?php
-                        if (get_parent_info($dbo, $row['cat_id'])==true){
+                        if (get_parent_info($dbo, $row['cat_id'], $_POST['cats'])==true){
                             echo "checked";
                         }
 
