@@ -143,7 +143,10 @@
             <div class="form-group">
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <h3 class="subHeader">Attribute Management</h3>
+                    <p class="col-xs-12 col-sm-8 col-md-8 col-lg-8">To add options/attributes to a item(e.g. Colour) write in the specified attribute that you would like to add and click the "Add New Attribute" button<br> Afterwards to add in specific value options(e.g. red/blue) to the attribute you just added, write in the value you want and how much extra the price should be for that option and click the "Add Attribute Values" button.
+                    <br> Multiple Attributes can be added with also multiple attribute values as well. </p>
                 </div>
+                
             </div>
             <!--Current Set Attributes Starts here-->
             <div class="form-group">
@@ -161,7 +164,7 @@
             </div>
             <div class="form-group">
                 <div class="col-xs-3 col-sm-2 col-md-2 col-lg-12 ">
-                    <button type="button" id="btn-addNewAttr" class="btn btn-default">Add New Attribute +</button>
+                    <button type="button" id="btn-addNewAttr" class="btn btn-success">Add New Attribute +</button>
                 </div>
             </div>
             <!--Attribute Input Starts here-->
@@ -213,6 +216,7 @@
             <div class="form-group">
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <h3 class="subHeader">Price Management</h3>
+                    <p class="col-xs-12 col-sm-8 col-md-8 col-lg-8">This section is to add prices for different shopper groups. Simply type in a price for a certain shopper group, select a group that you want to add that price for and "Add New Price+". <br>To add more, write a new price, select a new shopper group and hit the button again</p>
                 </div>
             </div>
             <div class="form-group">
@@ -255,7 +259,7 @@
             <!--Add new shopper group discount button-->
             <div class="form-group row">
                 <div class="col-xs-3 col-sm-2 col-md-2 col-lg-12 ">
-                    <button type="button" value="Add New Shopper Group Discount +" id="btn-addNewShopGrpDisc" class="btn btn-default">Add New Price +</button>
+                    <button type="button" value="Add New Shopper Group Discount +" id="btn-addNewShopGrpDisc" class="btn btn-success">Add New Price +</button>
                 </div>
             </div>
             <div class="form-group row">
@@ -280,7 +284,7 @@
             <div class="form-group row">
                 <!--Length Label-->
                 <div class="hidden-xs col-sm-2 col-md-2 col-lg-2">
-                    <p class="labelText">Length:</p>
+                    <p class="labelText">Length(cm):</p>
                 </div>
                 <!--Length Input-->
                 <div class="col-xs-12 col-sm-2  col-md-2 col-lg-2">
@@ -295,7 +299,7 @@
                 </div>
                 <!--Width Label-->
                 <div class="hidden-xs col-sm-1 col-md-1 col-lg-2">
-                    <p class="labelText">Width</p>
+                    <p class="labelText">Width(cm):</p>
 
                 </div>
                 <!--Width input-->
@@ -312,7 +316,7 @@
                     </p>
                 </div>
                 <div class="hidden-xs col-sm-1 col-md-1 col-lg-1">
-                    <p class="labelText">Height:</p>
+                    <p class="labelText">Height(cm):</p>
                 </div>
                 <div class="col-xs-12 col-sm-2  col-md-2 col-lg-2">
                     <input name="prod_h" type="number" class="text-input-underline" placeholder="Height" id="form-input-height" oninput="checkNumber(this.id)" value="<?php if(isset($_POST['prod_h'])){echo $_POST['prod_h'];}?>" required>
@@ -331,7 +335,7 @@
             <div class="form-group row">
                 <!--Weight Starts Here-->
                 <div class="hidden-xs col-sm-3 col-md-2 col-lg-2">
-                    <p class="labelText">Weight</p>
+                    <p class="labelText">Weight(kg)</p>
                 </div>
                 <div class="col-xs-12 col-sm-3  col-md-3 col-lg-2">
                     <input name="prod_weight" type="number" class="text-input-underline" placeholder="Weight" id="form-input-weight" oninput="checkNumber(this.id)" value="<?php if(isset($_POST['prod_weight'])){echo $_POST['prod_weight'];}?>" required>

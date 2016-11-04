@@ -62,7 +62,7 @@ function createButton(key) {
   var buttonId = document.createAttribute("class");
   var buttonFunc = document.createAttribute("onclick");
   buttonFunc.value = "addValue(this.value)";
-  buttonId.value = "add-val btn-default btn";
+  buttonId.value = "add-val btn-success btn";
   buttonAction.value = "button";
   buttonValue.value = key;
   button.setAttributeNode(buttonAction);
@@ -85,7 +85,7 @@ function removeAttr(key) {
   var buttonId = document.createAttribute("class");
   var buttonFunc = document.createAttribute("onclick");
   buttonFunc.value = "removeAttrFunc(this.value)";
-  buttonId.value = "remove-attr btn-default btn";
+  buttonId.value = "remove-attr btn-success btn";
   buttonAction.value = "button";
   buttonValue.value = key;
   button.setAttributeNode(buttonAction);
