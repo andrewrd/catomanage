@@ -260,6 +260,71 @@ function edit_category($dbo){
 
 }
 
+//This updates the category after displaying a dropdown to select using select_category()
+function edit_category_form($dbo){
+    //from role based access control
+    check_user_permission_level();
+    //Validate the form using validate_cat(). Set it to false to allow it to display until this is completed.
+    //$validated = validateCategory();
+    $cats = $_POST['cat'];
+    if($cats!=null){
+        include '../layouts/editcatupdater.php';
+        foreach($cats as $cat){
+            $stmt->bindParam(':id', $cat);
+        }
+    }
+    else {
+        include '../layouts/editcatform.php';
+    }
+
+
+    $stmt = null;
+/*    if($validated==true){
+    //If the form passes the validation test
+   // if ($validated==true) {
+        //add the form data info to the DB using submit category, then figure out if parents are needed
+        //This adds the product to the database
+        $cat_id = submit_category($dbo);
+        //Submits the category parent
+        submit_category_rel($dbo, $cat_id);
+
+        //unset the post variables from the last form
+        unsetCatForm();
+        unsetCatFormErrors();
+
+        //echos out a link for testing purposes only DO NOT LEAVE THIS IN
+
+        echo "<p>Category has successfully updated to the system.</p>";
+        echo "<p><p><a href='editcat.php'>Update another category</a></p></p>";
+     }
+    else {
+    //      $validated = false;
+        //if info hasnt been added, show the form to add new info
+        include '../layouts/editcatform.php';
+    }
+*/
+}
+
+function get_cat_name($cat_id){
+
+}
+
+function get_cat_desc($cat_id){
+    
+}
+
+function get_catdisp_cmd($cat_id){
+    
+}
+
+function get_catimg_url($cat_id){
+    
+}
+
+function get_cat_childname($cat_id){
+    
+}
+
 //Function that unsets all post variables that were set from the form on the addcatform.php page
 function unsetCatForm(){
     unset($_POST['cat_name_title']);
@@ -1158,6 +1223,28 @@ function get_all_categories($dbo){
             </label>
         </div>
 	   <?php
+    }
+
+    $stmt = null;
+}
+
+function get_all_categories_edit($dbo){
+    /* function that gets all of the categories and their ids for using in adding
+    producs to categories - we might also want to filter out the root category
+    as an option */
+    $stmt = $dbo->prepare("SELECT cat_id, cat_name FROM category");
+    $stmt->bindParam(':id', $parent_id);
+    try_or_die($stmt);
+
+    //outputs the html for category selection, with a checkbox for each possible category
+    while($row = $stmt->fetch()) { ?>
+        <div class="checkbox">
+            <label>
+                <input class="btn" type="submit" name="cat[]" value="<?php echo $row['cat_id']; ?>">
+                <?php echo $row['cat_name']; ?>
+            </label>
+        </div>
+       <?php
     }
 
     $stmt = null;

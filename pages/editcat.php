@@ -1,4 +1,5 @@
 <?php
+
 //Includes the application header
 include '../layouts/header.php';
 //Allows function calls and connection database
@@ -6,7 +7,9 @@ include '../controller/controller.php';
 
 ?>
 
-<?php edit_category($dbo); ?>
+<?php
+
+ edit_category_form($dbo); ?>
 
 <?php
 
