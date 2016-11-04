@@ -742,7 +742,7 @@ function get_all_categories_editor($dbo, $params){
                             echo "checked";
                         }
 
-                    } //iterated loop to check whether they match }
+                     //iterated loop to check whether they match }
                  ?>
 
                 type="checkbox" name="cat[]" value="<?php echo $row['cat_id']; ?>">
