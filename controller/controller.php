@@ -94,12 +94,13 @@ function get_category_products($dbo){
     //gathers product details for each of the products
 
     while($row2 = $stmt2->fetch()) { ?>
-        <a href = "<?php echo $row2[4]."?prod_id=".$row2[0]?>">
+        <a class = "productLink" href = "<?php echo $row2[4]."?prod_id=".$row2[0]?>">
           <div class=  "col-md-4 productBox">
             <img src = "../img/<?php echo $row2[3] ?>" width = "200" height = "200"/><br/>
             <h3 class = "productname"><?php echo $row2[1] ?></h3>
             <h3 class = "price">$<?php echo $row2[5] ?></h3>
             <p class = "desc"><?php echo $row2[2] ?></p>
+            <a href = "editprod.php?prod_id=<?php echo $row2[0]?>">Edit</a>
           </div>
         </a>
     <?php }
