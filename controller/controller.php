@@ -225,41 +225,6 @@ function select_category($dbo) {
     //list categories using a function call to populate a dropdown
 }
 
-//This updates the category after displaying a dropdown to select using select_category()
-function edit_category($dbo){
-    //from role based access control
-    check_user_permission_level();
-
-    //Validate the form using validate_cat(). Set it to false to allow it to display until this is completed.
-    //$validated = validateCategory();
-    $validated = validateCategory();
-
-    if($validated==true){
-    //If the form passes the validation test
-   // if ($validated==true) {
-        //add the form data info to the DB using submit category, then figure out if parents are needed
-        //This adds the product to the database
-        $cat_id = submit_category($dbo);
-        //Submits the category parent
-        submit_category_rel($dbo, $cat_id);
-
-        //unset the post variables from the last form
-        unsetCatForm();
-        unsetCatFormErrors();
-
-        //echos out a link for testing purposes only DO NOT LEAVE THIS IN
-
-        echo "<p>Category has successfully updated to the system.</p>";
-        echo "<p><p><a href='editcat.php'>Update another category</a></p></p>";
-     }
-    else {
-    //      $validated = false;
-        //if info hasnt been added, show the form to add new info
-        include '../layouts/editcatform.php';
-    }
-
-
-}
 
 //This updates the category after displaying a dropdown to select using select_category()
 function edit_category_form($dbo){
@@ -267,12 +232,23 @@ function edit_category_form($dbo){
     check_user_permission_level();
     //Validate the form using validate_cat(). Set it to false to allow it to display until this is completed.
     //$validated = validateCategory();
-    $cats = $_POST['cat'];
+    $cats = $_POST['cats'];
     if($cats!=null){
+        sanitise_number($cats);
+
+        //need to get the prod_id of the new product
+        $stmt = $dbo->prepare("SELECT * FROM category WHERE cat_id = (:id)");
+        $stmt->bindParam(':id', $cats);
+
+        try_or_die($stmt);
+
+        $row = $stmt->fetch();
         include '../layouts/editcatupdater.php';
-        foreach($cats as $cat){
-            $stmt->bindParam(':id', $cat);
-        }
+      session_start();
+      $_SESSION['category_name'] = $row[1];
+      $_SESSION['category_description'] = $row[2];
+      $_SESSION['category_img_url'] = $row[3];
+      $_SESSION['category_disp_cmd'] = $row[4];
     }
     else {
         include '../layouts/editcatform.php';
@@ -305,27 +281,6 @@ function edit_category_form($dbo){
     }
 */
 }
-
-function get_cat_name($cat_id){
-
-}
-
-function get_cat_desc($cat_id){
-
-}
-
-function get_catdisp_cmd($cat_id){
-
-}
-
-function get_catimg_url($cat_id){
-
-}
-
-function get_cat_childname($cat_id){
-
-}
-
 //Function that unsets all post variables that were set from the form on the addcatform.php page
 function unsetCatForm(){
     unset($_POST['cat_name_title']);
@@ -731,16 +686,19 @@ function get_all_categories_edit($dbo){
     try_or_die($stmt);
 
     //outputs the html for category selection, with a checkbox for each possible category
+
+    ?>
+    <select name="cats">
+    <?php
     while($row = $stmt->fetch()) { ?>
-        <div class="checkbox">
-            <label>
-                <input class="btn" type="submit" name="cat[]" value="<?php echo $row['cat_id']; ?>">
-                <?php echo $row['cat_name']; ?>
-            </label>
-        </div>
-       <?php
+                <option value="<?php echo $row['cat_id']; ?>">
+                <?php echo $row['cat_name'];
     }
 
+    ?>
+</select>
+        <button class="btn" type="submit" value="Submit">Submit</button>
+    <?php
     $stmt = null;
 }
 
