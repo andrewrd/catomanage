@@ -17,7 +17,7 @@
                 </div>
                 <!--Product Name Info-->
                 <div class="hidden-xs col-sm-3 col-md-3 col-lg-2">
-                    <p class="labelText">Product Name</p>
+                    <p class="labelText">Product Name(40 characters max)</p>
                 </div>
                 <div class="col-xs-12 col-sm-9  col-md-3 col-lg-4">
                     <input name="prod_name" type="text" class="text-input-underline" placeholder="Product Name" id="form-input-productName" oninput="checkString(this.id, 40)" maxlength="40" value="<?php if(isset($_POST['prod_name'])){echo $_POST['prod_name'];}?>" required>
@@ -143,7 +143,7 @@
             <div class="form-group">
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <h3 class="subHeader">Attribute Management</h3>
-                    <p class="col-xs-12 col-sm-8 col-md-8 col-lg-8">To add options/attributes to a item(e.g. Colour) write in the specified attribute that you would like to add and click the "Add New Attribute" button<br> Afterwards to add in specific value options(e.g. red/blue) to the attribute you just added, write in the value you want and how much extra the price should be for that option and click the "Add Attribute Values" button.
+                    <p class="col-xs-12 col-sm-8 col-md-8 col-lg-8">To add options/attributes to a item(e.g. Colour) write in the specified attribute that you would like to add and click the "Add New Attribute" button.<br> Afterwards to add in specific value options(e.g. red/blue) to the attribute you just added, write in the value you want and how much extra the price should be for that option and click the "Add Attribute Values" button.
                     <br> Multiple Attributes can be added with also multiple attribute values as well. </p>
                 </div>
                 
@@ -216,7 +216,7 @@
             <div class="form-group">
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <h3 class="subHeader">Price Management</h3>
-                    <p class="col-xs-12 col-sm-8 col-md-8 col-lg-8">This section is to add prices for different shopper groups. Simply type in a price for a certain shopper group, select a group that you want to add that price for and "Add New Price+". <br>To add more, write a new price, select a new shopper group and hit the button again</p>
+                    <p class="col-xs-12 col-sm-8 col-md-8 col-lg-8">This section is to add prices for different shopper groups. Simply type in a price for a certain shopper group, select a group that you want to add that price for and "Add New Price+". <br>To add more, write a new price, select a new shopper group and hit the button again.</p>
                 </div>
             </div>
             <div class="form-group">
