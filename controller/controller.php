@@ -493,7 +493,7 @@ function validateCategory(){
             $errors .="You have to add an image";
         }
         if(in_array($file_ext,$allowedExtensions)=== false){
-            $errors .="That extension isn't allowed, please only use JPEG, JPG or PNG";
+            $errors .="<br>That extension isn't allowed, please only use JPEG, JPG or PNG";
         }
         if($file_size > 2097152){
             $errors .= "File must be under 2MB";
@@ -503,7 +503,7 @@ function validateCategory(){
             echo "Success";
         } else{
 
-            $_POST['cat_img_error'] = $errors;
+            $_POST['cat_img_error'] = "<span class='errorMessage'>". $errors . "</span>";
             $validated = false;
         }
     }
@@ -936,16 +936,16 @@ function validateProd(){
             $errors .="You have to add an image";
         }
         if(in_array($file_ext,$allowedExtensions)=== false){
-            $errors .="That extension isn't allowed, please only use JPEG, JPG or PNG";
+            $errors .="<br>That extension isn't allowed, please only use JPEG, JPG or PNG";
         }
         if($file_size > 2097152){
-            $errors .= "File must be under 2MB";
+            $errors .= "<br>File must be under 2MB";
         }
         if(empty($errors)==true){
             move_uploaded_file($file_tmp, "../img/".$file_name);
             echo "Success";
         } else{
-            $_POST['prod_img_error'] = $errors;
+            $_POST['prod_img_error'] = "<span class='errorMessage'>".$errors. "</span>";
             $validated = false;
         }
     }
