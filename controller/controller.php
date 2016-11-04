@@ -299,10 +299,6 @@ function edit_category_form($dbo){
 */
 }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 4136c922d36b9bc80ce4fe03280acbc334b48095
 //Function that unsets all post variables that were set from the form on the addcatform.php page
 function unsetCatForm(){
     unset($_POST['cat_name_title']);

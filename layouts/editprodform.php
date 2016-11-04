@@ -294,7 +294,7 @@
                 </div>
                 <!--Length Input-->
                 <div class="col-xs-12 col-sm-2  col-md-2 col-lg-2">
-                    <input name="prod_l" type="number" class="text-input-underline" placeholder="Length" id="form-input-length" oninput="checkNumber(this.id)" value="<?php if(isset($_POST['prod_l'])){echo $_POST['prod_l'];}?>" required>
+                    <input name="prod_l" type="number" class="text-input-underline" placeholder="Length" id="form-input-length" oninput="checkNumber(this.id)" value="<?php if(isset($_POST['prod_l'])){echo $_POST['prod_l'];}else{ echo $row[8];}?>" required>
                     <p id="form-error-length">
                         <?php
                         if(isset($_POST['prod_l_error'])){
@@ -310,7 +310,7 @@
                 </div>
                 <!--Width input-->
                 <div class="col-xs-12 col-sm-2  col-md-2 col-lg-2">
-                    <input name="prod_w" type="number" class="text-input-underline" placeholder="Width" id="form-input-width" oninput="checkNumber(this.id)" value="<?php if(isset($_POST['prod_w'])){echo $_POST['prod_w'];}?>" required>
+                    <input name="prod_w" type="number" class="text-input-underline" placeholder="Width" id="form-input-width" oninput="checkNumber(this.id)" value="<?php if(isset($_POST['prod_w'])){echo $_POST['prod_w'];}else{ echo $row[9];}?>" required>
                     <p id="form-error-width">
                         <?php
 
@@ -325,7 +325,7 @@
                     <p class="labelText">Height:</p>
                 </div>
                 <div class="col-xs-12 col-sm-2  col-md-2 col-lg-2">
-                    <input name="prod_h" type="number" class="text-input-underline" placeholder="Height" id="form-input-height" oninput="checkNumber(this.id)" value="<?php if(isset($_POST['prod_h'])){echo $_POST['prod_h'];}?>" required>
+                    <input name="prod_h" type="number" class="text-input-underline" placeholder="Height" id="form-input-height" oninput="checkNumber(this.id)" value="<?php if(isset($_POST['prod_h'])){echo $_POST['prod_h'];}else{echo $row[10];}?>" required>
                     <p id="form-error-height">
                         <?php
 
@@ -344,7 +344,7 @@
                     <p class="labelText">Weight</p>
                 </div>
                 <div class="col-xs-12 col-sm-3  col-md-3 col-lg-2">
-                    <input name="prod_weight" type="number" class="text-input-underline" placeholder="Weight" id="form-input-weight" oninput="checkNumber(this.id)" value="<?php if(isset($_POST['prod_weight'])){echo $_POST['prod_weight'];}else{echo $row[1]}?>" required>
+                    <input name="prod_weight" type="number" class="text-input-underline" placeholder="Weight" id="form-input-weight" oninput="checkNumber(this.id)" value="<?php if(isset($_POST['prod_weight'])){echo $_POST['prod_weight'];}else{echo $row[7];}?>" required>
                     <p id="form-error-weight">
                         <?php
 
