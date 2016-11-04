@@ -8,9 +8,3 @@ include '../controller/controller.php';
 delete_prod($dbo);
 
 ?>
-
-<<?php
-
-include '..include/layouts/footer.php';
-
-?>
