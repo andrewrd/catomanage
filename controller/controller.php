@@ -242,20 +242,24 @@ function get_cat_info($dbo, $cats){
     }
 }
 
-//This gets the relational information for the form
-function get_parent_info($dbo, $cats){
-    if($cats!=null){
-        sanitise_number($cats);
+//This gets the relational information for the editcatoform
+function get_parent_info($dbo, $post_id){
+        sanitise_number($post_id);
 
-        $stmt = $dbo->prepare("SELECT * FROM CGRYREL WHERE CGRYREL_ID_CHILD = (:id)");
-        $stmt->bindParam(':id', $cats);
+        $stmt = $dbo->prepare("SELECT CGRYREL_ID_CHILD FROM CGRYREL WHERE CGRYREL_ID_PARENT = (:id)");
+        $stmt->bindParam(':id', $post_id);
 
         try_or_die($stmt);
 
         $row = $stmt->fetch();
-
-        return $row; 
-    }
+        if($row != null) {
+            return true;
+        }
+    /*    for ($i=0; $i<count($row); $i++){
+            if($row[$i]==$post_id){
+                return true; 
+            }
+        } */
 }
 //This updates the category after displaying a dropdown to select using select_category()
 function edit_category_form($dbo){
@@ -738,17 +742,14 @@ function get_all_categories_editor($dbo, $params){
     try_or_die($stmt);
 
     //outputs the html for category selection, with a checkbox for each possible category
-    while($row = $stmt->fetch()) { ?>
+    while($row = $stmt->fetch()) {?>
         <div class="checkbox">
             <label>
                 <input <?php
-
-                $rower = get_parent_info($dbo, $row['cat_id']);
-                    for ($i=0; $i<rower.length; $i++){
-                        if($rower[$i]== $row['cat_id']){
+                        if (get_parent_info($dbo, $row['cat_id'])==true){
                             echo "checked";
                         }
-                    } //iterated loop to check whether they match } 
+                     //iterated loop to check whether they match } 
                  ?> 
                 type="checkbox" name="cat[]" value="<?php echo $row['cat_id']; ?>">
                 <?php echo $row['cat_name']; ?>

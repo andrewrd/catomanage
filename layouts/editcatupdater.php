@@ -5,7 +5,7 @@
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 header">
-                <h3 class="title">Add Category</h3>
+                <h3 class="title">Edit Category</h3>
 
             </div>
         </div>
