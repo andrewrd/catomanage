@@ -172,8 +172,7 @@ function submit_category($dbo){
     //prepare statement to insert the basic category details into the product table
     //should break these statements up into smaller pieces
     $stmt = $dbo->prepare("INSERT INTO category(cat_name, cat_desc, cat_img_url, cat_disp_cmd) VALUES(:cat_name_title, :cat_desc, :cat_img_url, :cat_disp_cmd)");
-    /*bind variables, using post variables without any
-    validation, which still needs to be done */
+
     $stmt->bindParam(':cat_name_title', $_POST['cat_name_title']);
     $stmt->bindParam(':cat_desc', $_POST['cat_desc']);
     $stmt->bindParam(':cat_img_url', $_FILES['cat_img_url']['name']);
@@ -977,12 +976,39 @@ function submit_edit_prod($dbo){
 
   //echos out a link for testing purposes only DO NOT LEAVE THIS IN
 
-  echo "<p>Product successfully added to the system.</p>";
-  echo "<p><p><a href='addprod.php'>Add another product</a></p></p>";
+  echo "<p>Product successfully edited.</p>";
 }
 
 function edit_prod_details($dbo){
-  return;
+
+  $stmt = $dbo->prepare("SELECT prod_id FROM product WHERE prod_name = (:prod_name)");
+  $stmt->bindParam(':prod_name', $_POST['prod_name']);
+
+  try_or_die($stmt);
+
+  $prod_id = $stmt->fetchColumn();
+
+  $stmt = $dbo->prepare("UPDATE product SET prod_name = (:prod_name), prod_desc = (:prod_desc), prod_img_url = (:prod_img_url), prod_long_desc = (:prod_long_desc), prod_sku = (:prod_sku), prod_disp_cmd = (:prod_disp_cmd), prod_weight = (:prod_weight), prod_l = (:prod_l), prod_w = (:prod_w), prod_h = (:prod_h) WHERE prod_id = (:prod_id)");
+
+  //variable validation already done
+  $stmt->bindParam(':prod_name', $_POST['prod_name'], PDO::PARAM_STR);
+  $stmt->bindParam(':prod_desc', $_POST['prod_desc'], PDO::PARAM_STR);
+  $stmt->bindParam(':prod_img_url', $_FILES['prod_img_url']['name'], PDO::PARAM_STR);
+  $stmt->bindParam(':prod_long_desc', $_POST['prod_long_desc'],PDO::PARAM_STR);
+  $stmt->bindParam(':prod_sku', $_POST['prod_sku'], PDO::PARAM_STR);
+  $stmt->bindParam(':prod_disp_cmd', $_POST['prod_disp_cmd'], PDO::PARAM_STR);
+  $stmt->bindParam(':prod_weight', $_POST['prod_weight'], PDO::PARAM_INT);
+  $stmt->bindParam(':prod_l', $_POST['prod_l'], PDO::PARAM_INT);
+  $stmt->bindParam(':prod_w', $_POST['prod_w'], PDO::PARAM_INT);
+  $stmt->bindParam(':prod_h', $_POST['prod_h'], PDO::PARAM_INT);
+  $stmt->bindParam(':prod_id', $prod_id, PDO::PARAM_INT);
+
+  try_or_die($stmt);
+
+  $stmt = null;
+
+
+  return $prod_id;
 }
 
 function delete_prod($dbo){
@@ -1000,33 +1026,23 @@ function delete_prod($dbo){
 
       //statement for deleting the attribute, prices, category relationship and product values
       $stmt = $dbo->prepare("DELETE FROM cgprrel WHERE cgpr_prod_id = (:prod_id);");
-
       $stmt->bindParam(':prod_id', $prod_id);
-
       try_or_die($stmt);
 
       $stmt = $dbo->prepare("DELETE FROM prodprices WHERE prpr_prod_id = (:prod_id);");
-
       $stmt->bindParam(':prod_id', $prod_id);
-
       try_or_die($stmt);
 
       $stmt = $dbo->prepare("DELETE FROM attributevalue WHERE attrval_prod_id = (:prod_id);");
-
       $stmt->bindParam(':prod_id', $prod_id);
-
       try_or_die($stmt);
 
       $stmt = $dbo->prepare("DELETE FROM attribute WHERE product_prod_id = (:prod_id);");
-
       $stmt->bindParam(':prod_id', $prod_id);
-
       try_or_die($stmt);
 
       $stmt = $dbo->prepare("DELETE FROM product WHERE prod_id = (:prod_id);");
-
       $stmt->bindParam(':prod_id', $prod_id);
-
       try_or_die($stmt);
     }
 
@@ -1069,8 +1085,7 @@ function update_category($dbo){
     //prepare statement to insert the basic category details into the product table
     //should break these statements up into smaller pieces
     $stmt = $dbo->prepare("UPDATE category SET cat_name=:cat_name_title, cat_desc=:cat_desc, cat_img_url=:cat_img_url, cat_disp_cmd=:cat_disp_cmd WHERE cat_id=:cat");
-    /*bind variables, using post variables without any
-    validation, which still needs to be done */
+
     $stmt->bindParam(':cat_name_title', $_POST['cat_name_title']);
     $stmt->bindParam(':cat_desc', $_POST['cat_desc']);
     $stmt->bindParam(':cat_img_url', $_POST['cat_img_url']);
