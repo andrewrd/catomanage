@@ -943,7 +943,6 @@ function validateProd(){
         }
         if(empty($errors)==true){
             move_uploaded_file($file_tmp, "../img/".$file_name);
-            echo "Success";
         } else{
             $_POST['prod_img_error'] = "<span class='errorMessage'>".$errors. "</span>";
             $validated = false;
