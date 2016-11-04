@@ -273,14 +273,7 @@ function edit_category_form($dbo){
 
         $row = $stmt->fetch();
         include '../layouts/editcatupdater.php';
-    }
-    else {
-        include '../layouts/editcatform.php';
-    }
-
-
-    $stmt = null;
-/*    if($validated==true){
+        /*    if($validated==true){
     //If the form passes the validation test
    // if ($validated==true) {
         //add the form data info to the DB using submit category, then figure out if parents are needed
@@ -304,6 +297,13 @@ function edit_category_form($dbo){
         include '../layouts/editcatform.php';
     }
 */
+    }
+    else {
+        include '../layouts/editcatform.php';
+    }
+
+
+    $stmt = null;
 }
 
 
@@ -1011,6 +1011,76 @@ function delete_prod($dbo){
 
       //link back to catalogue page
       echo '<br><br><a href="catalogue.php">Back to Catalogue</a>';
+}
+
+//This function handles the adding of categories into the database.
+function update_cat($dbo){
+    //Validate the form using validate_cat(). Set it to false to allow it to display until this is completed.
+    //$validated = validateCategory();
+    $validated = validateCategory();
+
+    //If the form passes the validation test
+   // if ($validated==true) {
+        //add the form data info to the DB using submit category, then figure out if parents are needed
+        //This adds the product to the database
+        $cat_id = submit_category($dbo);
+        //Submits the category parent
+        submit_category_rel($dbo, $cat_id);
+
+        //unset the post variables from the last form
+        unsetCatForm();
+        unsetCatFormErrors();
+
+        //echos out a link for testing purposes only DO NOT LEAVE THIS IN
+
+        echo "<div class='container'>";
+        echo "<p>Category has been updated.</p>";
+        echo "<p><p><a href='catalogue.php'>Return to the catalogue</a></p></p>";
+        echo "</div>";
+}
+
+//Inserts a new category into the sql database
+//Gets all posted categories from layouts/addcatform.php and adds them to the database.
+function update_category($dbo){
+    //prepare statement to insert the basic category details into the product table
+    //should break these statements up into smaller pieces
+    $stmt = $dbo->prepare("INSERT INTO category(cat_name, cat_desc, cat_img_url, cat_disp_cmd) VALUES(:cat_name_title, :cat_desc, :cat_img_url, :cat_disp_cmd)");
+    /*bind variables, using post variables without any
+    validation, which still needs to be done */
+    $stmt->bindParam(':cat_name_title', $_POST['cat_name_title']);
+    $stmt->bindParam(':cat_desc', $_POST['cat_desc']);
+    $stmt->bindParam(':cat_img_url', $_FILES['cat_img_url']['name']);
+    $stmt->bindParam(':cat_disp_cmd', $_POST['cat_disp_cmd']);
+
+    try_or_die($stmt);
+
+    $stmt = null;
+
+    //need to get the prod_id of the new product
+    $stmt = $dbo->prepare("SELECT cat_id FROM category WHERE cat_name = (:cat_name_title)");
+    $stmt->bindParam(':cat_name_title', $_POST['cat_name_title']);
+
+    try_or_die($stmt);
+
+    $cat_id = $stmt->fetchColumn();
+
+    return $cat_id;
+}
+
+//Submits the category's parents and child relations.
+function update_category_rel($dbo, $cat_id){
+    //redo this for the categories table, do I need to select child?
+    $cats = $_POST['cat'];
+    foreach($cats as $cat){
+        $stmt = $dbo->prepare("INSERT INTO CGRYREL(CGRYREL_ID_PARENT, CGRYREL_ID_CHILD) VALUES(:id, :cat_id)");
+        $stmt->bindParam(':cat_id', $cat_id);
+        $stmt->bindParam(':id', $cat);
+
+        try_or_die($stmt);
+    }
+
+    $stmt = null;
+
 }
 
 ?>
