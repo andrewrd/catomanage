@@ -94,13 +94,13 @@ function get_category_products($dbo){
     //gathers product details for each of the products
 
     while($row2 = $stmt2->fetch()) { ?>
-        <a class = "productLink" href = "<?php echo $row2[4]."?prod_id=".$row2[0]?>">
+        <a href = "<?php echo $row2[4]."?prod_id=".$row2[0]?>">
           <div class=  "col-md-4 productBox">
             <img src = "../img/<?php echo $row2[3] ?>" width = "200" height = "200"/><br/>
             <h3 class = "productname"><?php echo $row2[1] ?></h3>
             <h3 class = "price">$<?php echo $row2[5] ?></h3>
             <p class = "desc"><?php echo $row2[2] ?></p>
-            <a href = "editprod.php?prod_id=<?php echo $row2[0]?>">Edit</a>
+            <a href = "editprod.php?prod_id=<?php echo $row2[0]?>">Edit</a> / <a href = "addspecial.php?prod_id=<?php echo $row2[0] ?>">Add Specials</a>
           </div>
         </a>
     <?php }
@@ -1317,7 +1317,7 @@ function displayproductattributes($dbo) {
       }
     }
     if ($validated) { //then query the db for respective product details
-      $stmt = $dbo->prepare("SELECT ID, PRODUCT_PROD_ID, NAME FROM ATTRIBUTE WHERE PRODUCT_PROD_ID = (:id)");
+      $stmt = $dbo->prepare("SELECT ID, NAME FROM ATTRIBUTE WHERE PRODUCT_PROD_ID = (:id)");
       $stmt->bindParam(':id', $prod_id);
       try_or_die($stmt);
       if ($stmt->rowCount() > 0) { ?>
@@ -1329,7 +1329,7 @@ function displayproductattributes($dbo) {
 
         while($row = $stmt->fetch()) {
             $attribute_ids[] = $row[0]; //contains ID's related to product
-            $attribute_id_names[$row[0]]=$row[2]; //contains the ID's and their associated names
+            $attribute_id_names[$row[0]]=$row[1]; //contains the ID's and their associated names
         }
 
         $stmt = null;
