@@ -12,7 +12,7 @@ if ($dbloc == "mq") {
 else if ($dbloc == "local") {
   $dbhost = 'localhost';
   $dbusername = 'root';
-  $dbuserpassword = '';
+  $dbuserpassword = 'pass';
   $default_dbname = 'comp344';
 }
 

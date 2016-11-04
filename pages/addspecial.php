@@ -5,7 +5,7 @@ include '../layouts/header.php';
 include '../controller/addspecialcontroller.php';
 ?>
 
-<?php add_special($dbo); ?>
+<?php get_attrs_and_vals($dbo); ?>
 
 <?php
 //includes the footer of the application
