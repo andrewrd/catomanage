@@ -1,7 +1,6 @@
 <!-- Form Container starts here -->
 <div class="container">
     <!-- Main content starts here -->
-    <?php echo $_POST['cats']; ?>
     <form action="addcategory.php" method="POST" class="form-horizontal" enctype="multipart/form-data">
 
         <div class="form-group">
@@ -20,8 +19,8 @@
                     <p class="labelText">Category Name</p>
                 </div>
                 <div class="col-xs-12 col-sm-9  col-md-3 col-lg-4">
-                    <input name="cat_name_title" type="text" class="text-input-underline" placeholder="<?php $_SESSION['category_name']; ?>" id="form-input-catName" oninput="checkString(this.id, 40)" required 
-                    value="<?php if(isset($_POST['cat_name_title'])){$_POST['cat_name_title'];}?>">
+                    <input name="cat_name_title" type="text" class="text-input-underline" placeholder="<?php $name = get_cat_info($dbo, $_POST['cats']); echo $name[1];?>" id="form-input-catName" oninput="checkString(this.id, 40)" required 
+                    value="<?php $name = get_cat_info($dbo, $_POST['cats']); echo $name[1];?>">
                     <p id="form-error-catName">
                         <?php
 
@@ -40,7 +39,7 @@
                         </p>
                 </div>
                 <div class="col-xs-12 col-sm-9 col-md-9 col-lg-10">
-                    <textarea name="cat_desc" class="form-control" id="form-input-desc" rows="2" placeholder="Description Text" required oninput="checkString(this.id, 128)"></textarea>
+                    <textarea name="cat_desc" class="form-control" id="form-input-desc" rows="2" placeholder="<?php $name = get_cat_info($dbo, $_POST['cats']); echo $name[2];?>" value=""required oninput="checkString(this.id, 128)"><?php $name = get_cat_info($dbo, $_POST['cats']); echo $name[2];?></textarea>
                     <p id="form-error-desc">
                     
                         <?php
@@ -60,7 +59,7 @@
                 </div>
                 <!--Shopper group selection-->
                 <div class="col-xs-12 col-sm-9 col-md-9  col-lg-10">
-                     <?php get_all_categories($dbo); ?>
+                     <?php get_all_categories_editor($dbo); ?>
                     <p id="form-error-desc">
 
                         <?php
@@ -88,7 +87,7 @@
                     <p class="labelText">Image URL</p>
                 </div>
                 <div class="col-xs-3 col-sm-3  col-md-3 col-lg-4">
-                    <input name="cat_img_url" type="file" class="text-input-underline" placeholder="Image URL" id="form-url-input">
+                    <input name="cat_img_url" type="text" class="text-input-underline" placeholder="Insert a link here" value="<?php $name = get_cat_info($dbo, $_POST['cats']); echo $name[3];?>" id="form-url-input">
                     <p id="form-error-img">
                         <?php
 
