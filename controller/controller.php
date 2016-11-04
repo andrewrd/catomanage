@@ -249,11 +249,6 @@ function get_parent_info($dbo, $post_id, $child_id){
         if($row != null) {
             return true;
         }
-    /*    for ($i=0; $i<count($row); $i++){
-            if($row[$i]==$post_id){
-                return true;
-            }
-        } */
 
 }
 //This updates the category after displaying a dropdown to select using select_category()
@@ -927,8 +922,15 @@ function insert_product_prices($dbo, $prod_id){
 }
 
 function edit_prod($dbo){
-  if(isset($_POST['prod_id'])){
+  //this is the root function of edit products
+  //this function is incomplete due to lack of participation by one of our group members
+  $validated = validateProd();
+
+  //If the form passes the validation test
+  if ($validated==true) {
+      //add the form data info to the DB
     submit_edit_prod($dbo);
+
   }
   else{
     if(isset($_GET['prod_id'])){
@@ -937,7 +939,13 @@ function edit_prod($dbo){
       $row = get_product_info($dbo, $prod_id);
       include '../layouts/editprodform.php';
     } else {
-      echo 'not a valid product';
+      if ($validated==false){
+        $validated = false;
+        //if info hasnt been added, show the form to add new info
+        include '../layouts/addprodform.php';
+      } else {
+        echo 'Not a valid product id.';
+      }
     }
   }
 }
@@ -957,6 +965,23 @@ function get_product_info($dbo, $prod_id){
 
 function submit_edit_prod($dbo){
   //function needs to submit updated product information to the database
+  $prod_id = edit_prod_details($dbo);
+  submit_product_category($dbo, $prod_id);
+  submit_product_attributes($dbo, $prod_id);
+  insert_product_prices($dbo, $prod_id);
+
+  //unset the post variables from the last form
+  unsetProdForm();
+  //unset the post error message variables from the last form
+  unsetProdFormErrors();
+
+  //echos out a link for testing purposes only DO NOT LEAVE THIS IN
+
+  echo "<p>Product successfully added to the system.</p>";
+  echo "<p><p><a href='addprod.php'>Add another product</a></p></p>";
+}
+
+function edit_prod_details($dbo){
   return;
 }
 

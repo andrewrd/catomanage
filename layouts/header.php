@@ -19,7 +19,6 @@
           <li><a href="/catomanage/pages/addcategory.php">Add Category</a></li>
           <li><a href="/catomanage/pages/editcat.php">Edit Category</a></li>
           <li><a href="/catomanage/pages/addprod.php">Add Product</a></li>
-          <li><a href="/catomanage/pages/editprod.php">Edit Product</a></li>
         </ul>
       </div>
     </nav>

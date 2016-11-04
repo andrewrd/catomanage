@@ -159,11 +159,6 @@
                     <button type="button" id="btn-addNewAttr" class="btn btn-default">Add New Attribute +</button>
                 </div>
             </div>
-            <div class="form-group">
-                <div class="col-xs-3 col-sm-2 col-md-2 col-lg-12 ">
-                    <button type="button" id="btn-DeleteAttr" class="btn btn-default">Delete Attribute -</button>
-                </div>
-            </div>
             <!--Attribute Input Starts here-->
             <!--Attribute Name-->
             <div class="form-group row">
@@ -256,16 +251,6 @@
             <div class="form-group row">
                 <div class="col-xs-3 col-sm-2 col-md-2 col-lg-12 ">
                     <button type="button" value="Add New Shopper Group Discount +" id="btn-addNewShopGrpDisc" class="btn btn-default">Add New Price +</button>
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="col-xs-3 col-sm-2 col-md-2 col-lg-12 ">
-                    <button type="button" value="Edit Price" id="btn-editPrice" class="btn btn-default">Edit Price</button>
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="col-xs-3 col-sm-2 col-md-2 col-lg-12 ">
-                    <button type="button" value="Delete Price" id="btn-editPrice" class="btn btn-default">Delete Price</button>
                 </div>
             </div>
             <div class="form-group row">
